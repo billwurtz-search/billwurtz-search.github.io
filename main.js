@@ -44,7 +44,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     try {
         const count = await SearchEngine.loadAllData(LOG_FILES);
         countDisplay.innerText = "";
-        statusMsg.innerText = "Search stuff to search.";
+        statusMsg.innerText = `Search stuff to search. (${count} questions loaded)`;
     } catch (e) {
         statusMsg.innerText = "Error loading database :(";
     }
@@ -177,3 +177,4 @@ const observer = new IntersectionObserver((entries) => {
 
 
 observer.observe(sentinel);
+
