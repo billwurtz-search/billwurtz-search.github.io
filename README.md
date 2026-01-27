@@ -5,13 +5,13 @@
 [![Screenshot](logs/screenshot.png)](https://kuzeyalt.github.io/billwurtz-search/)
 
 ## Why?
-Why not? Searching is cool. Searching with regex is even cooler.
+Why not? Searching is cool. Searching with Regex is even cooler.
 
 ## What about [this](https://www.billwurtz-search.com)?
 I'm not affiliated with that site, though this project is heavily inspired by that. The reason I've made my own is because that website doesn't work anymore.
 
 ## Will you update the log files?
-Occasionally. I'm currently far too stressed out publishing this. So don't yell at me now/in the far future if I haven't touched this in a month.
+Occasionally. I am a little bit stressed out publishing this. So don't yell at me now/in the far future if I don't touch this in a month.
 
 ## How does it work?
 I scraped the questions page and made it one big json file that IS actually parsable, instead of the nightmare that is Bill's html. Then I had to split them into 14 individual files because it was too big for Github. Then it's all just vanilla js.
