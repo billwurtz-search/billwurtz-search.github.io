@@ -22,6 +22,9 @@ YES!! You can do anything with it. Actually, I would love to see someone analyzi
 ## About pull requests
 i don't know how github works. and i'm not sure i have the time to review them. just make stuff and dm it to me
 
+## License
+1) This project is "unlicensed" as in public domain. 2) I don't own the logs, their content is from Bill Wurtz. 3) THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+
 ## Contact
 I don't know. Just DM my [Reddit account](https://reddit.com/user/Kuzeyy27). I don't go on Reddit a lot, but this felt "safer" than putting my email on the internet.
 Also, if you have actual serious issues with this, please still contact me in the same way. I will take it down.
