@@ -204,13 +204,13 @@ body.disable-highlight .highlight {
     #sort {
         grid-column: 1 / 2;
         grid-row: 2;
-        width: 48%;
+        width: 35%;
         justify-self: start;
     }
     #filter {
         grid-column: 1 / 2;
         grid-row: 2;
-        width: 48%;
+        width: 63%;
         justify-self: end;
     }
 
@@ -218,8 +218,10 @@ body.disable-highlight .highlight {
         grid-column: 2 / 3;
         grid-row: 2;
         justify-self: center;
-        width: 100%;
+        width: auto;
+        padding: 0 10px;
     }
 
     #count-display { display: none; }
+    .hide-mobile { display: none; }
 }
