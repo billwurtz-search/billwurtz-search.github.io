@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>questions</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="config-modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal">x</span>
+            
+            <div class="modal-section">
+                <span class="center-bold">About</span>
+                This is an unofficial search engine for Bill Wurtz's questions page. Check it out <a href="https://billwurtz.com/questions/questions.html" target="_blank">here</a>.<br>
+                Last database update: 2025-12-11 <br> Ported to JS for GitHub Pages
+            </div>
+
+            <div class="modal-section">
+                <span class="center-bold">Search</span>
+                Use "quotes" to search exact words or phrases. <code>"hello there"</code> <br>
+                Use AND to find questions containing all terms. <code>hello AND hi</code> <br>
+                Use OR to find questions containing either term. <code>hello OR hi</code> <br>
+                Use XOR to find questions containing one term, but not both. <code>hello XOR hi</code> <br>
+                Start with REGEX= to use regular expressions. <code>REGEX=\bh[a-z]{3}o\b</code>
+            </div>
+
+            <div class="modal-section">
+                <span class="center-bold">Configuration</span>
+                <span id="limit-label">100</span> questions will be loaded at once.<br>
+                <input type="range" id="limit-slider" min="20" max="150" value="100" style="width: 200px;"><br><br>
+                
+                <label>
+                    <input type="checkbox" id="check-links" checked> Enable question links.
+                </label><br>
+
+                <label>
+                    <input type="checkbox" id="check-highlight" checked> Enable highlighting.
+                </label><br>
+                
+                <label>
+                    <input type="checkbox" id="check-regex" checked> Enable Regex.
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="search-container">
+        <form id="search-form" style="display:flex; width:100%; justify-content:space-between;">
+            <div class="search-left">
+                <input type="text" id="q" placeholder="Search..." size="40" autocomplete="off">
+                
+                <label for="sort">Sort by:</label>
+                <select id="sort">
+                    <option value="newest">Newest</option>
+                    <option value="oldest">Oldest</option>
+                    <option value="frequency">Frequency</option>
+                </select>
+
+                <label for="filter">Search in:</label>
+                <select id="filter">
+                    <option value="both">Question & Answer</option>
+                    <option value="question">Questions Only</option>
+                    <option value="answer">Answers Only</option>
+                </select>
+            </div>
+
+            <div class="search-right">
+                <span id="count-display" style="color:#bfbfbf;">Loading data...</span>
+                <button type="button" id="config-btn">?</button>
+                <input type="submit" value="Search">
+            </div>
+        </form>
+    </div>
+
+    <div id="results-area"></div>
+
+    <div id="sentinel"></div>
+    <div id="status-msg"></div>
+
+    <script src="search.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
