@@ -7,7 +7,7 @@
 ## Why?
 Why not? Searching is cool. Searching with Regex is even cooler.
 
-## What about [this](https://www.billwurtz-search.com)?
+## Are you [billwurtz-search.com](https://www.billwurtz-search.com)?
 I'm not affiliated with that site, though this project is heavily inspired by that. The reason I've made my own is because that website doesn't work anymore.
 
 ## Will you update the log files?
