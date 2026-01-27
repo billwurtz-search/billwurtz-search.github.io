@@ -5,15 +5,6 @@ for (let i = 1; i <= 14; i++) {
   LOG_FILES.push(`logs/log_${num}.json`);
 }
 
-const logs = [];
-
-for (const file of LOG_FILES) {
-  fetch(file)
-    .then(r => r.json())
-    .then(data => logs.push(data))
-    .catch(err => console.error(file, err));
-}
-
 // -- State --
 let currentResults = [];
 let currentOffset = 0;
@@ -41,14 +32,24 @@ const checkRegex = document.getElementById('check-regex');
 
 // -- INITIALIZATION --
 window.addEventListener('DOMContentLoaded', async () => {
-    try {
-        const count = await SearchEngine.loadAllData(LOG_FILES);
-        countDisplay.innerText = "";
-        statusMsg.innerText = `Search stuff to search. (${count} questions loaded)`;
-    } catch (e) {
-        statusMsg.innerText = "Error loading database :(";
-    }
+    statusMsg.innerText = "Loading database...";
     
+    try {
+        // 1. pass the list of files
+        // 2. 'await' makes the code pause until they're loaded
+        const count = await SearchEngine.loadAllData(LOG_FILES);
+        
+        if (count === 0) {
+            statusMsg.innerText = "Database loaded (0 items). Check console for 404 errors.";
+        } else {
+            countDisplay.innerText = "";
+            statusMsg.innerText = `Database loaded (${count} items). Ready.`;
+        }
+    } catch (e) {
+        console.error(e);
+        statusMsg.innerText = "Error loading database. Check console (F12).";
+    }
+    // clear input on reload
     qInput.value = '';
 });
 
@@ -177,4 +178,5 @@ const observer = new IntersectionObserver((entries) => {
 
 
 observer.observe(sentinel);
+
 
