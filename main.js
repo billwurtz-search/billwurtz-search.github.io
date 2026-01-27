@@ -43,7 +43,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             statusMsg.innerText = "Database loaded (0 items). Check console for 404 errors.";
         } else {
             countDisplay.innerText = "";
-            statusMsg.innerText = `Database loaded (${count} items). Ready.`;
+            statusMsg.innerText = "Search stuff to search.";
         }
     } catch (e) {
         console.error(e);
