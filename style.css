@@ -160,7 +160,7 @@ body.disable-highlight .highlight {
 
     #search-form {
         display: grid;
-        grid-template-columns: 1fr 1.5fr auto;
+        grid-template-columns: 0.8fr 1.8fr auto;
         gap: 8px;
     }
 
@@ -204,4 +204,5 @@ body.disable-highlight .highlight {
 
     #count-display { display: none; }
     .hide-mobile { display: none; }
+
 }
