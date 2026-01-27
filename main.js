@@ -1,8 +1,17 @@
 // -- Load files --
 const LOG_FILES = [];
 for (let i = 1; i <= 14; i++) {
-    const num = i.toString().padStart(2, '0');
-    LOG_FILES.push(`logs/log_${num}.json`);
+  const num = i.toString().padStart(2, '0');
+  LOG_FILES.push(`logs/log_${num}.json`);
+}
+
+const logs = [];
+
+for (const file of LOG_FILES) {
+  fetch(file)
+    .then(r => r.json())
+    .then(data => logs.push(data))
+    .catch(err => console.error(file, err));
 }
 
 // -- State --
@@ -165,5 +174,6 @@ const observer = new IntersectionObserver((entries) => {
         }
     }
 }, { threshold: 0.1 });
+
 
 observer.observe(sentinel);
