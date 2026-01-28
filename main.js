@@ -65,6 +65,9 @@ closeModal.onclick = () => modal.style.display = "none";
 window.onclick = (e) => {
     if (e.target == modal) modal.style.display = "none";
 };
+window.addEventListener('keydown', (e) => {
+    if (e.key === "Escape") modal.style.display = "none";
+});
 
 limitSlider.oninput = function() {
     limitLabel.innerText = this.value;
@@ -178,5 +181,6 @@ const observer = new IntersectionObserver((entries) => {
 
 
 observer.observe(sentinel);
+
 
 
