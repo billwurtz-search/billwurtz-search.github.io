@@ -174,9 +174,12 @@ const SearchEngine = {
                     const resItem = { ...item };
                     resItem.matchCount = count;
                     regexPattern.lastIndex = 0; 
-                    resItem.questionHtml = this.highlightText(item.question, regexPattern, true);
+                    
+                    // Conditional Highlighting
+                    resItem.questionHtml = (searchIn === 'question' || searchIn === 'both') ? this.highlightText(item.question, regexPattern, true) : item.question;
                     regexPattern.lastIndex = 0;
-                    resItem.answerHtml = this.highlightText(item.answer, regexPattern, true);
+                    resItem.answerHtml = (searchIn === 'answer' || searchIn === 'both') ? this.highlightText(item.answer, regexPattern, true) : item.answer;
+                    
                     processedData.push(resItem);
                 }
             }
@@ -258,18 +261,18 @@ const SearchEngine = {
                 if (matchFound) {
                     const resItem = { ...item };
                     resItem.matchCount = totalCounts;
-                    resItem.questionHtml = this.highlightText(item.question, terms, false);
-                    resItem.answerHtml = this.highlightText(item.answer, terms, false);
+                    
+                    // Conditional Highlighting
+                    resItem.questionHtml = (searchIn === 'question' || searchIn === 'both') ? this.highlightText(item.question, terms, false) : item.question;
+                    resItem.answerHtml = (searchIn === 'answer' || searchIn === 'both') ? this.highlightText(item.answer, terms, false) : item.answer;
+                    
                     processedData.push(resItem);
                 }
             }
         }
         // Literal Mode
         else {
-            // Treat the whole query as one single fuzzy string
-            // No boolean parsing, no special operators.
             const literalTerm = { text: query, exact: false, lower: query.toLowerCase() };
-            // Wrap in array for the highlighter to use
             const terms = [literalTerm];
 
             for (const item of this.allData) {
@@ -280,7 +283,6 @@ const SearchEngine = {
 
                 let totalCounts = 0;
                 
-                // Helper to count substring matches
                 const checkField = (textLower) => {
                     let c = 0;
                     let pos = textLower.indexOf(literalTerm.lower);
@@ -301,8 +303,11 @@ const SearchEngine = {
                 if (totalCounts > 0) {
                     const resItem = { ...item };
                     resItem.matchCount = totalCounts;
-                    resItem.questionHtml = this.highlightText(qText, terms, false);
-                    resItem.answerHtml = this.highlightText(aText, terms, false);
+                    
+                    // Highlighting
+                    resItem.questionHtml = (searchIn === 'question' || searchIn === 'both') ? this.highlightText(qText, terms, false) : qText;
+                    resItem.answerHtml = (searchIn === 'answer' || searchIn === 'both') ? this.highlightText(aText, terms, false) : aText;
+                    
                     processedData.push(resItem);
                 }
             }
@@ -316,8 +321,8 @@ const SearchEngine = {
                 if (b.matchCount !== a.matchCount) return b.matchCount - a.matchCount;
                 return parseInt(b.id) - parseInt(a.id);
             });
-        } else {
             // Newest
+        } else {
             processedData.sort((a, b) => parseInt(b.id) - parseInt(a.id));
         }
 
