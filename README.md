@@ -1,8 +1,8 @@
 # Bill Wurtz Search
 ### A fan-made search engine for Bill Wurtz's [questions](https://billwurtz.com/questions/questions.html) page.
-## Open it [here](https://billwurtz-search.github.io/billwurtz-search/)!!
+## Open it [here](https://billwurtz-search.github.io)!!
 
-[![Screenshot](logs/screenshot.png)](https://billwurtz-search.github.io/billwurtz-search/)
+[![Screenshot](logs/screenshot.png)](https://billwurtz-search.github.io)
 
 ## Why?
 Why not? Searching is cool. Searching with Regex is even cooler.
