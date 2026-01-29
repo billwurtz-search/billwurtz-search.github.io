@@ -29,7 +29,6 @@ const limitLabel = document.getElementById('limit-label');
 const checkLinks = document.getElementById('check-links');
 const checkHighlight = document.getElementById('check-highlight');
 const checkRegex = document.getElementById('check-regex');
-
 // -- INITIALIZATION --
 window.addEventListener('DOMContentLoaded', async () => {
     statusMsg.innerText = "Loading database...";
@@ -40,14 +39,31 @@ window.addEventListener('DOMContentLoaded', async () => {
         const count = await SearchEngine.loadAllData(LOG_FILES);
         
         if (count === 0) {
-            statusMsg.innerText = "Database loaded (0 items). Check console for 404 errors.";
+            statusMsg.innerText = "Database loaded with 0 items. Was it a 404?";
         } else {
             countDisplay.innerText = "";
             statusMsg.innerText = "Search stuff to search.";
+
+            // auto update the date on the html
+            const lastItem = SearchEngine.allData[SearchEngine.allData.length - 1];
+            
+            if (lastItem && lastItem.date) {
+                const rawDate = lastItem.date.split(' ')[0]; 
+                const parts = rawDate.split('.');
+                
+                if (parts.length === 3) {
+                    const month = parts[0].padStart(2, '0');
+                    const day = parts[1].padStart(2, '0');
+                    const year = "20" + parts[2]; // i'm just assuming
+                    
+                    const dateEl = document.getElementById('db-date');
+                    if (dateEl) dateEl.innerText = `${year}-${month}-${day}`;
+                }
+            }
         }
     } catch (e) {
         console.error(e);
-        statusMsg.innerText = "Error loading database. Check console (F12).";
+        statusMsg.innerText = "Error loading database :(";
     }
     // clear input on reload
     qInput.value = '';
@@ -146,8 +162,7 @@ function renderBatch() {
     nextBatch.forEach(item => {
         const div = document.createElement('div');
         const dateHtml = `<a href="${item.link}" target="_blank">${item.date}</a>`;
-
-        // Updated to use standard classes instead of custom tags
+      
         div.innerHTML = `
             <br><br>
             <h3> 
@@ -181,6 +196,7 @@ const observer = new IntersectionObserver((entries) => {
 
 
 observer.observe(sentinel);
+
 
 
 
