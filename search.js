@@ -4,9 +4,7 @@ const SearchEngine = {
 
     // -- Data Loading --
     async loadAllData(fileList) {
-        console.log("Loading data...");
         let tempArray = [];
-
         try {
             const promises = fileList.map(fileName => 
                 fetch(fileName)
@@ -34,12 +32,9 @@ const SearchEngine = {
             });
 
             tempArray.sort((a, b) => parseInt(a.id) - parseInt(b.id));
-            
             this.allData = tempArray;
             this.isLoaded = true;
-            console.log(`Loaded ${this.allData.length} entries.`);
             return this.allData.length;
-
         } catch (err) {
             console.error("Critical error loading data:", err);
             throw err;
@@ -48,7 +43,8 @@ const SearchEngine = {
 
     // -- Query Parsing --
     parseBooleanQuery(query) {
-        const regex = /"([^"]+)"|'([^']+)'|([^\s"']+)/g;
+        // the tokenizer now only treats quotes as special if they are at the start/end
+        const regex = /"([^"]+)"|'([^']+)'|(\S+)/g;
         let match;
         const tokens = [];
         
@@ -98,20 +94,16 @@ const SearchEngine = {
         });
 
         const codeStr = `return ${expressionParts.join(' ')};`;
-        
         try {
             new Function('vals', codeStr);
             return { codeStr, terms };
-        } catch (e) {
-            return null;
-        }
+        } catch (e) { return null; }
     },
 
     // -- Highlighting --
     highlightText(text, patterns, isRegexMode) {
         if (!text) return "";
         if (!patterns) return text;
-
         let result = text;
 
         if (isRegexMode) {
@@ -125,7 +117,10 @@ const SearchEngine = {
                 
                 let regex;
                 if (term.exact) {
-                    regex = new RegExp(`\\b${escaped}\\b`, 'gi');
+                    // we now check for word boundaries ONLY if the term starts/ends with a word character
+                    const startBoundary = /^\w/.test(queryStr) ? '\\b' : '';
+                    const endBoundary = /\w$/.test(queryStr) ? '\\b' : '';
+                    regex = new RegExp(`${startBoundary}${escaped}${endBoundary}`, 'gi');
                 } else {
                     regex = new RegExp(escaped, 'gi');
                 }
@@ -138,24 +133,19 @@ const SearchEngine = {
     // -- Main Search --
     executeSearch(params) {
         const { query, sortBy, searchIn, regexEnabled } = params;
-        
         if (!query.trim()) return { results: [], message: "" };
-
         let processedData = [];
 
-        // Regex Mode
+        // 1. REGEX MODE
         if (regexEnabled && query.startsWith("REGEX=")) {
             const regexStr = query.substring(6);
             let regexPattern;
             try {
                 regexPattern = new RegExp(regexStr, 'g'); 
-            } catch (e) {
-                return { results: [], message: "Invalid regex." };
-            }
+            } catch (e) { return { results: [], message: "Invalid regex." }; }
 
             for (const item of this.allData) {
                 let count = 0;
-                
                 const countMatches = (str) => {
                     if (!str) return 0;
                     regexPattern.lastIndex = 0; 
@@ -163,29 +153,19 @@ const SearchEngine = {
                     return matches ? matches.length : 0;
                 };
 
-                if (searchIn === 'question' || searchIn === 'both') {
-                    count += countMatches(item.question);
-                }
-                if (searchIn === 'answer' || searchIn === 'both') {
-                    count += countMatches(item.answer);
-                }
+                if (searchIn === 'question' || searchIn === 'both') count += countMatches(item.question);
+                if (searchIn === 'answer' || searchIn === 'both') count += countMatches(item.answer);
 
                 if (count > 0) {
                     const resItem = { ...item };
                     resItem.matchCount = count;
-                    regexPattern.lastIndex = 0; 
-                    
-                    // Conditional Highlighting
                     resItem.questionHtml = (searchIn === 'question' || searchIn === 'both') ? this.highlightText(item.question, regexPattern, true) : item.question;
-                    regexPattern.lastIndex = 0;
                     resItem.answerHtml = (searchIn === 'answer' || searchIn === 'both') ? this.highlightText(item.answer, regexPattern, true) : item.answer;
-                    
                     processedData.push(resItem);
                 }
             }
-
         } 
-        // Boolean mode
+        // 2. BOOLEAN MODE
         else if (regexEnabled) {
             const parsed = this.parseBooleanQuery(query);
             if (!parsed) return { results: [], message: "" };
@@ -194,9 +174,12 @@ const SearchEngine = {
             const evalFunc = new Function('vals', codeStr);
 
             terms.forEach(t => {
+                const escaped = t.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                 if (t.exact) {
-                    const escaped = t.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                    t.regexGlobal = new RegExp(`\\b${escaped}\\b`, 'gi');
+                    const startB = /^\w/.test(t.text) ? '\\b' : '';
+                    const endB = /\w$/.test(t.text) ? '\\b' : '';
+                    t.regexGlobal = new RegExp(`${startB}${escaped}${endB}`, 'gi');
+                    t.regexTest = new RegExp(`${startB}${escaped}${endB}`, 'i');
                 } else {
                     t.lower = t.text.toLowerCase();
                 }
@@ -205,126 +188,66 @@ const SearchEngine = {
             const isComplex = query.includes(' OR ') || query.includes(' XOR ');
 
             for (const item of this.allData) {
-                const qText = item.question || "";
-                const aText = item.answer || "";
-                const qLower = item.q_lower;
-                const aLower = item.a_lower;
-
-                let matchFound = false;
                 let totalCounts = 0;
                 let vals = [];
+                let skipItem = false;
 
                 for (const term of terms) {
                     let termCount = 0;
-
-                    const checkField = (textOriginal, textLower) => {
+                    const checkField = (textOrig, textLow) => {
                         if (term.exact) {
-                            const matches = textOriginal.match(term.regexGlobal);
-                            return matches ? matches.length : 0;
+                            const m = textOrig.match(term.regexGlobal);
+                            return m ? m.length : 0;
                         } else {
-                            let c = 0;
-                            let pos = textLower.indexOf(term.lower);
-                            while (pos !== -1) {
-                                c++;
-                                pos = textLower.indexOf(term.lower, pos + 1);
-                            }
+                            let c = 0, pos = textLow.indexOf(term.lower);
+                            while (pos !== -1) { c++; pos = textLow.indexOf(term.lower, pos + 1); }
                             return c;
                         }
                     };
 
-                    if (searchIn === 'question' || searchIn === 'both') {
-                        termCount += checkField(qText, qLower);
-                    }
-                    if (searchIn === 'answer' || searchIn === 'both') {
-                        termCount += checkField(aText, aLower);
-                    }
+                    if (searchIn === 'question' || searchIn === 'both') termCount += checkField(item.question, item.q_lower);
+                    if (searchIn === 'answer' || searchIn === 'both') termCount += checkField(item.answer, item.a_lower);
 
-                    if (!isComplex) {
-                        if (termCount === 0) {
-                            matchFound = false;
-                            vals = null;
-                            break;
-                        }
-                        matchFound = true;
-                    } else {
-                        vals.push(termCount > 0);
-                    }
+                    if (!isComplex && termCount === 0) { skipItem = true; break; }
+                    vals.push(termCount > 0);
                     totalCounts += termCount;
                 }
 
-                if (isComplex && vals) {
-                    try {
-                        matchFound = evalFunc(vals);
-                    } catch (e) { matchFound = false; }
-                }
+                if (skipItem) continue;
+                let matchFound = isComplex ? false : true;
+                if (isComplex) { try { matchFound = evalFunc(vals); } catch (e) { matchFound = false; } }
 
                 if (matchFound) {
-                    const resItem = { ...item };
-                    resItem.matchCount = totalCounts;
-                    
-                    // Conditional Highlighting
+                    const resItem = { ...item, matchCount: totalCounts };
                     resItem.questionHtml = (searchIn === 'question' || searchIn === 'both') ? this.highlightText(item.question, terms, false) : item.question;
                     resItem.answerHtml = (searchIn === 'answer' || searchIn === 'both') ? this.highlightText(item.answer, terms, false) : item.answer;
-                    
                     processedData.push(resItem);
                 }
             }
         }
-        // Literal Mode
+        // 3. LITERAL MODE
         else {
             const literalTerm = { text: query, exact: false, lower: query.toLowerCase() };
-            const terms = [literalTerm];
-
             for (const item of this.allData) {
-                const qText = item.question || "";
-                const aText = item.answer || "";
-                const qLower = item.q_lower;
-                const aLower = item.a_lower;
+                let qC = item.q_lower.split(literalTerm.lower).length - 1;
+                let aC = item.a_lower.split(literalTerm.lower).length - 1;
+                let total = 0;
+                if (searchIn === 'question' || searchIn === 'both') total += qC;
+                if (searchIn === 'answer' || searchIn === 'both') total += aC;
 
-                let totalCounts = 0;
-                
-                const checkField = (textLower) => {
-                    let c = 0;
-                    let pos = textLower.indexOf(literalTerm.lower);
-                    while (pos !== -1) {
-                        c++;
-                        pos = textLower.indexOf(literalTerm.lower, pos + 1);
-                    }
-                    return c;
-                };
-
-                if (searchIn === 'question' || searchIn === 'both') {
-                    totalCounts += checkField(qLower);
-                }
-                if (searchIn === 'answer' || searchIn === 'both') {
-                    totalCounts += checkField(aLower);
-                }
-
-                if (totalCounts > 0) {
-                    const resItem = { ...item };
-                    resItem.matchCount = totalCounts;
-                    
-                    // Highlighting
-                    resItem.questionHtml = (searchIn === 'question' || searchIn === 'both') ? this.highlightText(qText, terms, false) : qText;
-                    resItem.answerHtml = (searchIn === 'answer' || searchIn === 'both') ? this.highlightText(aText, terms, false) : aText;
-                    
+                if (total > 0) {
+                    const resItem = { ...item, matchCount: total };
+                    resItem.questionHtml = (searchIn === 'question' || searchIn === 'both') ? this.highlightText(item.question, [literalTerm], false) : item.question;
+                    resItem.answerHtml = (searchIn === 'answer' || searchIn === 'both') ? this.highlightText(item.answer, [literalTerm], false) : item.answer;
                     processedData.push(resItem);
                 }
             }
         }
 
         // Sorting
-        if (sortBy === 'oldest') {
-            processedData.sort((a, b) => parseInt(a.id) - parseInt(b.id));
-        } else if (sortBy === 'frequency') {
-            processedData.sort((a, b) => {
-                if (b.matchCount !== a.matchCount) return b.matchCount - a.matchCount;
-                return parseInt(b.id) - parseInt(a.id);
-            });
-            // Newest
-        } else {
-            processedData.sort((a, b) => parseInt(b.id) - parseInt(a.id));
-        }
+        if (sortBy === 'oldest') processedData.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+        else if (sortBy === 'frequency') processedData.sort((a, b) => (b.matchCount - a.matchCount) || (parseInt(b.id) - parseInt(a.id)));
+        else processedData.sort((a, b) => parseInt(b.id) - parseInt(a.id));
 
         return { results: processedData, message: "" };
     }
