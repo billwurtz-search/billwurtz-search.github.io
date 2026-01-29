@@ -43,15 +43,20 @@ const SearchEngine = {
 
     // -- Query Parsing --
     parseBooleanQuery(query) {
-        // the tokenizer now only treats quotes as special if they are at the start/end
+        // tokenizer handles quotes or non-space words
         const regex = /"([^"]+)"|'([^']+)'|(\S+)/g;
         let match;
         const tokens = [];
         
         while ((match = regex.exec(query)) !== null) {
-            if (match[1] !== undefined) tokens.push({ val: match[1], quoted: true });
-            else if (match[2] !== undefined) tokens.push({ val: match[2], quoted: true });
-            else tokens.push({ val: match[3], quoted: false });
+            let val = match[1] || match[2] || match[3];
+            let quoted = match[1] !== undefined || match[2] !== undefined;
+
+            if (!quoted && !['AND', 'OR', 'XOR', '(', ')'].includes(val.toUpperCase())) {
+                val = val.replace(/^[.,!?;:]+|[.,!?;:]+$/g, '');
+            }
+
+            if (val) tokens.push({ val: val, quoted: quoted });
         }
 
         if (tokens.length === 0) return null;
@@ -62,15 +67,17 @@ const SearchEngine = {
         tokens.forEach(tokenObj => {
             const rawVal = tokenObj.val;
             
-            if (!tokenObj.quoted && ['AND', 'OR', 'XOR'].includes(rawVal)) {
-                if (rawVal === 'AND') expressionParts.push('&&');
-                if (rawVal === 'OR') expressionParts.push('||');
-                if (rawVal === 'XOR') expressionParts.push('!='); 
+            if (!tokenObj.quoted && ['AND', 'OR', 'XOR'].includes(rawVal.toUpperCase())) {
+                const op = rawVal.toUpperCase();
+                if (op === 'AND') expressionParts.push('&&');
+                if (op === 'OR') expressionParts.push('||');
+                if (op === 'XOR') expressionParts.push('!='); 
             } else if (!tokenObj.quoted && rawVal === '(') {
                 expressionParts.push('(');
             } else if (!tokenObj.quoted && rawVal === ')') {
                 expressionParts.push(')');
             } else {
+                // Merge adjacent terms (Implicit Phrase)
                 if (expressionParts.length > 0 && expressionParts[expressionParts.length - 1].startsWith("vals[")) {
                     const lastIdx = terms.length - 1;
                     terms[lastIdx].text += " " + rawVal;
@@ -86,6 +93,7 @@ const SearchEngine = {
         if (terms.length === 0) return null;
 
         terms.forEach(t => {
+            // was the original term wrapped in quotes?
             if (t.explicitQuote || query.includes(`"${t.text}"`) || query.includes(`'${t.text}'`)) {
                 t.exact = true;
             } else {
@@ -117,7 +125,7 @@ const SearchEngine = {
                 
                 let regex;
                 if (term.exact) {
-                    // we now check for word boundaries ONLY if the term starts/ends with a word character
+                    // match word boundaries only if the term starts/ends with a word character
                     const startBoundary = /^\w/.test(queryStr) ? '\\b' : '';
                     const endBoundary = /\w$/.test(queryStr) ? '\\b' : '';
                     regex = new RegExp(`${startBoundary}${escaped}${endBoundary}`, 'gi');
@@ -179,7 +187,6 @@ const SearchEngine = {
                     const startB = /^\w/.test(t.text) ? '\\b' : '';
                     const endB = /\w$/.test(t.text) ? '\\b' : '';
                     t.regexGlobal = new RegExp(`${startB}${escaped}${endB}`, 'gi');
-                    t.regexTest = new RegExp(`${startB}${escaped}${endB}`, 'i');
                 } else {
                     t.lower = t.text.toLowerCase();
                 }
@@ -227,13 +234,15 @@ const SearchEngine = {
         }
         // 3. LITERAL MODE
         else {
-            const literalTerm = { text: query, exact: false, lower: query.toLowerCase() };
+            const cleanQuery = query.replace(/^[.,!?;:]+|[.,!?;:]+$/g, '');
+            const literalTerm = { text: cleanQuery, exact: false, lower: cleanQuery.toLowerCase() };
+            
             for (const item of this.allData) {
-                let qC = item.q_lower.split(literalTerm.lower).length - 1;
-                let aC = item.a_lower.split(literalTerm.lower).length - 1;
                 let total = 0;
-                if (searchIn === 'question' || searchIn === 'both') total += qC;
-                if (searchIn === 'answer' || searchIn === 'both') total += aC;
+                const countSub = (low) => low.split(literalTerm.lower).length - 1;
+
+                if (searchIn === 'question' || searchIn === 'both') total += countSub(item.q_lower);
+                if (searchIn === 'answer' || searchIn === 'both') total += countSub(item.a_lower);
 
                 if (total > 0) {
                     const resItem = { ...item, matchCount: total };
