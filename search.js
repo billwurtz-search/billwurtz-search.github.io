@@ -254,9 +254,19 @@ const SearchEngine = {
         }
 
         // Sorting
-        if (sortBy === 'oldest') processedData.sort((a, b) => parseInt(a.id) - parseInt(b.id));
-        else if (sortBy === 'frequency') processedData.sort((a, b) => (b.matchCount - a.matchCount) || (parseInt(b.id) - parseInt(a.id)));
-        else processedData.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+        if (sortBy === 'oldest') {
+            processedData.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+        } else if (sortBy === 'frequency') {
+            processedData.sort((a, b) => (b.matchCount - a.matchCount) || (parseInt(b.id) - parseInt(a.id)));
+        } else if (sortBy === 'randy') {
+            for (let i = processedData.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [processedData[i], processedData[j]] = [processedData[j], processedData[i]];
+            }
+        } else {
+            // Newest
+            processedData.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+        }
 
         return { results: processedData, message: "" };
     }
