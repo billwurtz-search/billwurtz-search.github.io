@@ -93,9 +93,10 @@ body.disable-highlight .highlight {
     left: 50%;
     transform: translate(-50%, -50%);
     
-    /* Desktop Default */
+    aspect-ratio: auto;
     width: 50vw;
-    aspect-ratio: 5/3;
+    height: auto;
+    max-height: 90vh;
     
     background-color: #dbdbdb;
     color: black;
@@ -206,7 +207,3 @@ body.disable-highlight .highlight {
     .hide-mobile { display: none; }
 
 }
-
-
-
-

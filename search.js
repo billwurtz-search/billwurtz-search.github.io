@@ -2,103 +2,90 @@ const SearchEngine = {
     allData: [],
     isLoaded: false,
 
-    // -- Data Loading --
-    async loadAllData(fileList) {
+    async loadAllData(fileList, onProgress) {
         let tempArray = [];
+        let loadedCount = 0;
+        const totalFiles = fileList.length;
+
         try {
-            const promises = fileList.map(fileName => 
-                fetch(fileName)
-                    .then(res => {
-                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                        return res.json();
-                    })
-                    .catch(err => {
-                        console.warn(`Failed to load ${fileName}:`, err);
-                        return null;
-                    })
-            );
+            const promises = fileList.map(async (f) => {
+                const response = await fetch(f);
+                const content = await response.json();
+                
+                loadedCount++;
+                if (onProgress) onProgress(loadedCount, totalFiles);
+                
+                return content;
+            });
 
             const results = await Promise.all(promises);
-
-            results.forEach(jsonContent => {
-                if (!jsonContent) return;
-                Object.keys(jsonContent).forEach(key => {
-                    const item = jsonContent[key];
+            
+            results.forEach(content => {
+                if (!content) return;
+                Object.keys(content).forEach(key => {
+                    const item = content[key];
                     item.id = key; 
                     item.q_lower = (item.question || "").toLowerCase();
                     item.a_lower = (item.answer || "").toLowerCase();
+                    item.d_lower = (item.date || "").toLowerCase();
+                    
+                    const punc = /[.,!?;:\-]/g; 
+                    item.q_clean = item.q_lower.replace(punc, ' ').replace(/\s+/g, ' ').trim();
+                    item.a_clean = item.a_lower.replace(punc, ' ').replace(/\s+/g, ' ').trim();
+                    item.d_clean = item.d_lower.replace(punc, ' ').replace(/\s+/g, ' ').trim();
+
+                    const rawDate = (item.link && item.link.split('date=')[1]) || "";
+                    item.ts = rawDate.replace(/[-:\.]/g, '');
                     tempArray.push(item);
                 });
             });
 
-            tempArray.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+            tempArray.sort((a, b) => (parseInt(a.id) || 0) - (parseInt(b.id) || 0));
             this.allData = tempArray;
             this.isLoaded = true;
             return this.allData.length;
-        } catch (err) {
-            console.error("Critical error loading data:", err);
-            throw err;
-        }
+        } catch (err) { throw err; }
     },
 
-    // -- Query Parsing --
     parseBooleanQuery(query) {
-        // tokenizer handles quotes or non-space words
         const regex = /"([^"]+)"|'([^']+)'|(\S+)/g;
-        let match;
-        const tokens = [];
-        
+        let match, tokens = [];
         while ((match = regex.exec(query)) !== null) {
             let val = match[1] || match[2] || match[3];
             let quoted = match[1] !== undefined || match[2] !== undefined;
-
+            
             if (!quoted && !['AND', 'OR', 'XOR', '(', ')'].includes(val.toUpperCase())) {
-                val = val.replace(/^[.,!?;:]+|[.,!?;:]+$/g, '');
+                const cleaned = val.replace(/^[.,!?;:\-]+|[.,!?;:\-]+$/g, '');
+                val = cleaned === "" ? val : cleaned;
             }
-
             if (val) tokens.push({ val: val, quoted: quoted });
         }
-
         if (tokens.length === 0) return null;
 
-        let expressionParts = [];
-        let terms = [];
-        
+        let expressionParts = [], terms = [];
         tokens.forEach(tokenObj => {
             const rawVal = tokenObj.val;
-            
             if (!tokenObj.quoted && ['AND', 'OR', 'XOR'].includes(rawVal.toUpperCase())) {
                 const op = rawVal.toUpperCase();
-                if (op === 'AND') expressionParts.push('&&');
-                if (op === 'OR') expressionParts.push('||');
-                if (op === 'XOR') expressionParts.push('!='); 
-            } else if (!tokenObj.quoted && rawVal === '(') {
-                expressionParts.push('(');
-            } else if (!tokenObj.quoted && rawVal === ')') {
-                expressionParts.push(')');
-            } else {
-                // Merge adjacent terms (Implicit Phrase)
+                expressionParts.push(op === 'AND' ? '&&' : (op === 'OR' ? '||' : '!='));
+            } else if (!tokenObj.quoted && rawVal === '(') expressionParts.push('(');
+            else if (!tokenObj.quoted && rawVal === ')') expressionParts.push(')');
+            else {
                 if (expressionParts.length > 0 && expressionParts[expressionParts.length - 1].startsWith("vals[")) {
-                    const lastIdx = terms.length - 1;
-                    terms[lastIdx].text += " " + rawVal;
-                    if (tokenObj.quoted) terms[lastIdx].explicitQuote = true;
+                    terms[terms.length - 1].text += " " + rawVal;
+                    if (tokenObj.quoted) terms[terms.length - 1].explicitQuote = true;
                 } else {
-                    const index = terms.length;
                     terms.push({ text: rawVal, explicitQuote: tokenObj.quoted });
-                    expressionParts.push(`vals[${index}]`);
+                    expressionParts.push(`vals[${terms.length - 1}]`);
                 }
             }
         });
 
-        if (terms.length === 0) return null;
-
         terms.forEach(t => {
-            // was the original term wrapped in quotes?
-            if (t.explicitQuote || query.includes(`"${t.text}"`) || query.includes(`'${t.text}'`)) {
-                t.exact = true;
-            } else {
-                t.exact = false;
-            }
+            t.exact = (t.explicitQuote || query.includes(`"${t.text}"`) || query.includes(`'${t.text}'`));
+            t.lower = t.text.toLowerCase();
+            t.clean = t.lower.replace(/[.,!?;:\-]/g, ' ').replace(/\s+/g, ' ').trim();
+            if (t.clean === "") t.clean = t.lower;
         });
 
         const codeStr = `return ${expressionParts.join(' ')};`;
@@ -108,165 +95,173 @@ const SearchEngine = {
         } catch (e) { return null; }
     },
 
-    // -- Highlighting --
     highlightText(text, patterns, isRegexMode) {
-        if (!text) return "";
-        if (!patterns) return text;
-        let result = text;
+        if (!text || !patterns) return text || "";
 
         if (isRegexMode) {
-            try {
-                result = text.replace(patterns, (match) => `<span class="highlight">${match}</span>`);
-            } catch (e) { return text; }
-        } else {
-            patterns.forEach(term => {
-                const queryStr = term.text;
-                const escaped = queryStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                
-                let regex;
-                if (term.exact) {
-                    // match word boundaries only if the term starts/ends with a word character
-                    const startBoundary = /^\w/.test(queryStr) ? '\\b' : '';
-                    const endBoundary = /\w$/.test(queryStr) ? '\\b' : '';
-                    regex = new RegExp(`${startBoundary}${escaped}${endBoundary}`, 'gi');
-                } else {
-                    regex = new RegExp(escaped, 'gi');
-                }
-                result = result.replace(regex, (match) => `<span class="highlight">${match}</span>`);
-            });
+            try { return text.replace(patterns, (m) => `<span class="highlight">${m}</span>`); } catch (e) { return text; }
         }
-        return result;
+        
+        // build a list of valid regex source strings for each term
+        const regexParts = patterns.map(term => {
+            if (!term.text) return null;
+            if (term.exact) {
+                const escaped = term.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const bS = /^\w/.test(term.text) ? '\\b' : '';
+                const bE = /\w$/.test(term.text) ? '\\b' : '';
+                return `${bS}${escaped}${bE}`;
+            } else {
+                const source = term.clean || term.lower;
+                if (!source || source.trim() === "") return null;
+                const parts = source.split(/\s+/).filter(p => p.length > 0);
+                const escapedParts = parts.map(p => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+                return escapedParts.join('[.,!?;:\\-\\s]+');
+            }
+        }).filter(p => p !== null);
+
+        if (regexParts.length === 0) return text;
+
+        // join them. wrap in parens. add safety lookahead.
+        // this checks 'dont match if followed by a closing > without an opening < first'
+        const compositePattern = `(${regexParts.join('|')})(?![^<]*>)`;
+        
+        try {
+            const compositeRegex = new RegExp(compositePattern, 'gi');
+            return text.replace(compositeRegex, (m) => `<span class="highlight">${m}</span>`);
+        } catch (e) {
+            return text;
+        }
     },
 
-    // -- Main Search --
     executeSearch(params) {
-        const { query, sortBy, searchIn, regexEnabled } = params;
-        if (!query.trim()) return { results: [], message: "" };
-        let processedData = [];
+        let { query, sortBy, searchIn, regexEnabled } = params;
+        const includeDates = (searchIn === 'date-incl');
+        let qTrim = query.trim();
+        if (!qTrim) return { results: [], message: "" };
 
-        // 1. REGEX MODE
-        if (regexEnabled && query.startsWith("REGEX=")) {
-            const regexStr = query.substring(6);
-            let regexPattern;
-            try {
-                regexPattern = new RegExp(regexStr, 'g'); 
-            } catch (e) { return { results: [], message: "Invalid regex." }; }
+        const isRawRegex = (regexEnabled && qTrim.startsWith("REGEX="));
 
-            for (const item of this.allData) {
-                let count = 0;
-                const countMatches = (str) => {
-                    if (!str) return 0;
-                    regexPattern.lastIndex = 0; 
-                    const matches = str.match(regexPattern);
-                    return matches ? matches.length : 0;
-                };
+    let dateFilter = null;
+        if (!isRawRegex) {
+            const dMatch = qTrim.match(/\b(before:|bfr:|after:|aft:|range:|rng:)([0-9\-\.:]+?)(?:\.\.([0-9\-\.:]+))?(?=\s|$)/);
+            if (dMatch) {
+                const fullTag = dMatch[0], op = dMatch[1], d1 = dMatch[2], d2 = dMatch[3];
+                qTrim = qTrim.replace(fullTag, '').trim();
+                const pad = (s, char) => (s || "").replace(/[-:\.]/g, '').padEnd(12, char);
 
-                if (searchIn === 'question' || searchIn === 'both') count += countMatches(item.question);
-                if (searchIn === 'answer' || searchIn === 'both') count += countMatches(item.answer);
-
-                if (count > 0) {
-                    const resItem = { ...item };
-                    resItem.matchCount = count;
-                    resItem.questionHtml = (searchIn === 'question' || searchIn === 'both') ? this.highlightText(item.question, regexPattern, true) : item.question;
-                    resItem.answerHtml = (searchIn === 'answer' || searchIn === 'both') ? this.highlightText(item.answer, regexPattern, true) : item.answer;
-                    processedData.push(resItem);
+                if (op.startsWith('b')) dateFilter = (ts) => ts < pad(d1, '0');
+                else if (op.startsWith('a')) dateFilter = (ts) => ts >= pad(d1, '0');
+                else if (op.startsWith('r')) {
+                    if (!d2) return { results: [], message: "Invalid date range." };
+                    dateFilter = (ts) => ts >= pad(d1, '0') && ts <= pad(d2, '9');
                 }
             }
-        } 
-        // 2. BOOLEAN MODE
-        else if (regexEnabled) {
-            const parsed = this.parseBooleanQuery(query);
-            if (!parsed) return { results: [], message: "" };
+        }
 
-            const { codeStr, terms } = parsed;
-            const evalFunc = new Function('vals', codeStr);
+        let processedData = [];
+        let terms = [], evalFunc = null, isComplex = false;
 
-            terms.forEach(t => {
-                const escaped = t.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                if (t.exact) {
-                    const startB = /^\w/.test(t.text) ? '\\b' : '';
-                    const endB = /\w$/.test(t.text) ? '\\b' : '';
-                    t.regexGlobal = new RegExp(`${startB}${escaped}${endB}`, 'gi');
+        if (qTrim !== "" || dateFilter) {
+            if (qTrim !== "") {
+                if (regexEnabled && !isRawRegex) {
+                    const parsed = this.parseBooleanQuery(qTrim);
+                    if (!parsed) return { results: [], message: "Invalid query syntax." };
+                    terms = parsed.terms;
+                    evalFunc = new Function('vals', parsed.codeStr);
+                    isComplex = qTrim.includes(' OR ') || qTrim.includes(' XOR ');
                 } else {
-                    t.lower = t.text.toLowerCase();
+                    const clean = isRawRegex ? qTrim.substring(6) : qTrim.replace(/^[.,!?;:]+|[.,!?;:]+$/g, '');
+                    // Fix: if clean is empty (user typed "?"), use raw qTrim
+                    const finalText = clean === "" ? qTrim : clean;
+                    const lit = { text: finalText, exact: false, lower: finalText.toLowerCase() };
+                    lit.clean = lit.lower.replace(/[.,!?;:\-]/g, ' ').replace(/\s+/g, ' ').trim();
+                    if (lit.clean === "") lit.clean = lit.lower; // ensure we have a search term
+                    terms = [lit];
                 }
-            });
-
-            const isComplex = query.includes(' OR ') || query.includes(' XOR ');
+                
+                terms.forEach(t => {
+                    try {
+                        if (t.exact || isRawRegex) {
+                            const escaped = t.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                            const bS = (!isRawRegex && /^\w/.test(t.text)) ? '\\b' : '';
+                            const bE = (!isRawRegex && /\w$/.test(t.text)) ? '\\b' : '';
+                            t.regexGlobal = new RegExp(isRawRegex ? t.text : `${bS}${escaped}${bE}`, 'gi');
+                        }
+                    } catch (e) { t.regexGlobal = null; }
+                });
+            }
 
             for (const item of this.allData) {
-                let totalCounts = 0;
-                let vals = [];
-                let skipItem = false;
+                if (dateFilter && !dateFilter(item.ts)) continue;
+                if (qTrim === "") {
+                    processedData.push({ ...item, matchCount: 0, dateHtml: item.date, questionHtml: item.question, answerHtml: item.answer });
+                    continue;
+                }
 
+                let totalCounts = 0, vals = [], skipItem = false;
                 for (const term of terms) {
-                    let termCount = 0;
-                    const checkField = (textOrig, textLow) => {
-                        if (term.exact) {
-                            const m = textOrig.match(term.regexGlobal);
-                            return m ? m.length : 0;
-                        } else {
-                            let c = 0, pos = textLow.indexOf(term.lower);
-                            while (pos !== -1) { c++; pos = textLow.indexOf(term.lower, pos + 1); }
-                            return c;
-                        }
+                    const check = (txt, low, clean) => {
+                        if (term.regexGlobal) return ((txt || "").match(term.regexGlobal) || []).length;
+                        
+                        const useRaw = (!term.clean || term.clean.length === 0 || /[^\w\s]/.test(term.lower));
+                        const target = useRaw ? low : clean;
+                        const find = useRaw ? term.lower : term.clean;
+                        
+                        if (!find || !target || find.length === 0) return 0;
+                        
+                        let c = 0, pos = target.indexOf(find);
+                        while (pos !== -1) { c++; pos = target.indexOf(find, pos + 1); }
+                        return c;
                     };
 
-                    if (searchIn === 'question' || searchIn === 'both') termCount += checkField(item.question, item.q_lower);
-                    if (searchIn === 'answer' || searchIn === 'both') termCount += checkField(item.answer, item.a_lower);
+                    const dC = includeDates ? check(item.date, item.d_lower, item.d_clean) : 0;
+                    const qC = check(item.question, item.q_lower, item.q_clean);
+                    const aC = check(item.answer, item.a_lower, item.a_clean);
+                    
+                    let hasM = false;
+                    if (searchIn === 'both') hasM = (qC > 0 || aC > 0);
+                    else if (searchIn === 'question') hasM = (qC > 0);
+                    else if (searchIn === 'answer') hasM = (aC > 0);
+                    else if (searchIn === 'dual-req') hasM = (qC > 0 && aC > 0);
+                    else if (searchIn === 'q-excl') hasM = (qC > 0 && aC === 0);
+                    else if (searchIn === 'a-excl') hasM = (aC > 0 && qC === 0);
+                    else if (searchIn === 'date-incl') hasM = (dC > 0 || qC > 0 || aC > 0);
 
-                    if (!isComplex && termCount === 0) { skipItem = true; break; }
-                    vals.push(termCount > 0);
-                    totalCounts += termCount;
+                    if (!isComplex && !hasM) { skipItem = true; break; }
+                    vals.push(hasM); 
+                    if (searchIn === 'question' || searchIn === 'q-excl') totalCounts += qC;
+                    else if (searchIn === 'answer' || searchIn === 'a-excl') totalCounts += aC;
+                    else totalCounts += (dC + qC + aC);
                 }
 
-                if (skipItem) continue;
-                let matchFound = isComplex ? false : true;
-                if (isComplex) { try { matchFound = evalFunc(vals); } catch (e) { matchFound = false; } }
+                if (!skipItem) {
+                    let isMatch = false;
+                    if (isComplex) { try { isMatch = evalFunc(vals); } catch(e) { isMatch = false; } }
+                    else { isMatch = true; }
 
-                if (matchFound) {
-                    const resItem = { ...item, matchCount: totalCounts };
-                    resItem.questionHtml = (searchIn === 'question' || searchIn === 'both') ? this.highlightText(item.question, terms, false) : item.question;
-                    resItem.answerHtml = (searchIn === 'answer' || searchIn === 'both') ? this.highlightText(item.answer, terms, false) : item.answer;
-                    processedData.push(resItem);
+                    if (isMatch) {
+                        const hPats = isRawRegex ? (terms[0] ? terms[0].regexGlobal : null) : terms;
+                        const showA = ['both','answer','dual-req','a-excl','date-incl'].includes(searchIn);
+                        const showQ = ['both','question','dual-req','q-excl','date-incl'].includes(searchIn);
+                        processedData.push({
+                            ...item, matchCount: totalCounts,
+                            dateHtml: includeDates ? this.highlightText(item.date, hPats, isRawRegex) : item.date,
+                            questionHtml: showQ ? this.highlightText(item.question, hPats, isRawRegex) : item.question,
+                            answerHtml: showA ? this.highlightText(item.answer, hPats, isRawRegex) : item.answer
+                        });
+                    }
                 }
             }
         }
-        // 3. LITERAL MODE
-        else {
-            const cleanQuery = query.replace(/^[.,!?;:]+|[.,!?;:]+$/g, '');
-            const literalTerm = { text: cleanQuery, exact: false, lower: cleanQuery.toLowerCase() };
-            
-            for (const item of this.allData) {
-                let total = 0;
-                const countSub = (low) => low.split(literalTerm.lower).length - 1;
 
-                if (searchIn === 'question' || searchIn === 'both') total += countSub(item.q_lower);
-                if (searchIn === 'answer' || searchIn === 'both') total += countSub(item.a_lower);
-
-                if (total > 0) {
-                    const resItem = { ...item, matchCount: total };
-                    resItem.questionHtml = (searchIn === 'question' || searchIn === 'both') ? this.highlightText(item.question, [literalTerm], false) : item.question;
-                    resItem.answerHtml = (searchIn === 'answer' || searchIn === 'both') ? this.highlightText(item.answer, [literalTerm], false) : item.answer;
-                    processedData.push(resItem);
-                }
-            }
-        }
-
-        // Sorting
-        if (sortBy === 'oldest') {
-            processedData.sort((a, b) => parseInt(a.id) - parseInt(b.id));
-        } else if (sortBy === 'frequency') {
-            processedData.sort((a, b) => (b.matchCount - a.matchCount) || (parseInt(b.id) - parseInt(a.id)));
-        } else if (sortBy === 'randy') {
+        if (sortBy === 'oldest') processedData.sort((a, b) => (parseInt(a.id)||0) - (parseInt(b.id)||0));
+        else if (sortBy === 'frequency') processedData.sort((a, b) => (b.matchCount - a.matchCount) || ((parseInt(b.id)||0) - (parseInt(a.id)||0)));
+        else if (sortBy === 'randy') {
             for (let i = processedData.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [processedData[i], processedData[j]] = [processedData[j], processedData[i]];
             }
-        } else {
-            // Newest
-            processedData.sort((a, b) => parseInt(b.id) - parseInt(a.id));
-        }
+        } else processedData.sort((a, b) => (parseInt(b.id)||0) - (parseInt(a.id)||0));
 
         return { results: processedData, message: "" };
     }

@@ -24,7 +24,7 @@
                 Use "quotes" to search exact words or phrases. <code>"hi"</code>&nbsp;<code>"oh no!"</code> <br>
                 Use AND to find questions containing all terms. <code>apple AND orange</code> <br>
                 Use OR to find questions containing either term. <code>apple OR orange</code> <br>
-                <span class="hide-mobile">Use XOR to find questions containing one term, but not both. <code>apple XOR orange</code> <br></span>
+                Use bfr:/aft:/rng: to filter by date. <code>before:2020-04-01</code>&nbsp;<code>range:2019..2023</code> <br>
                 Start with REGEX= to use regular expressions. <code>REGEX=^how|^w[a-z]{2,3}</code>
             </div>
 
@@ -43,6 +43,10 @@
                 
                 <label>
                     <input type="checkbox" id="check-regex" checked> Enable Regex.
+                </label><br>
+
+                <label>
+                    <input type="checkbox" id="check-more-filters"> More filter options.
                 </label>
             </div>
         </div>
