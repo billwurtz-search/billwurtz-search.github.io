@@ -47,14 +47,14 @@ const SearchEngine = {
         } catch (err) { throw err; }
     },
 
-    parseBooleanQuery(query) {
+parseBooleanQuery(query) {
         const regex = /"([^"]+)"|'([^']+)'|(\S+)/g;
         let match, tokens = [];
         while ((match = regex.exec(query)) !== null) {
             let val = match[1] || match[2] || match[3];
             let quoted = match[1] !== undefined || match[2] !== undefined;
             
-            if (!quoted && !['AND', 'OR', 'XOR', '(', ')'].includes(val.toUpperCase())) {
+            if (!quoted && !['AND', 'OR', 'XOR', '(', ')'].includes(val)) {
                 const cleaned = val.replace(/^[.,!?;:\-]+|[.,!?;:\-]+$/g, '');
                 val = cleaned === "" ? val : cleaned;
             }
@@ -65,12 +65,14 @@ const SearchEngine = {
         let expressionParts = [], terms = [];
         tokens.forEach(tokenObj => {
             const rawVal = tokenObj.val;
-            if (!tokenObj.quoted && ['AND', 'OR', 'XOR'].includes(rawVal.toUpperCase())) {
-                const op = rawVal.toUpperCase();
-                expressionParts.push(op === 'AND' ? '&&' : (op === 'OR' ? '||' : '!='));
-            } else if (!tokenObj.quoted && rawVal === '(') expressionParts.push('(');
-            else if (!tokenObj.quoted && rawVal === ')') expressionParts.push(')');
-            else {
+            
+            if (!tokenObj.quoted && ['AND', 'OR', 'XOR'].includes(rawVal)) {
+                expressionParts.push(rawVal === 'AND' ? '&&' : (rawVal === 'OR' ? '||' : '!='));
+            } else if (!tokenObj.quoted && rawVal === '(') {
+                expressionParts.push('(');
+            } else if (!tokenObj.quoted && rawVal === ')') {
+                expressionParts.push(')');
+            } else {
                 if (expressionParts.length > 0 && expressionParts[expressionParts.length - 1].startsWith("vals[")) {
                     terms[terms.length - 1].text += " " + rawVal;
                     if (tokenObj.quoted) terms[terms.length - 1].explicitQuote = true;
@@ -80,6 +82,8 @@ const SearchEngine = {
                 }
             }
         });
+
+        if (terms.length === 0) return null;
 
         terms.forEach(t => {
             t.exact = (t.explicitQuote || query.includes(`"${t.text}"`) || query.includes(`'${t.text}'`));
@@ -92,7 +96,9 @@ const SearchEngine = {
         try {
             new Function('vals', codeStr);
             return { codeStr, terms };
-        } catch (e) { return null; }
+        } catch (e) { 
+            return null; 
+        }
     },
 
     highlightText(text, patterns, isRegexMode) {
