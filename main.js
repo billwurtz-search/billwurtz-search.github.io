@@ -26,6 +26,10 @@ const checkLinks = document.getElementById('check-links');
 const checkHighlight = document.getElementById('check-highlight');
 const checkRegex = document.getElementById('check-regex');
 const checkMoreFilters = document.getElementById('check-more-filters');
+const toastElement = document.getElementById('toast');
+const toastMessageElement = document.getElementById('toast-message');
+const modalBox = document.querySelector('.modal-content');
+let toastTimer = null;
 
 window.addEventListener('DOMContentLoaded', () => {
     checkMoreFilters.checked = false; 
@@ -134,18 +138,24 @@ async function triggerSearch() {
         regexEnabled: checkRegex.checked
     };
 
-    setTimeout(() => {
+setTimeout(() => {
         const response = SearchEngine.executeSearch(params);
         if (response.message) {
             statusMsg.innerText = response.message;
             return;
         }
+        
         currentResults = response.results;
+        const desktopText = `Found ${currentResults.length} results.`;
+        const mobileText = `${currentResults.length} results`;
+        
+        countDisplay.innerText = desktopText;
+        
         if (currentResults.length === 0) {
-            countDisplay.innerText = "Found 0 results.";
             statusMsg.innerText = "No results found.";
+            showToast("0 results");
         } else {
-            countDisplay.innerText = `Found ${currentResults.length} results.`;
+            showToast(mobileText);
             renderBatch();
         }
     }, 10);
@@ -175,6 +185,20 @@ function renderBatch() {
     resultsArea.appendChild(fragment);
     currentOffset += nextBatch.length;
     statusMsg.innerText = (currentOffset >= currentResults.length) ? "End of results." : "";
+}
+
+function showToast(message) {
+    if (toastTimer) clearTimeout(toastTimer);
+    
+    toastMessageElement.textContent = message;
+    toastElement.classList.remove('toast-hidden');
+    toastElement.classList.add('toast-visible');
+
+    toastTimer = setTimeout(() => {
+        toastElement.classList.remove('toast-visible');
+        toastElement.classList.add('toast-hidden');
+        toastTimer = null;
+    }, 3200);
 }
 
 const observer = new IntersectionObserver((entries) => {
