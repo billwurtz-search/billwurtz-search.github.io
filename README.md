@@ -8,19 +8,16 @@
 Why not? Searching is cool. Searching with Regex is even cooler.
 
 ## How does it work?
-I scraped the questions page and made it one big json file that IS actually parsable, instead of the nightmare that is Bill's html. Then I had to split them into 14 individual files because it was too big for Github. Rest is vanilla js.
+I scraped the questions page to json files that ARE parsable, instead of the mess that is the original html. The search itself is just Js.
 
 ## Will you update the log files?
-Occasionally. Just don't yell at me now/in the far future if I don't touch this in a month.
+Occasionally. Just don't yell at me if I don't for a bit.
 
 ## Can I use the log files myself?
-YES!! You can do anything with it. Actually, I would love to see someone analyzing it.
-
-## Is [this](https://www.billwurtz-search.com) you?
-No, I am not affiliated with that site, though this project is heavily inspired by that. The reason I've made my own is because that website doesn't work anymore.
+YES! Go for it. Actually, I would love to see someone analyzing it.
 
 ## About pull requests
-i don't really know how github works. you can make stuff and dm it to me.
+Sure. If you make a fix or like add a feature, send it to me.
 
 ## License
 1\) This project is "unlicensed" as in public domain. 2) I don't own the logs, their content is from Bill Wurtz. 3) THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
