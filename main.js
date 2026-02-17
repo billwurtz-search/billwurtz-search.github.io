@@ -34,11 +34,13 @@ let isDownloading = false;
 window.addEventListener('DOMContentLoaded', () => {
     checkMoreFilters.checked = false;
     
+    // Check '?q=' for permalink
     const urlParams = new URLSearchParams(window.location.search);
     const initialQuery = urlParams.get('q');
 
     if (initialQuery) {
         qInput.value = initialQuery;
+        window.history.replaceState(null, '', window.location.pathname);
         triggerSearch();
     } else {
         qInput.value = '';
@@ -101,10 +103,6 @@ async function triggerSearch() {
         statusMsg.innerText = "Please enter a search term.";
         return;
     }
-
-    const newUrl = new URL(window.location);
-    newUrl.searchParams.set('q', query);
-    window.history.replaceState(null, '', newUrl);
 
 if (!SearchEngine.isLoaded) {
         if (isDownloading) return;
