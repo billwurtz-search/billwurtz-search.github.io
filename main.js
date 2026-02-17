@@ -1,14 +1,3 @@
-const LOG_FILES = [];
-for (let i = 1; i <= 14; i++) {
-    const num = i.toString().padStart(2, '0');
-    LOG_FILES.push(`logs/log_${num}.json`);
-}
-
-let currentResults = [];
-let currentOffset = 0;
-let currentLimit = 100;
-let isDownloading = false;
-
 const form = document.getElementById('search-form');
 const qInput = document.getElementById('q');
 const sortSelect = document.getElementById('sort');
@@ -31,10 +20,30 @@ const toastMessageElement = document.getElementById('toast-message');
 const modalBox = document.querySelector('.modal-content');
 let toastTimer = null;
 
+const logFiles = [];
+for (let i = 1; i <= 14; i++) {
+    const num = i.toString().padStart(2, '0');
+    logFiles.push(`logs/log_${num}.json`);
+}
+
+let currentResults = [];
+let currentOffset = 0;
+let currentLimit = 100;
+let isDownloading = false;
+
 window.addEventListener('DOMContentLoaded', () => {
-    checkMoreFilters.checked = false; 
-    qInput.value = '';
-    statusMsg.innerText = "Search stuff to search.";
+    checkMoreFilters.checked = false;
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialQuery = urlParams.get('q');
+
+    if (initialQuery) {
+        qInput.value = initialQuery;
+        triggerSearch();
+    } else {
+        qInput.value = '';
+        statusMsg.innerText = "Search stuff to search.";
+    }
 });
 
 form.addEventListener('submit', (e) => {
@@ -93,11 +102,15 @@ async function triggerSearch() {
         return;
     }
 
+    const newUrl = new URL(window.location);
+    newUrl.searchParams.set('q', query);
+    window.history.replaceState(null, '', newUrl);
+
 if (!SearchEngine.isLoaded) {
         if (isDownloading) return;
         isDownloading = true;
 
-        statusMsg.innerText = `Loading database...`;
+        statusMsg.innerText = "Loading database...";
 
         let isSlowData = false;
         let hasStartedProgress = false;
@@ -110,22 +123,27 @@ if (!SearchEngine.isLoaded) {
         }, 10000);
 
         try {
-            await SearchEngine.loadAllData(LOG_FILES, (current, total) => {
+            await SearchEngine.loadAllData(logFiles, (current, total) => {
                 hasStartedProgress = true;
                 const loadPercent = Math.round((current / total) * 100);
-                const slowSuffix = isSlowData ? " -- don't worry, this is only slow once." : "";
+                const slowSuffix = isSlowData ? " -- this is only slow once." : "";
                 statusMsg.innerText = `Loading database (${loadPercent}%)${slowSuffix}`;
             });
 
-            const lastItem = SearchEngine.allData[SearchEngine.allData.length - 1];
-            if (lastItem && lastItem.date) {
-                const rawDate = lastItem.date.split(' ')[0];
-                const parts = rawDate.split('.');
-                if (parts.length === 3) {
-                    const dateEl = document.getElementById('db-date');
-                    if (dateEl) dateEl.innerText = `20${parts[2]}-${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')}`;
+        const lastItem = SearchEngine.allData[SearchEngine.allData.length - 1];
+        if (lastItem && lastItem.date) {
+            const rawDate = lastItem.date.split(' ')[0];
+            const parts = rawDate.split('.');
+            if (parts.length === 3) {
+                const dateEl = document.getElementById('db-date');
+                if (dateEl) {
+                    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
+                    const monthName = months[parseInt(parts[0], 10) - 1];
+                    const dbDay = parts[1].padStart(2, '0');
+                    dateEl.innerText = `20${parts[2]}-${monthName}-${dbDay}`;
                 }
             }
+        }
         } catch (e) {
             console.error(e);
             statusMsg.innerText = "Error loading database :(";
