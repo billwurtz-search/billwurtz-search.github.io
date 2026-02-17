@@ -93,22 +93,33 @@ async function triggerSearch() {
         return;
     }
 
-    if (!SearchEngine.isLoaded) {
+if (!SearchEngine.isLoaded) {
         if (isDownloading) return;
         isDownloading = true;
-        
-        // Initial message
+
         statusMsg.innerText = `Loading database...`;
-        
+
+        let isSlowData = false;
+        let hasStartedProgress = false;
+
+        const slowTimer = setTimeout(() => {
+            isSlowData = true;
+            if (!hasStartedProgress) {
+                statusMsg.innerText = "Loading database... (this is taking a while, huh)";
+            }
+        }, 10000);
+
         try {
             await SearchEngine.loadAllData(LOG_FILES, (current, total) => {
+                hasStartedProgress = true;
                 const loadPercent = Math.round((current / total) * 100);
-                statusMsg.innerText = `Loading database (${loadPercent}%)`;
+                const slowSuffix = isSlowData ? " -- don't worry, this is only slow once." : "";
+                statusMsg.innerText = `Loading database (${loadPercent}%)${slowSuffix}`;
             });
-            
+
             const lastItem = SearchEngine.allData[SearchEngine.allData.length - 1];
             if (lastItem && lastItem.date) {
-                const rawDate = lastItem.date.split(' ')[0]; 
+                const rawDate = lastItem.date.split(' ')[0];
                 const parts = rawDate.split('.');
                 if (parts.length === 3) {
                     const dateEl = document.getElementById('db-date');
@@ -117,9 +128,12 @@ async function triggerSearch() {
             }
         } catch (e) {
             console.error(e);
-            statusMsg.innerText = "Error loading database.";
+            statusMsg.innerText = "Error loading database :(";
             isDownloading = false;
+            clearTimeout(slowTimer);
             return;
+        } finally {
+            clearTimeout(slowTimer);
         }
         isDownloading = false;
     }
@@ -171,11 +185,10 @@ function renderBatch() {
     const fragment = document.createDocumentFragment();
     nextBatch.forEach(item => {
         const div = document.createElement('div');
-        const dateHtml = `<a href="${item.link}" target="_blank">${item.dateHtml}</a>`;
         div.innerHTML = `
             <br><br>
             <h3> 
-                <span class="dco">${dateHtml}</span> 
+                <span class="dco"><a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.dateHtml}</a></span> 
                 &nbsp;
                 <span class="qco">${item.questionHtml}</span> 
             </h3> 
