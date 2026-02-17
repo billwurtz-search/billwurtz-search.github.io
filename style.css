@@ -106,10 +106,13 @@ body.disable-highlight .highlight {
 }
 
 .close-btn {
+    background: none;
+    border: none;
+    padding: 0;
     position: absolute;
     color: #454545;
     top: 10px;
-    right: 15px;
+    right: 16px;
     font-size: 20px;
     cursor: pointer;
 }
@@ -124,6 +127,10 @@ body.disable-highlight .highlight {
     border-radius: 3px;
     font-family: monospace;
     padding: 0 4px;
+}
+
+.modal-section label {
+    display: block;
 }
 
 .center-bold {
@@ -195,7 +202,7 @@ body.disable-highlight .highlight {
 
     .search-left, .search-right { display: contents; }
 
-    /* Row 1 */
+    /* row 1 */
     #q {
         grid-column: 1 / 3;
         grid-row: 1;
@@ -210,7 +217,7 @@ body.disable-highlight .highlight {
         height: 100%;
     }
 
-    /* Row 2 */
+    /* row 2 */
     .search-left label { display: none; }
 
     #sort {

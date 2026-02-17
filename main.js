@@ -128,20 +128,20 @@ if (!SearchEngine.isLoaded) {
                 statusMsg.innerText = `Loading database (${loadPercent}%)${slowSuffix}`;
             });
 
-        const lastItem = SearchEngine.allData[SearchEngine.allData.length - 1];
-        if (lastItem && lastItem.date) {
-            const rawDate = lastItem.date.split(' ')[0];
-            const parts = rawDate.split('.');
-            if (parts.length === 3) {
-                const dateEl = document.getElementById('db-date');
-                if (dateEl) {
-                    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
-                    const monthName = months[parseInt(parts[0], 10) - 1];
-                    const dbDay = parts[1].padStart(2, '0');
-                    dateEl.innerText = `20${parts[2]}-${monthName}-${dbDay}`;
+            const lastItem = SearchEngine.allData[SearchEngine.allData.length - 1];
+            if (lastItem && lastItem.date) {
+                const rawDate = lastItem.date.split(' ')[0];
+                const parts = rawDate.split('.');
+                if (parts.length === 3) {
+                    const dateEl = document.getElementById('db-date');
+                    if (dateEl) {
+                        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
+                        const monthName = months[parseInt(parts[0], 10) - 1];
+                        const day = parseInt(parts[1], 10);
+                        dateEl.innerText = `${monthName} ${day}, 20${parts[2]}`;
+                    }
                 }
             }
-        }
         } catch (e) {
             console.error(e);
             statusMsg.innerText = "Error loading database :(";

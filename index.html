@@ -4,27 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bill Wurtz Search</title>
+    <meta name="description" content="A tool for searching Bill Wurtz's questions page">
     <link rel="icon" href="logs/bwumbrella.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="config-modal">
         <div class="modal-content">
-            <span class="close-btn" id="close-modal">x</span>
+            <button class="close-btn" id="close-modal" aria-label="close">×</button>
             
             <div class="modal-section">
                 <span class="center-bold">About</span>
-                This is an unofficial search engine for Bill Wurtz's questions page. Check it out <a href="https://billwurtz.com/questions/questions.html" target="_blank">here</a>.<br>
-                Last database update: <span id="db-date">2026...</span><br>
-                <span class="hide-mobile"><a href="https://github.com/kuzeyalt/billwurtz-search" target="_blank">View on Github</a></span>
+                This is an unofficial search engine for Bill Wurtz's <a href="https://billwurtz.com/questions/questions.html" target="_blank" rel="noopener noreferrer">questions</a> page.<br>
+                Last database update: <span id="db-date">(search something first!)</span><br>
+                <span class="hide-mobile"><a href="https://github.com/kuzeyalt/billwurtz-search" target="_blank" rel="noopener noreferrer">View on Github</a></span>
             </div>
 
             <div class="modal-section">
                 <span class="center-bold">Search</span>
-                Use "quotes" to search exact words or phrases. <code>"hi"</code>&nbsp;<code>"oh no!"</code> <br>
-                Use AND to find questions containing all terms. <code>apple AND orange</code> <br>
-                Use OR to find questions containing either term. <code>apple OR orange</code> <br>
-                Use bfr:/aft:/rng: to filter by date. <code>before:2020-04-01</code>&nbsp;<code>range:2019..2023</code> <br>
+                Use "quotes" to search exact words or phrases. <code>"hi"</code>&nbsp;<code>"oh no!"</code><br>
+                Use AND to find questions containing all terms. <code>apple AND orange</code><br>
+                Use OR to find questions containing either term. <code>apple OR orange</code><br>
+                Use bfr:/aft:/rng: to filter by date. <code>before:2020-04-01</code>&nbsp;<code>range:2019..2023</code><br>
                 Start with REGEX= to use regular expressions. <code>REGEX=^how|^w[a-z]{2,3}</code>
             </div>
 
@@ -33,21 +34,10 @@
                 <span id="limit-label">100</span> questions will be loaded at once<br>
                 <input type="range" id="limit-slider" min="20" max="150" value="100" style="width: 200px;"><br><br>
                 
-                <label>
-                    <input type="checkbox" id="check-links" checked> Enable question links
-                </label><br>
-
-                <label>
-                    <input type="checkbox" id="check-highlight" checked> Enable highlighting
-                </label><br>
-                
-                <label>
-                    <input type="checkbox" id="check-regex" checked> Enable Regex
-                </label><br>
-
-                <label>
-                    <input type="checkbox" id="check-more-filters"> More filter options (beta)
-                </label>
+                <label><input type="checkbox" id="check-links" checked> Enable question links</label>
+                <label><input type="checkbox" id="check-highlight" checked> Enable highlighting</label>
+                <label><input type="checkbox" id="check-regex" checked> Enable Regex</label>
+                <label><input type="checkbox" id="check-more-filters"> More filter options (beta)</label>
             </div>
         </div>
     </div>
@@ -75,7 +65,7 @@
 
             <div class="search-right">
                 <span id="count-display" style="color:#bfbfbf;"></span>
-                <button type="button" id="config-btn">?</button>
+                <button type="button" id="config-btn" aria-label="info">?</button>
                 <input type="submit" value="Search">
             </div>
         </form>
