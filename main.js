@@ -98,11 +98,12 @@ async function triggerSearch() {
         isDownloading = true;
         
         // Initial message
-        statusMsg.innerText = `Loading database... (0/${LOG_FILES.length})`;
+        statusMsg.innerText = `Loading database...`;
         
         try {
             await SearchEngine.loadAllData(LOG_FILES, (current, total) => {
-                statusMsg.innerText = `Loading database... (${current}/${total})`;
+                const loadPercent = Math.round((current / total) * 100);
+                statusMsg.innerText = `Loading database (${loadPercent}%)`;
             });
             
             const lastItem = SearchEngine.allData[SearchEngine.allData.length - 1];
@@ -198,7 +199,7 @@ function showToast(message) {
         toastElement.classList.remove('toast-visible');
         toastElement.classList.add('toast-hidden');
         toastTimer = null;
-    }, 3200);
+    }, 3600);
 }
 
 const observer = new IntersectionObserver((entries) => {
