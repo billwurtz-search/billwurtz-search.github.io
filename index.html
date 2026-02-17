@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,7 +16,7 @@
             <div class="modal-section">
                 <span class="center-bold">About</span>
                 This is an unofficial search engine for Bill Wurtz's <a href="https://billwurtz.com/questions/questions.html" target="_blank" rel="noopener noreferrer">questions</a> page.<br>
-                Last database update: <span id="db-date">(search something first!)</span><br>
+                Last database update: <span id="db-date">(search to see)</span><br>
                 <span class="hide-mobile"><a href="https://github.com/kuzeyalt/billwurtz-search" target="_blank" rel="noopener noreferrer">View on Github</a></span>
             </div>
 
@@ -25,7 +25,7 @@
                 Use "quotes" to search exact words or phrases. <code>"hi"</code>&nbsp;<code>"oh no!"</code><br>
                 Use AND to find questions containing all terms. <code>apple AND orange</code><br>
                 Use OR to find questions containing either term. <code>apple OR orange</code><br>
-                Use bfr:/aft:/rng: to filter by date. <code>before:2020-04-01</code>&nbsp;<code>range:2019..2023</code><br>
+                Use bfr:/aft:/rng: to filter by date. <code>before:2020-12-24</code>&nbsp;<code>range:2019..2022</code><br>
                 Start with REGEX= to use regular expressions. <code>REGEX=^how|^w[a-z]{2,3}</code>
             </div>
 
@@ -66,7 +66,7 @@
             <div class="search-right">
                 <span id="count-display" style="color:#bfbfbf;"></span>
                 <button type="button" id="config-btn" aria-label="info">?</button>
-                <input type="submit" value="Search">
+                <button type="submit">Search</button>
             </div>
         </form>
     </div>
@@ -84,5 +84,4 @@
     <script src="search.js"></script>
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3db493493d9c459d9ab95bc8c629b450"}'></script>
 </body>
-
 </html>
