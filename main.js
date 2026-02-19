@@ -13,11 +13,11 @@ const limitSlider = document.getElementById('limit-slider');
 const limitLabel = document.getElementById('limit-label');
 const checkLinks = document.getElementById('check-links');
 const checkHighlight = document.getElementById('check-highlight');
-const checkRegex = document.getElementById('check-regex');
 const checkMoreFilters = document.getElementById('check-more-filters');
 const toastElement = document.getElementById('toast');
 const toastMessageElement = document.getElementById('toast-message');
 const modalBox = document.querySelector('.modal-content');
+const checkIndexing = document.getElementById('check-indexing');
 let toastTimer = null;
 
 const logFiles = [];
@@ -32,6 +32,11 @@ let currentLimit = 100;
 let isDownloading = false;
 
 window.addEventListener('DOMContentLoaded', () => {
+    const savedCachePref = localStorage.getItem('bwsearch-cache-pref');
+    if (savedCachePref !== null) {
+        checkIndexing.checked = (savedCachePref === 'true');
+    }
+
     checkMoreFilters.checked = false;
     
     // Check '?q=' for permalink
@@ -73,7 +78,15 @@ checkHighlight.onchange = function() {
     else document.body.classList.add('disable-highlight');
 };
 
-checkRegex.onchange = function() { if (qInput.value.trim()) triggerSearch(); };
+checkIndexing.onchange = async function() {
+    localStorage.setItem('bwsearch-cache-pref', this.checked);
+    if (!this.checked) {
+        try {
+            await SearchEngine.deleteIndex();
+            console.jog("deleted index")
+        } catch(e) {}
+    }
+};
 
 checkMoreFilters.onchange = function() {
     const extraOptions = [
@@ -125,17 +138,12 @@ if (!SearchEngine.isLoaded) {
         }, 10000);
 
         try {
-            await SearchEngine.loadAllData(logFiles, (current, total) => {
+    await SearchEngine.loadAllData(logFiles, (current, total) => {
                 hasStartedProgress = true;
                 const loadPercent = Math.round((current / total) * 100);
-                
-                let loadText = `Loading database (${loadPercent}%)`;
-                if (isSlowData) {
-                    loadText += " -- this is only slow once.";
-                }
-                
-                statusMsg.innerText = loadText;
-            });
+                const slowSuffix = isSlowData ? " -- this is only slow once." : "";
+                statusMsg.innerText = `Loading database (${loadPercent}%)${slowSuffix}`;
+            }, checkIndexing.checked);
 
             const lastItem = SearchEngine.allData[SearchEngine.allData.length - 1];
             if (lastItem && lastItem.date) {
@@ -174,8 +182,7 @@ if (!SearchEngine.isLoaded) {
     const params = {
         query: query,
         sortBy: sortSelect.value,
-        searchIn: filterSelect.value,
-        regexEnabled: checkRegex.checked
+        searchIn: filterSelect.value
     };
 
 setTimeout(() => {

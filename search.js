@@ -1,4 +1,4 @@
-const cacheVersion = 3; 
+const cacheVersion = 4; 
 
 const SearchEngine = {
     allData: [],
@@ -38,21 +38,40 @@ const SearchEngine = {
         });
     },
 
-async loadAllData(fileList, onProgress) {
+
+    deleteIndex() {
+    return new Promise((resolve, reject) => {
+        const req = indexedDB.deleteDatabase("bwsearch-db");
+
+        req.onsuccess = () => {
+            console.log("database deleted");
+            resolve();
+        };
+
+        req.onerror = () => reject();
+
+        req.onblocked = () => {
+            console.log("couldn't delete the database");
+            reject();
+        };
+    });
+},
+
+async loadAllData(fileList, onProgress, useCache) {
         let tempArray = [];
         let loadedCount = 0;
         const totalFiles = fileList.length;
         let db = null;
 
-        // fail
-        try { db = await this._openDB(); } catch (e) {}
+        // fail silently
+        try { if (useCache) db = await this._openDB(); } catch (e) {}
 
         const promises = fileList.map(async (f, index) => {
             let content = null;
             const isLast = (index === fileList.length - 1);
 
             // try database
-            if (db && !isLast) {
+            if (useCache && db && !isLast) {
                 content = await this._getFromDB(db, f);
             }
 
@@ -86,7 +105,7 @@ async loadAllData(fileList, onProgress) {
                     });
 
                     // save the array
-                    if (db && !isLast) this._putToDB(db, f, content);
+                    if (useCache && db && !isLast) this._putToDB(db, f, content);
                 } catch (err) { console.error(err); }
             }
 
@@ -96,6 +115,11 @@ async loadAllData(fileList, onProgress) {
         });
 
         const results = await Promise.all(promises);
+
+        // make it so that we can actually delete the database 
+        if (db) {
+            db.close();
+        }
         
         // merge safely
         results.forEach(arr => {
@@ -200,8 +224,10 @@ parseBooleanQuery(query) {
     },
 
     executeSearch(params) {
-        let { query, sortBy, searchIn, regexEnabled } = params;
+        let { query, sortBy, searchIn } = params;
+        const regexEnabled = true;
         const includeDates = (searchIn === 'date-incl');
+
         let qTrim = query.trim();
         if (!qTrim) return { results: [], message: "" };
 
