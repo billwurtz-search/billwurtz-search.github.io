@@ -115,7 +115,11 @@ if (!SearchEngine.isLoaded) {
 
         const slowTimer = setTimeout(() => {
             isSlowData = true;
-            if (!hasStartedProgress) {
+            if (SearchEngine.isLoaded) return;
+
+            if (hasStartedProgress) {
+                statusMsg.innerText += " -- this is only slow once.";
+            } else {
                 statusMsg.innerText = "Loading database... (this is taking a while, huh)";
             }
         }, 10000);
@@ -124,8 +128,13 @@ if (!SearchEngine.isLoaded) {
             await SearchEngine.loadAllData(logFiles, (current, total) => {
                 hasStartedProgress = true;
                 const loadPercent = Math.round((current / total) * 100);
-                const slowSuffix = isSlowData ? " -- this is only slow once." : "";
-                statusMsg.innerText = `Loading database (${loadPercent}%)${slowSuffix}`;
+                
+                let loadText = `Loading database (${loadPercent}%)`;
+                if (isSlowData) {
+                    loadText += " -- this is only slow once.";
+                }
+                
+                statusMsg.innerText = loadText;
             });
 
             const lastItem = SearchEngine.allData[SearchEngine.allData.length - 1];
@@ -137,8 +146,8 @@ if (!SearchEngine.isLoaded) {
                     if (dateEl) {
                         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
                         const monthName = months[parseInt(parts[0], 10) - 1];
-                        const day = parseInt(parts[1], 10);
-                        dateEl.innerText = `${monthName} ${day}, 20${parts[2]}`;
+                        const dbDay = parseInt(parts[1], 10);
+                        dateEl.innerText = `${monthName} ${dbDay}, 20${parts[2]}`;
                     }
                 }
             }
