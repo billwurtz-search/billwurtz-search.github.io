@@ -1,50 +1,112 @@
+const cacheVersion = 2; 
+
 const SearchEngine = {
     allData: [],
     isLoaded: false,
 
-    async loadAllData(fileList, onProgress) {
+    // open or create the database
+    _openDB() {
+        return new Promise((resolve, reject) => {
+            const req = indexedDB.open("bwsearch-db", cacheVersion);
+            req.onupgradeneeded = (e) => {
+                const db = e.target.result;
+                if (db.objectStoreNames.contains("logs")) db.deleteObjectStore("logs");
+                db.createObjectStore("logs");
+            };
+            req.onsuccess = (e) => resolve(e.target.result);
+            req.onerror = () => reject();
+        });
+    },
+
+    // read
+    _getFromDB(db, key) {
+        return new Promise((resolve) => {
+            const tx = db.transaction(["logs"], "readonly");
+            const req = tx.objectStore("logs").get(key);
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => resolve(null);
+        });
+    },
+
+    // write
+    _putToDB(db, key, val) {
+        return new Promise((resolve) => {
+            const tx = db.transaction(["logs"], "readwrite");
+            const req = tx.objectStore("logs").put(val, key);
+            req.onsuccess = () => resolve();
+            req.onerror = () => resolve();
+        });
+    },
+
+async loadAllData(fileList, onProgress) {
         let tempArray = [];
         let loadedCount = 0;
         const totalFiles = fileList.length;
+        let db = null;
 
-        try {
-            const promises = fileList.map(async (f) => {
-                const response = await fetch(f);
-                const content = await response.json();
-                
-                loadedCount++;
-                if (onProgress) onProgress(loadedCount, totalFiles);
-                
-                return content;
-            });
+        // fail
+        try { db = await this._openDB(); } catch (e) {}
 
-            const results = await Promise.all(promises);
-            
-            results.forEach(content => {
-                if (!content) return;
-                Object.keys(content).forEach(key => {
-                    const item = content[key];
-                    item.id = key; 
-                    item.q_lower = (item.question || "").toLowerCase();
-                    item.a_lower = (item.answer || "").toLowerCase();
-                    item.d_lower = (item.date || "").toLowerCase();
-                    
-                    const punc = /[.,!?;:\-]/g; 
-                    item.q_clean = item.q_lower.replace(punc, ' ').replace(/\s+/g, ' ').trim();
-                    item.a_clean = item.a_lower.replace(punc, ' ').replace(/\s+/g, ' ').trim();
-                    item.d_clean = item.d_lower.replace(punc, ' ').replace(/\s+/g, ' ').trim();
+        const promises = fileList.map(async (f, index) => {
+            let content = null;
+            const isLast = (index === fileList.length - 1);
 
-                    const rawDate = (item.link && item.link.split('date=')[1]) || "";
-                    item.ts = rawDate.replace(/[-:\.]/g, '');
-                    tempArray.push(item);
-                });
-            });
+            // try database
+            if (db && !isLast) {
+                content = await this._getFromDB(db, f);
+            }
 
-            tempArray.sort((a, b) => (parseInt(a.id) || 0) - (parseInt(b.id) || 0));
-            this.allData = tempArray;
-            this.isLoaded = true;
-            return this.allData.length;
-        } catch (err) { throw err; }
+            // fetch
+            if (!content) {
+                try {
+                    const response = await fetch(f);
+                    const raw = await response.json();
+
+                    // it becomes a raw array
+                    content = Object.keys(raw).map(key => {
+                        const item = raw[key];
+                        const q_low = (item.question || "").toLowerCase();
+                        const a_low = (item.answer || "").toLowerCase();
+                        const d_low = (item.date || "").toLowerCase();
+                        const punc = /[.,!?;:\-]/g;
+
+                        return {
+                            id: key,
+                            link: item.link,
+                            date: item.date,
+                            question: item.question,
+                            answer: item.answer,
+                            q_lower: q_low,
+                            a_lower: a_low,
+                            d_lower: d_low,
+                            q_clean: q_low.replace(punc, ' ').replace(/\s+/g, ' ').trim(),
+                            a_clean: a_low.replace(punc, ' ').replace(/\s+/g, ' ').trim(),
+                            d_clean: d_low.replace(punc, ' ').replace(/\s+/g, ' ').trim(),
+                            ts: (item.link && item.link.split('date=')[1] || "").replace(/[-:\.]/g, '')
+                        };
+                    });
+
+                    // save the array
+                    if (db && !isLast) this._putToDB(db, f, content);
+                } catch (err) { console.error(err); }
+            }
+
+            loadedCount++;
+            if (onProgress) onProgress(loadedCount, totalFiles);
+            return content || [];
+        });
+
+        const results = await Promise.all(promises);
+        
+        // merge safely
+        results.forEach(arr => {
+            if (arr) tempArray = tempArray.concat(arr);
+        });
+
+        tempArray.sort((a, b) => (parseInt(a.id) || 0) - (parseInt(b.id) || 0));
+        this.allData = tempArray;
+        this.isLoaded = true;
+        return this.allData.length;
     },
 
 parseBooleanQuery(query) {
@@ -108,7 +170,7 @@ parseBooleanQuery(query) {
             try { return text.replace(patterns, (m) => `<span class="highlight">${m}</span>`); } catch (e) { return text; }
         }
         
-        // build a list of valid regex source strings for each term
+        // build a list of valid regex strings for each term
         const regexParts = patterns.map(term => {
             if (!term.text) return null;
             if (term.exact) {
@@ -127,8 +189,7 @@ parseBooleanQuery(query) {
 
         if (regexParts.length === 0) return text;
 
-        // join them. wrap in parens. add safety lookahead.
-        // this checks 'dont match if followed by a closing > without an opening < first'
+        // 'dont match if followed by a closing > without an opening < first'
         const compositePattern = `(${regexParts.join('|')})(?![^<]*>)`;
         
         try {
@@ -152,13 +213,23 @@ parseBooleanQuery(query) {
             const dMatch = qTrim.match(/\b(before:|bfr:|after:|aft:|range:|rng:)([0-9\-\.:]+?)(?:\.\.([0-9\-\.:]+))?(?=\s|$)/);
             if (dMatch) {
                 const fullTag = dMatch[0], op = dMatch[1], d1 = dMatch[2], d2 = dMatch[3];
+
+                // make sure we have the year at least
+                const d1Clean = d1.replace(/[-:\.]/g, '');
+                if (d1Clean.length < 4) return { results: [], message: "Invalid date range." };
+
+                if (op.startsWith('r')) {
+                    if (!d2) return { results: [], message: "Invalid date range." };
+                    const d2Clean = d2.replace(/[-:\.]/g, '');
+                    if (d2Clean.length < 4) return { results: [], message: "Invalid date range." };
+                }
+
                 qTrim = qTrim.replace(fullTag, '').trim();
                 const pad = (s, char) => (s || "").replace(/[-:\.]/g, '').padEnd(12, char);
 
                 if (op.startsWith('b')) dateFilter = (ts) => ts < pad(d1, '0');
                 else if (op.startsWith('a')) dateFilter = (ts) => ts >= pad(d1, '0');
                 else if (op.startsWith('r')) {
-                    if (!d2) return { results: [], message: "Invalid date range." };
                     dateFilter = (ts) => ts >= pad(d1, '0') && ts <= pad(d2, '9');
                 }
             }
@@ -177,7 +248,6 @@ parseBooleanQuery(query) {
                     isComplex = qTrim.includes(' OR ') || qTrim.includes(' XOR ');
                 } else {
                     const clean = isRawRegex ? qTrim.substring(6) : qTrim.replace(/^[.,!?;:]+|[.,!?;:]+$/g, '');
-                    // Fix: if clean is empty (user typed "?"), use raw qTrim
                     const finalText = clean === "" ? qTrim : clean;
                     const lit = { text: finalText, exact: false, lower: finalText.toLowerCase() };
                     lit.clean = lit.lower.replace(/[.,!?;:\-]/g, ' ').replace(/\s+/g, ' ').trim();
