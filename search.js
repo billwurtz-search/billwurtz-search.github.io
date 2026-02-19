@@ -1,4 +1,4 @@
-const cacheVersion = 2; 
+const cacheVersion = 3; 
 
 const SearchEngine = {
     allData: [],
@@ -78,7 +78,6 @@ async loadAllData(fileList, onProgress) {
                             answer: item.answer,
                             q_lower: q_low,
                             a_lower: a_low,
-                            d_lower: d_low,
                             q_clean: q_low.replace(punc, ' ').replace(/\s+/g, ' ').trim(),
                             a_clean: a_low.replace(punc, ' ').replace(/\s+/g, ' ').trim(),
                             d_clean: d_low.replace(punc, ' ').replace(/\s+/g, ' ').trim(),
@@ -100,7 +99,7 @@ async loadAllData(fileList, onProgress) {
         
         // merge safely
         results.forEach(arr => {
-            if (arr) tempArray = tempArray.concat(arr);
+            if (arr) tempArray.push(...arr);
         });
 
         tempArray.sort((a, b) => (parseInt(a.id) || 0) - (parseInt(b.id) || 0));
@@ -290,7 +289,7 @@ parseBooleanQuery(query) {
                         return c;
                     };
 
-                    const dC = includeDates ? check(item.date, item.d_lower, item.d_clean) : 0;
+                    const dC = includeDates ? check(item.date, item.date, item.d_clean) : 0;
                     const qC = check(item.question, item.q_lower, item.q_clean);
                     const aC = check(item.answer, item.a_lower, item.a_clean);
                     
