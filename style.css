@@ -37,6 +37,7 @@ h3 {
 
 /* search bar */
 .search-container {
+    background-color: transparent;
     padding: 10px;
     margin: 6px;
     font-family: Arial, sans-serif;
@@ -168,9 +169,8 @@ input[type="checkbox"] { accent-color: #4444dd; }
 /* force wrapping */
 #results-area,
 #results-area * {
-    white-space: normal !important;
-    overflow-wrap: anywhere !important;
-    word-break: break-word;
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 
 #search-form {
@@ -212,7 +212,7 @@ input[type="checkbox"] { accent-color: #4444dd; }
 }
 
 /* mobile layout */
-@media (orientation: portrait), (max-width: 630px) {
+@media (max-width: 630px) {
     .modal-content {
         width: 90%;
         max-height: 86vh;
@@ -231,34 +231,34 @@ input[type="checkbox"] { accent-color: #4444dd; }
     .search-left label { display: none; }
 
     #sort {
-        grid-column: 1 / 2;
         grid-row: 1;
+        grid-column: 1 / 2;
         width: 100%;
     }
 
     #filter {
-        grid-column: 2 / 3;
         grid-row: 1;
+        grid-column: 2 / 3;
         width: 100%;
     }
 
     #config-btn {
-        grid-column: 3 / 4;
         grid-row: 1;
+        grid-column: 3 / 4;
         width: 100%;
     }
 
     /* row 2 */
     #q {
-        grid-column: 1 / 3;
         grid-row: 2;
+        grid-column: 1 / 3;
         width: 100%;
         box-sizing: border-box;
     }
 
     button[type="submit"] {
-        grid-column: 3 / 4;
         grid-row: 2;
+        grid-column: 3 / 4;
         width: 100%;
         height: 100%;
     }
@@ -267,4 +267,53 @@ input[type="checkbox"] { accent-color: #4444dd; }
     #count-display { display: none; }
     .hide-mobile { display: none; }
     .show-mobile { display: inline; }
+}
+
+/* split screen */
+@media (min-width: 630px) and (max-width: 1024px) {
+    #search-form {
+        display: grid;
+        grid-template-columns: auto auto 1fr auto;
+        gap: 8px;
+    }
+
+    .search-left, .search-right { display: contents; }
+    .search-left label, .search-right label { display: none; }
+
+    /* row 1 */
+    #q { 
+        grid-row: 1; 
+        grid-column: 1 / 4;
+        width: 458px;
+        box-sizing: border-box; 
+    }
+    
+    input[type="submit"], button[type="submit"] { 
+        grid-row: 1; 
+        grid-column: 4 / 5;
+        width: auto;
+    }
+
+    /* row 2 */
+    #sort { 
+        grid-row: 2; 
+        grid-column: 1 / 2; 
+        width: auto; 
+    }
+    
+    #filter {
+        grid-row: 2; 
+        grid-column: 2 / 3; 
+        width: auto; 
+    }
+    
+    #config-btn { 
+        grid-row: 2; 
+        grid-column: 4 / 5;
+        width: auto;
+        justify-self: end;
+    }
+
+    #toast { display: block; }
+    #count-display { display: none; }
 }
