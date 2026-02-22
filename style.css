@@ -49,14 +49,33 @@ h3 {
     z-index: 100;
 }
 
-input[type="text"], select, input[type="submit"], button {
-    font-size: 16px; 
-}
-
 .search-left, .search-right {
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+input[type="text"], select, input[type="submit"], button {
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    padding: 2px 6px;
+    background: #e9e9ed;
+    color: #000000;
+    border: 1px solid #8f8f9d;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+button:hover,
+input[type="submit"]:hover {
+  background: #d0d0d7;
+  border-color: #676774;
+}
+
+button:active,
+input[type="submit"]:active {
+  background: #b1b1b9;
+  border-color: #484851;
 }
 
 /* highlight word */
@@ -141,7 +160,10 @@ body.disable-highlight .highlight {
     margin-bottom: 10px;
 }
 
-.modal-content a { color: blue; }
+.modal-content a { color: #0000ff; }
+
+input[type="range"] { accent-color: #4444ee; }
+input[type="checkbox"] { accent-color: #4444dd; }
 
 /* force wrapping */
 #results-area,
