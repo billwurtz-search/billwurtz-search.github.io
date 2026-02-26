@@ -39,7 +39,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     checkMoreFilters.checked = false;
     
-    // Check '?q=' for permalink
+    // check '?q=' permalink
     const urlParams = new URLSearchParams(window.location.search);
     const initialQuery = urlParams.get('q');
 
@@ -58,11 +58,39 @@ form.addEventListener('submit', (e) => {
     triggerSearch();
 });
 
-configBtn.onclick = () => modal.style.display = "block";
-closeModal.onclick = () => modal.style.display = "none";
-window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; };
-window.addEventListener('keydown', (e) => { if (e.key === "Escape") modal.style.display = "none"; });
+qInput.addEventListener('keydown', (e) => {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        triggerSearch();
+    }
+});
 
+window.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        qInput.focus();
+    }
+});
+
+// modal
+const hideModal = () => {
+    modal.style.display = "none";
+    configBtn.focus();
+};
+
+configBtn.onclick = () => {
+    modal.style.display = "block";
+    closeModal.focus();
+};
+
+closeModal.onclick = hideModal;
+window.onclick = (e) => { if (e.target == modal) hideModal(); };
+
+window.addEventListener('keydown', (e) => { 
+    if (e.key === "Escape" && modal.style.display === "block") hideModal(); 
+});
+
+// checkboxes
 limitSlider.oninput = function() {
     limitLabel.innerText = this.value;
     currentLimit = parseInt(this.value);
@@ -110,10 +138,11 @@ checkMoreFilters.onchange = function() {
     }
 };
 
+// trigger search
 async function triggerSearch() {
     const query = qInput.value.trim();
     if (!query) {
-        statusMsg.innerText = "Please enter a search term.";
+        statusMsg.innerText = "Please enter something to search.";
         return;
     }
 
@@ -171,7 +200,7 @@ if (!SearchEngine.isLoaded) {
         isDownloading = false;
     }
 
-    // Searching
+    // searching
     resultsArea.innerHTML = "";
     countDisplay.innerText = "";
     currentOffset = 0;
