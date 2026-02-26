@@ -78,7 +78,9 @@ async loadAllData(fileList, onProgress, useCache) {
             // fetch
             if (!content) {
                 try {
-                    const response = await fetch(f);
+                    const fetchOptions = isLast ? { cache: 'no-cache' } : {}; // realize the file is different
+                    
+                    const response = await fetch(f, fetchOptions);
                     const raw = await response.json();
 
                     // it becomes a raw array
