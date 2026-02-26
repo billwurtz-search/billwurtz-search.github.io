@@ -1,4 +1,4 @@
-const cacheVersion = 4; 
+const cacheVersion = 5; 
 
 const SearchEngine = {
     allData: [],
