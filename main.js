@@ -111,7 +111,6 @@ checkIndexing.onchange = async function() {
     if (!this.checked) {
         try {
             await SearchEngine.deleteIndex();
-            console.jog("deleted index")
         } catch(e) {}
     }
 };
@@ -121,7 +120,7 @@ checkMoreFilters.onchange = function() {
         { val: 'dual-req', txt: 'Must be in Both' },
         { val: 'q-excl', txt: 'Exclusively Ques' },
         { val: 'a-excl', txt: 'Exclusively Answ' },
-        { val: 'date-incl', txt: 'Include dates' }
+        { val: 'date-incl', txt: 'Search dates' }
     ];
 
     if (this.checked) {
@@ -192,7 +191,6 @@ if (!SearchEngine.isLoaded) {
             console.error(e);
             statusMsg.innerText = "Error loading database :(";
             isDownloading = false;
-            clearTimeout(slowTimer);
             return;
         } finally {
             clearTimeout(slowTimer);
@@ -204,7 +202,7 @@ if (!SearchEngine.isLoaded) {
     resultsArea.innerHTML = "";
     countDisplay.innerText = "";
     currentOffset = 0;
-    currentResults = []; 
+    currentResults = [];
 
     statusMsg.innerText = "Searching...";
     
@@ -214,7 +212,7 @@ if (!SearchEngine.isLoaded) {
         searchIn: filterSelect.value
     };
 
-setTimeout(() => {
+    setTimeout(() => {
         const response = SearchEngine.executeSearch(params);
         if (response.message) {
             statusMsg.innerText = response.message;
