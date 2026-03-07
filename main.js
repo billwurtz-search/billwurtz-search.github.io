@@ -33,11 +33,10 @@ let isDownloading = false;
 
 window.addEventListener('DOMContentLoaded', () => {
     const savedCachePref = localStorage.getItem('bwsearch-cache-pref');
-    if (savedCachePref !== null) {
-        checkIndexing.checked = (savedCachePref === 'true');
-    }
+    if (savedCachePref !== null) { checkIndexing.checked = (savedCachePref === 'true'); }
 
     checkMoreFilters.checked = false;
+    qInput.focus();
     
     // check '?q=' permalink
     const urlParams = new URLSearchParams(window.location.search);
@@ -56,13 +55,6 @@ window.addEventListener('DOMContentLoaded', () => {
 form.addEventListener('submit', (e) => {
     e.preventDefault();
     triggerSearch();
-});
-
-qInput.addEventListener('keydown', (e) => {
-    if (e.key === "Enter") {
-        e.preventDefault();
-        triggerSearch();
-    }
 });
 
 window.addEventListener('keydown', (e) => {
@@ -117,10 +109,10 @@ checkIndexing.onchange = async function() {
 
 checkMoreFilters.onchange = function() {
     const extraOptions = [
+        { val: 'date-incl', txt: 'Search dates' },
         { val: 'dual-req', txt: 'Must be in Both' },
         { val: 'q-excl', txt: 'Exclusively Ques' },
-        { val: 'a-excl', txt: 'Exclusively Answ' },
-        { val: 'date-incl', txt: 'Search dates' }
+        { val: 'a-excl', txt: 'Exclusively Answ' }
     ];
 
     if (this.checked) {
