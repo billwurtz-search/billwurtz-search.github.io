@@ -71,9 +71,7 @@ async loadAllData(fileList, onProgress, useCache) {
             const isLast = (index === fileList.length - 1);
 
             // try database
-            if (useCache && db && !isLast) {
-                content = await this._getFromDB(db, f);
-            }
+            if (useCache && db && !isLast) { content = await this._getFromDB(db, f); }
 
             // fetch
             if (!content) {
@@ -118,15 +116,11 @@ async loadAllData(fileList, onProgress, useCache) {
 
         const results = await Promise.all(promises);
 
-        // make it so that we can actually delete the database 
-        if (db) {
-            db.close();
-        }
+        // close it so we can delete it
+        if (db) { db.close(); }
         
         // merge safely
-        results.forEach(arr => {
-            if (arr) tempArray.push(...arr);
-        });
+        results.forEach(arr => { if (arr) tempArray.push(...arr); });
 
         tempArray.sort((a, b) => (parseInt(a.id) || 0) - (parseInt(b.id) || 0));
         this.allData = tempArray;
@@ -141,7 +135,7 @@ parseBooleanQuery(query) {
             let val = match[1] || match[2] || match[3];
             let quoted = match[1] !== undefined || match[2] !== undefined;
             
-            if (!quoted && !['AND', 'OR', 'XOR', '(', ')'].includes(val)) {
+            if (!quoted && !['AND', 'OR', 'XOR', 'NOT', '(', ')'].includes(val)) {
                 const cleaned = val.replace(/^[.,!?;:\-]+|[.,!?;:\-]+$/g, '');
                 val = cleaned === "" ? val : cleaned;
             }
@@ -153,8 +147,14 @@ parseBooleanQuery(query) {
         tokens.forEach(tokenObj => {
             const rawVal = tokenObj.val;
             
-            if (!tokenObj.quoted && ['AND', 'OR', 'XOR'].includes(rawVal)) {
-                expressionParts.push(rawVal === 'AND' ? '&&' : (rawVal === 'OR' ? '||' : '!='));
+            if (!tokenObj.quoted && ['AND', 'OR', 'XOR', 'NOT'].includes(rawVal)) {
+                if (rawVal === 'NOT') {
+                    if (expressionParts.length > 0 && !['&&', '||', '!='].includes(expressionParts[expressionParts.length - 1])) {
+                        expressionParts.push('&&');
+                    } expressionParts.push('!');
+                } else {
+                    expressionParts.push(rawVal === 'AND' ? '&&' : (rawVal === 'OR' ? '||' : '!='));
+                }
             } else if (!tokenObj.quoted && rawVal === '(') {
                 expressionParts.push('(');
             } else if (!tokenObj.quoted && rawVal === ')') {
@@ -183,9 +183,7 @@ parseBooleanQuery(query) {
         try {
             new Function('vals', codeStr);
             return { codeStr, terms };
-        } catch (e) { 
-            return null; 
-        }
+        } catch (e) { return null; }
     },
 
     highlightText(text, patterns, isRegexMode) {
@@ -218,11 +216,9 @@ parseBooleanQuery(query) {
         const compositePattern = `(${regexParts.join('|')})(?![^<]*>)`;
         
         try {
-            const compositeRegex = new RegExp(compositePattern, 'gi');
+            const compositeRegex = new RegExp(compositePattern, isRegexMode ? 'g' : 'gi');
             return text.replace(compositeRegex, (m) => `<span class="highlight">${m}</span>`);
-        } catch (e) {
-            return text;
-        }
+        } catch (e) { return text; }
     },
 
     executeSearch(params) {
@@ -272,7 +268,7 @@ parseBooleanQuery(query) {
                     if (!parsed) return { results: [], message: "Invalid query syntax." };
                     terms = parsed.terms;
                     evalFunc = new Function('vals', parsed.codeStr);
-                    isComplex = qTrim.includes(' OR ') || qTrim.includes(' XOR ');
+                    isComplex = qTrim.includes(' OR ') || qTrim.includes(' XOR ') || qTrim.includes(' NOT ') || qTrim.startsWith('NOT ');
                 } else {
                     const clean = isRawRegex ? qTrim.substring(6) : qTrim.replace(/^[.,!?;:]+|[.,!?;:]+$/g, '');
                     const finalText = clean === "" ? qTrim : clean;
@@ -288,7 +284,8 @@ parseBooleanQuery(query) {
                             const escaped = t.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                             const bS = (!isRawRegex && /^\w/.test(t.text)) ? '\\b' : '';
                             const bE = (!isRawRegex && /\w$/.test(t.text)) ? '\\b' : '';
-                            t.regexGlobal = new RegExp(isRawRegex ? t.text : `${bS}${escaped}${bE}`, 'gi');
+                            const flags = isRawRegex ? 'g' : 'gi';
+                            t.regexGlobal = new RegExp(isRawRegex ? t.text : `${bS}${escaped}${bE}`, flags);
                         }
                     } catch (e) { t.regexGlobal = null; }
                 });
@@ -360,12 +357,15 @@ parseBooleanQuery(query) {
         if (sortBy === 'oldest') processedData.sort((a, b) => (parseInt(a.id)||0) - (parseInt(b.id)||0));
         else if (sortBy === 'frequency') processedData.sort((a, b) => (b.matchCount - a.matchCount) || ((parseInt(b.id)||0) - (parseInt(a.id)||0)));
         else if (sortBy === 'randy') {
+            let srch = 0;
+            for (let i = 0; i < query.length; i++) srch = (srch << 5) - srch + query.charCodeAt(i);
             for (let i = processedData.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
+                srch = Math.imul(srch, 1234567891) + 0xABCDEF1 | 0;
+                const j = Math.abs(srch) % (i + 1);
                 [processedData[i], processedData[j]] = [processedData[j], processedData[i]];
             }
-        } else processedData.sort((a, b) => (parseInt(b.id)||0) - (parseInt(a.id)||0));
-
+        } // newest
+        else processedData.sort((a, b) => (parseInt(b.id)||0) - (parseInt(a.id)||0));
         return { results: processedData, message: "" };
     }
 };
