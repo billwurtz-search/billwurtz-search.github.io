@@ -21,19 +21,18 @@
             </div>
 
             <div class="modal-section">
-                <span class="hide-mobile"><span class="center-bold" style="text-decoration: underline dotted gray;"
-                    title="Use NOT -&gt; fever NOT fever dream&#10;Use XOR -&gt; color XOR colour&#10;Use ?q= permalink -&gt; billwurtz-search.github.io/?q=hi">Search</span>
-                </span><span class="show-mobile"><span class="center-bold">Search</span></span>
+                <span class="center-bold">Search</span>
                 Use "quotes" to search exact words or phrases. <code>"hi"</code>&nbsp;<code>"oh no!"</code><br>
                 Use AND to find questions containing all terms. <code>apple AND orange</code><br>
                 Use OR to find questions containing either term. <code>apple OR orange</code><br>
                 Use bfr:/aft:/rng: to filter by date. <code>before:2020-12-24</code>&nbsp;<code>range:2019..2022</code><br>
-                Start with REGEX= to use regular expressions. <code>REGEX=^how|^w[a-z]{2,3}</code>
+                Start with REGEX= to use regular expressions. <code>REGEX=^how|^w[a-z]{2,3}</code><div class="hide-mobile" style="height: 0; color: gray; cursor: help;"
+                title="Use NOT -&gt; fever NOT fever dream&#10;Use XOR -&gt; color XOR colour&#10;Use ?q= permalink -&gt; billwurtz-search.github.io/?q=hi">···</div>
             </div>
 
             <div class="modal-section">
                 <span class="center-bold">Configuration</span>
-                <span id="limit-label">100</span> questions will be loaded at once<br>
+                <span id="limit-label" style="font-variant-numeric: tabular-nums;">100</span> questions will be loaded at once<br>
                 <input type="range" id="limit-slider" min="20" max="150" value="100" style="width: 200px;"><br><br>
                 
                 <label><input type="checkbox" id="check-links" checked> Enable question links</label>
