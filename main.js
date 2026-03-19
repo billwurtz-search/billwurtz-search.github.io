@@ -64,6 +64,14 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
+resultsArea.addEventListener('click', (e) => {
+    const link = e.target.closest('a'); 
+        if (link) {
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+    }
+});
+
 // modal
 const hideModal = () => {
     modal.style.display = "none";
@@ -109,7 +117,6 @@ checkIndexing.onchange = async function() {
 
 checkMoreFilters.onchange = function() {
     const extraOptions = [
-        { val: 'date-incl', txt: 'Search dates' },
         { val: 'dual-req', txt: 'Must be in Both' },
         { val: 'q-excl', txt: 'Exclusively Ques' },
         { val: 'a-excl', txt: 'Exclusively Answ' }

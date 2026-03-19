@@ -1,4 +1,4 @@
-const cacheVersion = 5; 
+const cacheVersion = 9;
 
 const SearchEngine = {
     allData: [],
@@ -38,7 +38,7 @@ const SearchEngine = {
         });
     },
 
-
+    // delete
     deleteIndex() {
     return new Promise((resolve, reject) => {
         const req = indexedDB.deleteDatabase("bwsearch-db");
@@ -84,23 +84,30 @@ async loadAllData(fileList, onProgress, useCache) {
                     // it becomes a raw array
                     content = Object.keys(raw).map(key => {
                         const item = raw[key];
-                        const q_low = (item.question || "").toLowerCase();
-                        const a_low = (item.answer || "").toLowerCase();
+                        
+                        const tsStr = item.info ? item.info.ts : "";
+                        const hasLink = item.info ? !!item.info.hl : false;
+                        
+                        const stripA = (s) => (s || "").replace(/<\/?a[^>]*>/gi, '');
+                        
+                        const q_low = stripA(item.ques).toLowerCase();
+                        const a_low = stripA(item.answ).toLowerCase();
                         const d_low = (item.date || "").toLowerCase();
                         const punc = /[.,!?;:\-]/g;
 
                         return {
                             id: key,
-                            link: item.link,
-                            date: item.date,
-                            question: item.question,
-                            answer: item.answer,
+                            link: tsStr ? `https://billwurtz.com/questions/q.php?date=${tsStr}` : "",
+                            date: item.date, 
+                            question: item.ques || "",
+                            answer: item.answ || "",
+                            hasLink: hasLink,
                             q_lower: q_low,
                             a_lower: a_low,
                             q_clean: q_low.replace(punc, ' ').replace(/\s+/g, ' ').trim(),
                             a_clean: a_low.replace(punc, ' ').replace(/\s+/g, ' ').trim(),
                             d_clean: d_low.replace(punc, ' ').replace(/\s+/g, ' ').trim(),
-                            ts: (item.link && item.link.split('date=')[1] || "").replace(/[-:\.]/g, '')
+                            ts: tsStr
                         };
                     });
 
@@ -193,20 +200,21 @@ parseBooleanQuery(query) {
             try { return text.replace(patterns, (m) => `<span class="highlight">${m}</span>`); } catch (e) { return text; }
         }
         
-        // build a list of valid regex strings for each term
+        // build regex strings list
         const regexParts = patterns.map(term => {
             if (!term.text) return null;
             if (term.exact) {
                 const escaped = term.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const htmlAware = escaped.replace(/\s+/g, '(?:\\s|<[^>]+>)+');
                 const bS = /^\w/.test(term.text) ? '\\b' : '';
                 const bE = /\w$/.test(term.text) ? '\\b' : '';
-                return `${bS}${escaped}${bE}`;
+                return `${bS}${htmlAware}${bE}`;
             } else {
                 const source = term.clean || term.lower;
                 if (!source || source.trim() === "") return null;
                 const parts = source.split(/\s+/).filter(p => p.length > 0);
                 const escapedParts = parts.map(p => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-                return escapedParts.join('[.,!?;:\\-\\s]+');
+                return escapedParts.join('(?:[.,!?;:\\-\\s]|<[^>]+>)+');
             }
         }).filter(p => p !== null);
 
@@ -292,6 +300,7 @@ parseBooleanQuery(query) {
             }
 
             for (const item of this.allData) {
+                if (sortBy === 'links-only' && !item.hasLink) continue;
                 if (dateFilter && !dateFilter(item.ts)) continue;
                 if (qTrim === "") {
                     processedData.push({ ...item, matchCount: 0, dateHtml: item.date, questionHtml: item.question, answerHtml: item.answer });
@@ -301,7 +310,10 @@ parseBooleanQuery(query) {
                 let totalCounts = 0, vals = [], skipItem = false;
                 for (const term of terms) {
                     const check = (txt, low, clean) => {
-                        if (term.regexGlobal) return ((txt || "").match(term.regexGlobal) || []).length;
+                        if (term.regexGlobal) {
+                            const target = isRawRegex ? txt : low;
+                            return ((target || "").match(term.regexGlobal) || []).length;
+                        }
                         
                         const useRaw = (!term.clean || term.clean.length === 0 || /[^\w\s]/.test(term.lower));
                         const target = useRaw ? low : clean;
