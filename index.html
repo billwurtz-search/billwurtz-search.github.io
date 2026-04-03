@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bill Wurtz Search</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A tool for searching Bill Wurtz's questions page">
     <link rel="icon" href="logs/bwumbrella.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
@@ -17,7 +17,7 @@
                 <span class="center-bold">About</span>
                 This is an unofficial search engine for Bill Wurtz's <a href="https://billwurtz.com/questions/questions.html" target="_blank" rel="noopener noreferrer">questions</a> page.<br>
                 Last database update: <span id="db-date">(search to see)</span><br>
-                <span class="hide-mobile"><a href="https://github.com/kuzeyalt/billwurtz-search" target="_blank" rel="noopener noreferrer">View on Github</a></span>
+                <a class="hide-mobile" href="https://github.com/kuzeyalt/billwurtz-search" target="_blank" rel="noopener noreferrer">View on Github</a>
             </div>
 
             <div class="modal-section">
@@ -26,18 +26,18 @@
                 Use AND to find questions containing all terms. <code>apple AND orange</code><br>
                 Use OR to find questions containing either term. <code>apple OR orange</code><br>
                 Use bfr:/aft:/rng: to filter by date. <code>before:2020-12-24</code>&nbsp;<code>range:2019..2022</code><br>
-                Start with REGEX= to use regular expressions. <code>REGEX=^how|^w[a-z]{2,3}</code><div class="hide-mobile" style="height: 0; color: gray; cursor: help;"
-                title="Use NOT -&gt; fever NOT fever dream&#10;Use XOR -&gt; color XOR colour&#10;Use ?q= permalink -&gt; billwurtz-search.github.io/?q=hi">···</div>
+                Start with REGEX= to use regular expressions. <code>REGEX=^how|^w[a-z]</code><div class="hide-mobile" style="height: 0; color: gray; cursor: help;"
+                title="Use NOT -&gt; fever NOT fever dream&#10;Use ?q= permalink -&gt; billwurtz-search.github.io/?q=hi">···</div>
             </div>
 
             <div class="modal-section">
                 <span class="center-bold">Configuration</span>
                 <span id="limit-label" style="font-variant-numeric: tabular-nums;">100</span> questions will be loaded at once<br>
                 <input type="range" id="limit-slider" min="20" max="150" value="100" style="width: 200px;"><br><br>
-                
+
                 <label><input type="checkbox" id="check-links" checked> Enable question links</label>
                 <label><input type="checkbox" id="check-highlight" checked> Enable highlighting</label>
-                <label><input type="checkbox" id="check-indexing" checked> Enable caching (beta)</label>
+                <label><input type="checkbox" id="check-indexing" checked> Enable caching <span id="help-indext">(advanced)</span></label>
                 <label><input type="checkbox" id="check-more-filters"> More filter options (beta)</label>
             </div>
         </div>

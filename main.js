@@ -18,6 +18,7 @@ const toastElement = document.getElementById('toast');
 const toastMessageElement = document.getElementById('toast-message');
 const modalBox = document.querySelector('.modal-content');
 const checkIndexing = document.getElementById('check-indexing');
+const indexInfoText = document.getElementById('help-indext');
 let toastTimer = null;
 
 const logFiles = [];
@@ -36,6 +37,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (savedCachePref !== null) { checkIndexing.checked = (savedCachePref === 'true'); }
 
     checkMoreFilters.checked = false;
+    checkIndexing.onchange()
     qInput.focus();
     
     // check '?q=' permalink
@@ -69,6 +71,16 @@ resultsArea.addEventListener('click', (e) => {
         if (link) {
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
+    }
+});
+
+filterSelect.addEventListener('change', function() {
+    if (this.value === 'date-incl') {
+        const placeholderDate = [[3, 12], [1, 28], [17, 25]]
+            .map(([min, max]) => Math.floor(Math.random() * (max - min + 1) + min)).join('.');
+        qInput.placeholder = `${placeholderDate}...`;
+    } else {
+        qInput.placeholder = "Search...";
     }
 });
 
@@ -108,7 +120,12 @@ checkHighlight.onchange = function() {
 
 checkIndexing.onchange = async function() {
     localStorage.setItem('bwsearch-cache-pref', this.checked);
-    if (!this.checked) {
+    if (this.checked) {
+        indexInfoText.style.color = "inherit";
+        indexInfoText.innerHTML = "(advanced)";
+    } else {
+        indexInfoText.style.color = "gray";
+        indexInfoText.innerHTML = "<small>(tip: leave this on instead)</small>";
         try {
             await SearchEngine.deleteIndex();
         } catch(e) {}
@@ -117,9 +134,9 @@ checkIndexing.onchange = async function() {
 
 checkMoreFilters.onchange = function() {
     const extraOptions = [
-        { val: 'dual-req', txt: 'Must be in Both' },
         { val: 'q-excl', txt: 'Exclusively Ques' },
-        { val: 'a-excl', txt: 'Exclusively Answ' }
+        { val: 'a-excl', txt: 'Exclusively Answ' },
+        { val: 'dual-req', txt: 'Must be in Both' }
     ];
 
     if (this.checked) {

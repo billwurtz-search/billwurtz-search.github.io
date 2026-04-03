@@ -96,13 +96,20 @@ a .highlight, .highlight a {
     color: black !important;
 }
 
+.dco a .highlight, 
+.dco .highlight a
+{ background-color: yellow; }
+
+/* Disabled State Logic */
 body.disable-highlight .highlight,
-body.disable-highlight a .highlight {
+body.disable-highlight a .highlight,
+body.disable-highlight .dco a .highlight { 
     background-color: transparent;
     color: inherit;
 }
 
-body.disable-highlight .highlight a {
+body.disable-highlight .highlight a,
+body.disable-highlight .dco .highlight a {
     background-color: transparent;
     color: #24ff28; 
 }
