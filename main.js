@@ -121,11 +121,11 @@ checkHighlight.onchange = function() {
 checkIndexing.onchange = async function() {
     localStorage.setItem('bwsearch-cache-pref', this.checked);
     if (this.checked) {
-        indexInfoText.style.color = "inherit";
+        indexInfoText.style.color = "black";
         indexInfoText.innerHTML = "(advanced)";
     } else {
-        indexInfoText.style.color = "gray";
-        indexInfoText.innerHTML = "<small>(tip: leave this on instead)</small>";
+        indexInfoText.style.color = "#ee7777";
+        indexInfoText.innerHTML = "<small><i>(off is not recommended)</i></small>";
         try {
             await SearchEngine.deleteIndex();
         } catch(e) {}

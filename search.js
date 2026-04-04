@@ -239,30 +239,17 @@ parseBooleanQuery(query) {
 
         const isRawRegex = (regexEnabled && qTrim.startsWith("REGEX="));
 
-    let dateFilter = null;
+        let dateFilter = null;
         if (!isRawRegex) {
-            const dMatch = qTrim.match(/\b(before:|bfr:|after:|aft:|range:|rng:)([0-9\-\.:]+?)(?:\.\.([0-9\-\.:]+))?(?=\s|$)/);
-            if (dMatch) {
-                const fullTag = dMatch[0], op = dMatch[1], d1 = dMatch[2], d2 = dMatch[3];
-
-                // make sure we have the year at least
-                const d1Clean = d1.replace(/[-:\.]/g, '');
-                if (d1Clean.length < 4) return { results: [], message: "Invalid date range." };
-
-                if (op.startsWith('r')) {
-                    if (!d2) return { results: [], message: "Invalid date range." };
-                    const d2Clean = d2.replace(/[-:\.]/g, '');
-                    if (d2Clean.length < 4) return { results: [], message: "Invalid date range." };
-                }
-
-                qTrim = qTrim.replace(fullTag, '').trim();
-                const pad = (s, char) => (s || "").replace(/[-:\.]/g, '').padEnd(12, char);
-
-                if (op.startsWith('b')) dateFilter = (ts) => ts < pad(d1, '0');
-                else if (op.startsWith('a')) dateFilter = (ts) => ts >= pad(d1, '0');
-                else if (op.startsWith('r')) {
-                    dateFilter = (ts) => ts >= pad(d1, '0') && ts <= pad(d2, '9');
-                }
+            const dtMatches = qTrim.match(/\b(after|before):(\d{4}(?:-\d{2})?)\b/g);
+            if (dtMatches) {
+                const conditions = dtMatches.map(m => {
+                    const [prefix, val] = m.split(':');
+                    const limit = val.replace('-', '').padEnd(12, '0');
+                    return prefix === 'after' ? (ts) => ts >= limit : (ts) => ts < limit;
+                });
+                dateFilter = (ts) => conditions.every(cond => cond(ts));
+                qTrim = qTrim.replace(/\b(after|before):(\d{4}(?:-\d{2})?)\b/g, '').trim();
             }
         }
 
