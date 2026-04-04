@@ -1,4 +1,4 @@
-const cacheVersion = 9;
+const cacheVersion = 10;
 
 const SearchEngine = {
     allData: [],
@@ -79,11 +79,11 @@ async loadAllData(fileList, onProgress, useCache) {
                     const fetchOptions = isLast ? { cache: 'no-cache' } : {}; // realize the file is different
                     
                     const response = await fetch(f, fetchOptions);
-                    const raw = await response.json();
+                    const rawJson = await response.json();
 
                     // it becomes a raw array
-                    content = Object.keys(raw).map(key => {
-                        const item = raw[key];
+                    content = Object.keys(rawJson).map(key => {
+                        const item = rawJson[key];
                         
                         const tsStr = item.info ? item.info.ts : "";
                         const hasLink = item.info ? !!item.info.hl : false;
@@ -94,6 +94,7 @@ async loadAllData(fileList, onProgress, useCache) {
                         const a_low = stripA(item.answ).toLowerCase();
                         const d_low = (item.date || "").toLowerCase();
                         const punc = /[.,!?;:\-]/g;
+                        const apos = /['’]/g;
 
                         return {
                             id: key,
@@ -102,11 +103,11 @@ async loadAllData(fileList, onProgress, useCache) {
                             question: item.ques || "",
                             answer: item.answ || "",
                             hasLink: hasLink,
-                            q_lower: q_low,
-                            a_lower: a_low,
-                            q_clean: q_low.replace(punc, ' ').replace(/\s+/g, ' ').trim(),
-                            a_clean: a_low.replace(punc, ' ').replace(/\s+/g, ' ').trim(),
-                            d_clean: d_low.replace(punc, ' ').replace(/\s+/g, ' ').trim(),
+                            q_lower: q_low.replace(apos, ''),
+                            a_lower: a_low.replace(apos, ''),
+                            q_clean: q_low.replace(apos, '').replace(punc, ' ').replace(/\s+/g, ' ').trim(),
+                            a_clean: a_low.replace(apos, '').replace(punc, ' ').replace(/\s+/g, ' ').trim(),
+                            d_clean: d_low.replace(apos, '').replace(punc, ' ').replace(/\s+/g, ' ').trim(),
                             ts: tsStr
                         };
                     });
@@ -136,11 +137,11 @@ async loadAllData(fileList, onProgress, useCache) {
     },
 
 parseBooleanQuery(query) {
-        const regex = /"([^"]+)"|'([^']+)'|(\S+)/g;
+        const regex = /"([^"]+)"|(\S+)/g;
         let match, tokens = [];
         while ((match = regex.exec(query)) !== null) {
-            let val = match[1] || match[2] || match[3];
-            let quoted = match[1] !== undefined || match[2] !== undefined;
+            let val = match[1] || match[2];
+            let quoted = match[1] !== undefined;
             
             if (!quoted && !['AND', 'OR', 'XOR', 'NOT', '(', ')'].includes(val)) {
                 const cleaned = val.replace(/^[.,!?;:\-]+|[.,!?;:\-]+$/g, '');
@@ -180,8 +181,8 @@ parseBooleanQuery(query) {
         if (terms.length === 0) return null;
 
         terms.forEach(t => {
-            t.exact = (t.explicitQuote || query.includes(`"${t.text}"`) || query.includes(`'${t.text}'`));
-            t.lower = t.text.toLowerCase();
+            t.exact = (t.explicitQuote || query.includes(`"${t.text}"`));
+            t.lower = t.text.toLowerCase().replace(/['’]/g, '');
             t.clean = t.lower.replace(/[.,!?;:\-]/g, ' ').replace(/\s+/g, ' ').trim();
             if (t.clean === "") t.clean = t.lower;
         });
@@ -204,16 +205,21 @@ parseBooleanQuery(query) {
         const regexParts = patterns.map(term => {
             if (!term.text) return null;
             if (term.exact) {
-                const escaped = term.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const baseText = term.text.replace(/['’]/g, '');
+                const withApos = baseText.replace(/(\S)(?=\S)/g, '$1\x01'); // placeholder injection
+                const escaped = withApos.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\x01/g, '[\'’]?');
                 const htmlAware = escaped.replace(/\s+/g, '(?:\\s|<[^>]+>)+');
-                const bS = /^\w/.test(term.text) ? '\\b' : '';
-                const bE = /\w$/.test(term.text) ? '\\b' : '';
+                const bS = /^\w/.test(baseText) ? '\\b' : '';
+                const bE = /\w$/.test(baseText) ? '\\b' : '';
                 return `${bS}${htmlAware}${bE}`;
             } else {
                 const source = term.clean || term.lower;
                 if (!source || source.trim() === "") return null;
                 const parts = source.split(/\s+/).filter(p => p.length > 0);
-                const escapedParts = parts.map(p => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+                const escapedParts = parts.map(p => {
+                    const withApos = p.replace(/(\S)(?=\S)/g, '$1\x01');
+                    return withApos.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\x01/g, '[\'’]?');
+                });
                 return escapedParts.join('(?:[.,!?;:\\-\\s]|<[^>]+>)+');
             }
         }).filter(p => p !== null);
@@ -267,7 +273,7 @@ parseBooleanQuery(query) {
                 } else {
                     const clean = isRawRegex ? qTrim.substring(6) : qTrim.replace(/^[.,!?;:]+|[.,!?;:]+$/g, '');
                     const finalText = clean === "" ? qTrim : clean;
-                    const lit = { text: finalText, exact: false, lower: finalText.toLowerCase() };
+                    const lit = { text: finalText, exact: false, lower: finalText.toLowerCase().replace(/['’]/g, '') };
                     lit.clean = lit.lower.replace(/[.,!?;:\-]/g, ' ').replace(/\s+/g, ' ').trim();
                     if (lit.clean === "") lit.clean = lit.lower; // ensure we have a search term
                     terms = [lit];
@@ -276,9 +282,10 @@ parseBooleanQuery(query) {
                 terms.forEach(t => {
                     try {
                         if (t.exact || isRawRegex) {
-                            const escaped = t.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                            const bS = (!isRawRegex && /^\w/.test(t.text)) ? '\\b' : '';
-                            const bE = (!isRawRegex && /\w$/.test(t.text)) ? '\\b' : '';
+                            const baseText = isRawRegex ? t.text : t.text.replace(/['’]/g, '');
+                            const escaped = baseText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                            const bS = (!isRawRegex && /^\w/.test(baseText)) ? '\\b' : '';
+                            const bE = (!isRawRegex && /\w$/.test(baseText)) ? '\\b' : '';
                             const flags = isRawRegex ? 'g' : 'gi';
                             t.regexGlobal = new RegExp(isRawRegex ? t.text : `${bS}${escaped}${bE}`, flags);
                         }
