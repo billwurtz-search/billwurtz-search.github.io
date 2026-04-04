@@ -17,8 +17,6 @@ const checkMoreFilters = document.getElementById('check-more-filters');
 const toastElement = document.getElementById('toast');
 const toastMessageElement = document.getElementById('toast-message');
 const modalBox = document.querySelector('.modal-content');
-const checkIndexing = document.getElementById('check-indexing');
-const indexInfoText = document.getElementById('help-indext');
 let toastTimer = null;
 
 const logFiles = [];
@@ -32,22 +30,25 @@ let currentOffset = 0;
 let currentLimit = 100;
 let isDownloading = false;
 
-window.addEventListener('DOMContentLoaded', () => {
-    const savedCachePref = localStorage.getItem('bwsearch-cache-pref');
-    if (savedCachePref !== null) { checkIndexing.checked = (savedCachePref === 'true'); }
-
+window.addEventListener('DOMContentLoaded', async () => {
     checkMoreFilters.checked = false;
-    checkIndexing.onchange()
     qInput.focus();
     
-    // check '?q=' permalink
+    localStorage.removeItem('bwsearch-cache-pref'); // cleanup
     const urlParams = new URLSearchParams(window.location.search);
-    const initialQuery = urlParams.get('q');
+    if (urlParams.has('nocache')) { // there is a ?nocache=1 flag if u don't want IndexedDB
+        try { await SearchEngine.deleteIndex(); } catch(e) {}
+    }
 
+    // check '?q=' permalink
+    const initialQuery = urlParams.get('q');
     if (initialQuery) {
         qInput.value = initialQuery;
-        window.history.replaceState(null, '', window.location.pathname);
         triggerSearch();
+        
+        urlParams.delete('q');
+        const newSearch = urlParams.toString() ? '?' + urlParams.toString() : '';
+        window.history.replaceState(null, '', window.location.pathname + newSearch);
     } else {
         qInput.value = '';
         statusMsg.innerText = "Search stuff to search.";
@@ -118,20 +119,6 @@ checkHighlight.onchange = function() {
     else document.body.classList.add('disable-highlight');
 };
 
-checkIndexing.onchange = async function() {
-    localStorage.setItem('bwsearch-cache-pref', this.checked);
-    if (this.checked) {
-        indexInfoText.style.color = "black";
-        indexInfoText.innerHTML = "(advanced)";
-    } else {
-        indexInfoText.style.color = "#ee7777";
-        indexInfoText.innerHTML = "<small><i>(off is not recommended)</i></small>";
-        try {
-            await SearchEngine.deleteIndex();
-        } catch(e) {}
-    }
-};
-
 checkMoreFilters.onchange = function() {
     const extraOptions = [
         { val: 'q-excl', txt: 'Exclusively Ques' },
@@ -181,13 +168,14 @@ if (!SearchEngine.isLoaded) {
             }
         }, 10000);
 
+        const useCache = !new URLSearchParams(window.location.search).has('nocache');
         try {
-    await SearchEngine.loadAllData(logFiles, (current, total) => {
+            await SearchEngine.loadAllData(logFiles, (current, total) => {
                 hasStartedProgress = true;
                 const loadPercent = Math.round((current / total) * 100);
                 const slowSuffix = isSlowData ? " -- this is only slow once." : "";
                 statusMsg.innerText = `Loading database (${loadPercent}%)${slowSuffix}`;
-            }, checkIndexing.checked);
+            }, useCache);
 
             const lastItem = SearchEngine.allData[SearchEngine.allData.length - 1];
             if (lastItem && lastItem.date) {
