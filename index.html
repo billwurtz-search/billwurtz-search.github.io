@@ -14,24 +14,29 @@
             <button class="close-btn" id="close-modal" aria-label="close">×</button>
             
             <div class="modal-section">
-                <span class="center-bold">About</span>
+                <h4 class="center-bold">About</h4>
                 This is an unofficial search engine for Bill Wurtz's <a href="https://billwurtz.com/questions/questions.html" target="_blank" rel="noopener noreferrer">questions</a> page.<br>
                 Last database update: <span id="db-date">(search to see)</span><br>
                 <a class="hide-mobile" href="https://github.com/kuzeyalt/billwurtz-search" target="_blank" rel="noopener noreferrer">View on Github</a>
             </div>
 
             <div class="modal-section">
-                <span class="center-bold">Search</span>
-                Use "quotes" to search exact words or phrases. <code>"hi"</code>&nbsp;<code>"oh no!"</code><br>
-                Use AND to find questions containing all terms. <code>apple AND orange</code><br>
-                Use OR to find questions containing either term. <code>apple OR orange</code><br>
-                Use before:/after: to filter by date. <code>before:2024-12</code>&nbsp;<code>after:2020-04</code><br>
-                Start with REGEX= to use regular expressions. <code>REGEX=^how|^w[a-z]</code><div class="hide-mobile" style="height: 0; color: gray; cursor: help;"
-                title="Use NOT -&gt; fever NOT fever dream&#10;Use ?q= permalink -&gt; billwurtz-search.github.io/?q=hi">···</div>
-            </div>
+                <h4 class="center-bold">Search</h4>
+                <div class="search-examples">
+                <div>Exact word / phrase</div>
+                <div><code>"hi"</code> <code>"oh no!"</code></div>
+                <div>Term matching</div>
+                <div><code>apple AND orange</code> <code>color OR colour</code> <code>fever NOT dream</code></div>
+                <div>Filtering dates</div>
+                <div><code>before:2024-12</code> <code>after:2020-04</code></div>
+                <div>Using Regex</div>
+                    <div><code>REGEX=&lt;string&gt;</code>
+                    <small><i><span style="color: #666; margin: 0 2px;">e.g.</span></i></small>
+                    <code>REGEX=^how|^w[a-z]</code></div>
+            </div></div>
 
             <div class="modal-section">
-                <span class="center-bold">Configuration</span>
+                <h4 class="center-bold">Configuration</h4>
                 <span id="limit-label" style="font-variant-numeric: tabular-nums;">100</span> questions will be loaded at once<br>
                 <input type="range" id="limit-slider" min="20" max="150" value="100" style="width: 200px;"><br><br>
 
