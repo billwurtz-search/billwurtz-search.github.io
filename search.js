@@ -237,13 +237,12 @@ parseBooleanQuery(query) {
 
     executeSearch(params) {
         let { query, sortBy, searchIn } = params;
-        const regexEnabled = true;
-        const includeDates = (searchIn === 'date-incl');
+        const includeDates = (searchIn === 'date-incl' || searchIn === 'date-excl');
 
         let qTrim = query.trim();
         if (!qTrim) return { results: [], message: "" };
 
-        const isRawRegex = (regexEnabled && qTrim.startsWith("REGEX="));
+        const isRawRegex = (qTrim.startsWith("REGEX="));
 
         let dateFilter = null;
         if (!isRawRegex) {
@@ -264,7 +263,7 @@ parseBooleanQuery(query) {
 
         if (qTrim !== "" || dateFilter) {
             if (qTrim !== "") {
-                if (regexEnabled && !isRawRegex) {
+                if (!isRawRegex) {
                     const parsed = this.parseBooleanQuery(qTrim);
                     if (!parsed) return { results: [], message: "Invalid query syntax." };
                     terms = parsed.terms;
@@ -332,11 +331,14 @@ parseBooleanQuery(query) {
                     else if (searchIn === 'q-excl') hasM = (qC > 0 && aC === 0);
                     else if (searchIn === 'a-excl') hasM = (aC > 0 && qC === 0);
                     else if (searchIn === 'date-incl') hasM = (dC > 0 || qC > 0 || aC > 0);
+                    else if (searchIn === 'date-excl') hasM = (dC > 0 && qC === 0 && aC === 0);
+                    else if (searchIn === 'xor-res') hasM = (qC > 0) !== (aC > 0);
 
                     if (!isComplex && !hasM) { skipItem = true; break; }
                     vals.push(hasM); 
                     if (searchIn === 'question' || searchIn === 'q-excl') totalCounts += qC;
                     else if (searchIn === 'answer' || searchIn === 'a-excl') totalCounts += aC;
+                    else if (searchIn === 'date-excl') totalCounts += dC;
                     else totalCounts += (dC + qC + aC);
                 }
 
@@ -347,8 +349,8 @@ parseBooleanQuery(query) {
 
                     if (isMatch) {
                         const hPats = isRawRegex ? (terms[0] ? terms[0].regexGlobal : null) : terms;
-                        const showA = ['both','answer','dual-req','a-excl','date-incl'].includes(searchIn);
-                        const showQ = ['both','question','dual-req','q-excl','date-incl'].includes(searchIn);
+                        const showA = ['both', 'answer', 'dual-req', 'a-excl', 'date-incl', 'xor-res'].includes(searchIn);
+                        const showQ = ['both', 'question', 'dual-req', 'q-excl', 'date-incl', 'xor-res'].includes(searchIn);
                         processedData.push({
                             ...item, matchCount: totalCounts,
                             dateHtml: includeDates ? this.highlightText(item.date, hPats, isRawRegex) : item.date,

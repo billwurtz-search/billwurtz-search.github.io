@@ -16,8 +16,8 @@ const checkHighlight = document.getElementById('check-highlight');
 const checkMoreFilters = document.getElementById('check-more-filters');
 const toastElement = document.getElementById('toast');
 const toastMessageElement = document.getElementById('toast-message');
-const modalBox = document.querySelector('.modal-content');
 const sliderReset = document.getElementById('to-default-button');
+const modalBox = document.querySelector('.modal-content');
 let toastTimer = null;
 
 const logFiles = [];
@@ -32,7 +32,6 @@ let currentLimit = 100;
 let isDownloading = false;
 
 window.addEventListener('DOMContentLoaded', async () => {
-    checkMoreFilters.checked = false;
     qInput.focus();
     
     localStorage.removeItem('bwsearch-cache-pref'); // cleanup
@@ -77,7 +76,7 @@ resultsArea.addEventListener('click', (e) => {
 });
 
 filterSelect.addEventListener('change', function() {
-    if (this.value === 'date-incl') {
+    if (this.value === 'date-incl' || this.value === 'date-excl') {
         const placeholderDate = [[3, 12], [1, 28], [17, 25]]
             .map(([min, max]) => Math.floor(Math.random() * (max - min + 1) + min)).join('.');
         qInput.placeholder = `${placeholderDate}...`;
@@ -127,23 +126,37 @@ checkHighlight.onchange = function() {
 };
 
 checkMoreFilters.onchange = function() {
-    const extraOptions = [
+    const extraFilterOptions = [
         { val: 'q-excl', txt: 'Exclusively Ques' },
         { val: 'a-excl', txt: 'Exclusively Answ' },
-        { val: 'dual-req', txt: 'Must be in Both' }
+        { val: 'date-excl', txt: 'Exclusively Dates' },
+        { val: 'dual-req', txt: 'Must be in Both' },
+        { val: 'xor-res', txt: 'Only in one (XOR)' }
+        
+    ];
+    const extraSortOptions = [
+        { val: 'links-only', txt: 'Links only' }
     ];
 
     if (this.checked) {
-        extraOptions.forEach(opt => {
+        extraFilterOptions.forEach(opt => {
             const el = document.createElement('option');
             el.value = opt.val;
             el.textContent = opt.txt;
-            el.className = 'extra-opt';
+            el.className = 'extra-f';
             filterSelect.appendChild(el);
         });
+        extraSortOptions.forEach(opt => {
+            const el = document.createElement('option');
+            el.value = opt.val;
+            el.textContent = opt.txt;
+            el.className = 'extra-s';
+            sortSelect.appendChild(el);
+        });
     } else {
-        if (filterSelect.selectedOptions[0]?.classList.contains('extra-opt')) filterSelect.value = 'both';
-        document.querySelectorAll('.extra-opt').forEach(el => el.remove());
+        if (filterSelect.selectedOptions[0]?.classList.contains('extra-f')) filterSelect.value = 'both';
+        if (sortSelect.selectedOptions[0]?.classList.contains('extra-s')) sortSelect.value = 'newest';
+        document.querySelectorAll('.extra-f, .extra-s').forEach(el => el.remove());
     }
 };
 
