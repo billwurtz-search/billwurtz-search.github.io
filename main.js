@@ -132,31 +132,53 @@ checkMoreFilters.onchange = function() {
         { val: 'date-excl', txt: 'Exclusively Dates' },
         { val: 'dual-req', txt: 'Must be in Both' },
         { val: 'xor-res', txt: 'Only in one (XOR)' }
-        
     ];
     const extraSortOptions = [
         { val: 'links-only', txt: 'Links only' }
     ];
 
     if (this.checked) {
-        extraFilterOptions.forEach(opt => {
-            const el = document.createElement('option');
-            el.value = opt.val;
-            el.textContent = opt.txt;
-            el.className = 'extra-f';
-            filterSelect.appendChild(el);
-        });
-        extraSortOptions.forEach(opt => {
-            const el = document.createElement('option');
-            el.value = opt.val;
-            el.textContent = opt.txt;
-            el.className = 'extra-s';
-            sortSelect.appendChild(el);
-        });
+            const gOrig = document.createElement('optgroup');
+            gOrig.label = 'Simply...';  gOrig.id = 'orig-group';
+            gOrig.style.cssText = 'color:gray; font-weight:normal';
+            Array.from(filterSelect.children).forEach(el => {
+                el.style.color = 'initial';
+                gOrig.appendChild(el);
+            }); filterSelect.appendChild(gOrig);
+
+            let mg = document.createElement('optgroup');
+            mg.label = 'Individually...'; mg.className = 'extra-f';
+            mg.style.cssText = 'color:gray; font-weight:normal';
+            filterSelect.appendChild(mg);
+
+            extraFilterOptions.forEach((opt, i) => {
+                if (i === 3) {
+                    mg = document.createElement('optgroup');
+                    mg.label = 'As fields...'; mg.className = 'extra-f';
+                    mg.style.cssText = 'color:gray; font-weight:normal';
+                    filterSelect.appendChild(mg);
+                }
+                const el = document.createElement('option');
+                el.value = opt.val; el.textContent = opt.txt;
+                el.className = 'extra-f'; el.style.color = 'initial'; 
+                mg.appendChild(el);
+            });
+
+            extraSortOptions.forEach(opt => {
+                const el = document.createElement('option');
+                el.value = opt.val; el.textContent = opt.txt; el.className = 'extra-s';
+                sortSelect.appendChild(el);
+            });
     } else {
         if (filterSelect.selectedOptions[0]?.classList.contains('extra-f')) filterSelect.value = 'both';
         if (sortSelect.selectedOptions[0]?.classList.contains('extra-s')) sortSelect.value = 'newest';
         document.querySelectorAll('.extra-f, .extra-s').forEach(el => el.remove());
+
+        const origG = document.getElementById('orig-group');
+        if (origG) {
+            Array.from(origG.children).forEach(el => filterSelect.appendChild(el));
+            origG.remove();
+        }
     }
 };
 
