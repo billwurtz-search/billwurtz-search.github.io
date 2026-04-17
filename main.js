@@ -17,6 +17,7 @@ const checkMoreFilters = document.getElementById('check-more-filters');
 const toastElement = document.getElementById('toast');
 const toastMessageElement = document.getElementById('toast-message');
 const modalBox = document.querySelector('.modal-content');
+const sliderReset = document.getElementById('to-default-button');
 let toastTimer = null;
 
 const logFiles = [];
@@ -107,6 +108,12 @@ window.addEventListener('keydown', (e) => {
 limitSlider.oninput = function() {
     limitLabel.innerText = this.value;
     currentLimit = parseInt(this.value);
+    sliderReset.style.display = this.value == 100 ? 'none' : 'inline-block';
+};
+
+sliderReset.onclick = function() {
+    limitSlider.value = 100;
+    limitSlider.dispatchEvent(new Event('input'));
 };
 
 checkLinks.onchange = function() {

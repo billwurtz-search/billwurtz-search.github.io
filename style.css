@@ -101,7 +101,6 @@ a .highlight, .highlight a {
 .dco .highlight a
 { background-color: yellow; }
 
-/* Disabled State Logic */
 body.disable-highlight .highlight,
 body.disable-highlight a .highlight,
 body.disable-highlight .dco a .highlight { 
@@ -250,6 +249,15 @@ input[type="checkbox"]
     pointer-events: auto;
 }
 
+.to-default-button {
+    width: 16px;
+    height: 16px;
+    background-color: #888;
+    cursor: pointer;
+    /* oh god */
+    mask: url('data:image/svg+xml;utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"%3E%3Cpath d="m480-120c-92 0-172.17-30.5-240.5-91.5s-107.5-137.17-117.5-228.5h82c9.3333 69.333 40.167 126.67 92.5 172s113.5 68 183.5 68c78 0 144.17-27.167 198.5-81.5s81.5-120.5 81.5-198.5-27.167-144.17-81.5-198.5-120.5-81.5-198.5-81.5c-46 0-89 10.667-129 32s-73.667 50.667-101 88h110v80h-240v-240h80v94c34-42.667 75.5-75.667 124.5-99s100.83-35 155.5-35c50 0 96.833 9.5 140.5 28.5s81.667 44.667 114 77 58 70.333 77 114 28.5 90.5 28.5 140.5-9.5 96.833-28.5 140.5-44.667 81.667-77 114-70.333 58-114 77-90.5 28.5-140.5 28.5zm112-192 56-56z"/%3E%3C/svg%3E') center / contain no-repeat;
+}
+
 /* mobile layout */
 @media (max-width: 630px) {
     .modal-content {
@@ -304,7 +312,7 @@ input[type="checkbox"]
 
     #toast { display: block; }
     #count-display { display: none; }
-    .hide-mobile { display: none; }
+    .hide-mobile { display: none !important; }
     .show-mobile { display: inline; }
 }
 
