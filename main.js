@@ -103,7 +103,7 @@ window.addEventListener('keydown', (e) => {
     if (e.key === "Escape" && modal.style.display === "block") hideModal(); 
 });
 
-// checkboxes
+// modal knobs
 limitSlider.oninput = function() {
     limitLabel.innerText = this.value;
     currentLimit = parseInt(this.value);
@@ -127,35 +127,28 @@ checkHighlight.onchange = function() {
 
 checkMoreFilters.onchange = function() {
     const extraFilterOptions = [
+        { val: 'dual-req', txt: 'Must be in Both' },
         { val: 'q-excl', txt: 'Exclusively Ques' },
         { val: 'a-excl', txt: 'Exclusively Answ' },
-        { val: 'date-excl', txt: 'Exclusively Dates' },
-        { val: 'dual-req', txt: 'Must be in Both' },
-        { val: 'xor-res', txt: 'Only in one (XOR)' }
-        
+        { val: 'date-excl', txt: 'Exclusively Dates' }
     ];
     const extraSortOptions = [
         { val: 'links-only', txt: 'Links only' }
     ];
 
+    const addOpts = (sel, list, cls) => list.forEach(o => {
+        const opt = new Option(o.txt, o.val);
+        opt.className = cls;
+        sel.add(opt);
+    });
+
     if (this.checked) {
-        extraFilterOptions.forEach(opt => {
-            const el = document.createElement('option');
-            el.value = opt.val;
-            el.textContent = opt.txt;
-            el.className = 'extra-f';
-            filterSelect.appendChild(el);
-        });
-        extraSortOptions.forEach(opt => {
-            const el = document.createElement('option');
-            el.value = opt.val;
-            el.textContent = opt.txt;
-            el.className = 'extra-s';
-            sortSelect.appendChild(el);
-        });
+        addOpts(filterSelect, extraFilterOptions, 'extra-f');
+        addOpts(sortSelect, extraSortOptions, 'extra-s');
+
     } else {
-        if (filterSelect.selectedOptions[0]?.classList.contains('extra-f')) filterSelect.value = 'both';
-        if (sortSelect.selectedOptions[0]?.classList.contains('extra-s')) sortSelect.value = 'newest';
+        if (filterSelect.selectedOptions[0]?.classList.contains('extra-f')) { filterSelect.value = 'both'; }
+        if (sortSelect.selectedOptions[0]?.classList.contains('extra-s')) { sortSelect.value = 'newest'; }
         document.querySelectorAll('.extra-f, .extra-s').forEach(el => el.remove());
     }
 };
