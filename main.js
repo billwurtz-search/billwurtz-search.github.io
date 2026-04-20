@@ -127,58 +127,60 @@ checkHighlight.onchange = function() {
 
 checkMoreFilters.onchange = function() {
     const extraFilterOptions = [
-        { val: 'q-excl', txt: 'Exclusively Ques' },
-        { val: 'a-excl', txt: 'Exclusively Answ' },
-        { val: 'date-excl', txt: 'Exclusively Dates' },
-        { val: 'dual-req', txt: 'Must be in Both' },
-        { val: 'xor-res', txt: 'Only in one (XOR)' }
+        { val: 'q-excl', txt: 'Exclusively Ques', grp: 'Individually...' },
+        { val: 'a-excl', txt: 'Exclusively Answ', grp: 'Individually...' },
+        { val: 'date-excl', txt: 'Exclusively Dates', grp: 'Individually...' },
+        { val: 'dual-req', txt: 'Must be in Both', grp: 'As fields...' },
+        { val: 'xor-res', txt: 'Purely in One', grp: 'As fields...' }
     ];
     const extraSortOptions = [
         { val: 'links-only', txt: 'Links only' }
     ];
 
     if (this.checked) {
-            const gOrig = document.createElement('optgroup');
-            gOrig.label = 'Simply...';  gOrig.id = 'orig-group';
-            gOrig.style.cssText = 'color:gray; font-weight:normal';
-            Array.from(filterSelect.children).forEach(el => {
-                el.style.color = 'initial';
-                gOrig.appendChild(el);
-            }); filterSelect.appendChild(gOrig);
+        const savedVal = filterSelect.value;
+        const gOrig = document.createElement('optgroup');
+        gOrig.label = 'Simply...'; gOrig.id = 'orig-group';
+        gOrig.style.cssText = 'color:gray; font-weight:normal';
+        Array.from(filterSelect.children).forEach(el => {
+            el.style.color = 'initial';
+            gOrig.appendChild(el);
+        });
+        filterSelect.appendChild(gOrig);
 
-            let mg = document.createElement('optgroup');
-            mg.label = 'Individually...'; mg.className = 'extra-f';
-            mg.style.cssText = 'color:gray; font-weight:normal';
-            filterSelect.appendChild(mg);
+        let currentGrp = null;
+        extraFilterOptions.forEach(opt => {
+            if (!currentGrp || currentGrp.label !== opt.grp) {
+                currentGrp = document.createElement('optgroup');
+                currentGrp.label = opt.grp; currentGrp.className = 'extra-f';
+                currentGrp.style.cssText = 'color:gray; font-weight:normal';
+                filterSelect.appendChild(currentGrp);
+            }
+            const el = document.createElement('option');
+            el.value = opt.val; el.textContent = opt.txt;
+            el.className = 'extra-f'; el.style.color = 'initial';
+            currentGrp.appendChild(el);
+        });
 
-            extraFilterOptions.forEach((opt, i) => {
-                if (i === 3) {
-                    mg = document.createElement('optgroup');
-                    mg.label = 'As fields...'; mg.className = 'extra-f';
-                    mg.style.cssText = 'color:gray; font-weight:normal';
-                    filterSelect.appendChild(mg);
-                }
-                const el = document.createElement('option');
-                el.value = opt.val; el.textContent = opt.txt;
-                el.className = 'extra-f'; el.style.color = 'initial'; 
-                mg.appendChild(el);
-            });
-
-            extraSortOptions.forEach(opt => {
-                const el = document.createElement('option');
-                el.value = opt.val; el.textContent = opt.txt; el.className = 'extra-s';
-                sortSelect.appendChild(el);
-            });
+        extraSortOptions.forEach(opt => {
+            const el = document.createElement('option');
+            el.value = opt.val; el.textContent = opt.txt; el.className = 'extra-s';
+            sortSelect.appendChild(el);
+        });
+        filterSelect.value = savedVal;
     } else {
+        const origG = document.getElementById('orig-group');
+        if (origG) {
+            const savedVal = filterSelect.value;
+            Array.from(origG.children).forEach(el => {
+                el.style.color = ''; filterSelect.appendChild(el);
+            });
+            origG.remove();
+            filterSelect.value = savedVal;
+        }
         if (filterSelect.selectedOptions[0]?.classList.contains('extra-f')) filterSelect.value = 'both';
         if (sortSelect.selectedOptions[0]?.classList.contains('extra-s')) sortSelect.value = 'newest';
         document.querySelectorAll('.extra-f, .extra-s').forEach(el => el.remove());
-
-        const origG = document.getElementById('orig-group');
-        if (origG) {
-            Array.from(origG.children).forEach(el => filterSelect.appendChild(el));
-            origG.remove();
-        }
     }
 };
 
