@@ -103,7 +103,7 @@ window.addEventListener('keydown', (e) => {
     if (e.key === "Escape" && modal.style.display === "block") hideModal(); 
 });
 
-// checkboxes
+// modal knobs
 limitSlider.oninput = function() {
     limitLabel.innerText = this.value;
     currentLimit = parseInt(this.value);
@@ -127,11 +127,10 @@ checkHighlight.onchange = function() {
 
 checkMoreFilters.onchange = function() {
     const extraFilterOptions = [
-        { val: 'q-excl', txt: 'Exclusively Ques', grp: 'Individually...' },
-        { val: 'a-excl', txt: 'Exclusively Answ', grp: 'Individually...' },
-        { val: 'date-excl', txt: 'Exclusively Dates', grp: 'Individually...' },
-        { val: 'dual-req', txt: 'Must be in Both', grp: 'As fields...' },
-        { val: 'xor-res', txt: 'Purely in One', grp: 'As fields...' }
+        { val: 'dual-req', txt: 'Must be in Both', grp: 'Broadly' },
+        { val: 'q-excl',   txt: 'Exclusively Ques', grp: 'Individually' },
+        { val: 'a-excl',   txt: 'Exclusively Answ', grp: 'Individually' },
+        { val: 'date-excl',txt: 'Exclusively Dates', grp: 'Individually' }
     ];
     const extraSortOptions = [
         { val: 'links-only', txt: 'Links only' }
@@ -140,28 +139,33 @@ checkMoreFilters.onchange = function() {
     if (this.checked) {
         const savedVal = filterSelect.value;
         const gOrig = document.createElement('optgroup');
-        gOrig.label = 'Simply...'; gOrig.id = 'orig-group';
-        gOrig.style.cssText = 'color:gray; font-weight:normal';
+        gOrig.label = 'Broadly'; gOrig.id = 'orig-group';
+        gOrig.style.cssText = 'color: gray;';
         Array.from(filterSelect.children).forEach(el => {
             el.style.color = 'initial';
             gOrig.appendChild(el);
         });
         filterSelect.appendChild(gOrig);
-
         let currentGrp = null;
         extraFilterOptions.forEach(opt => {
-            if (!currentGrp || currentGrp.label !== opt.grp) {
-                currentGrp = document.createElement('optgroup');
-                currentGrp.label = opt.grp; currentGrp.className = 'extra-f';
-                currentGrp.style.cssText = 'color:gray; font-weight:normal';
-                filterSelect.appendChild(currentGrp);
+            if (opt.grp === 'Broadly') {
+                const el = document.createElement('option');
+                el.value = opt.val; el.textContent = opt.txt;
+                el.className = 'extra-f'; el.style.color = 'initial';
+                gOrig.appendChild(el);
+            } else {
+                if (!currentGrp || currentGrp.label !== opt.grp) {
+                    currentGrp = document.createElement('optgroup');
+                    currentGrp.label = opt.grp; currentGrp.className = 'extra-f';
+                    currentGrp.style.cssText = 'color: gray;';
+                    filterSelect.appendChild(currentGrp);
+                }
+                const el = document.createElement('option');
+                el.value = opt.val; el.textContent = opt.txt;
+                el.className = 'extra-f'; el.style.color = 'initial';
+                currentGrp.appendChild(el);
             }
-            const el = document.createElement('option');
-            el.value = opt.val; el.textContent = opt.txt;
-            el.className = 'extra-f'; el.style.color = 'initial';
-            currentGrp.appendChild(el);
         });
-
         extraSortOptions.forEach(opt => {
             const el = document.createElement('option');
             el.value = opt.val; el.textContent = opt.txt; el.className = 'extra-s';
