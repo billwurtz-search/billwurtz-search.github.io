@@ -82,19 +82,23 @@ async loadAllData(fileList, onProgress, useCache) {
                     const rawJson = await response.json();
 
                     // it becomes a raw array
+                    const stripA = (s) => (s || "").replace(/<\/?a[^>]*>/gi, '');
+                    const punc = /[.,!?;:\-]/g;
+                    const apos = /['’]/g;
+                    const commaNum = /(\d),(\d)/g;
+                    const ws = /\s+/g;
+
                     content = Object.keys(rawJson).map(key => {
                         const item = rawJson[key];
+                        const tsStr = item.info?.ts || "";
                         
-                        const tsStr = item.info ? item.info.ts : "";
-                        const hasLink = item.info ? !!item.info.hl : false;
-                        
-                        const stripA = (s) => (s || "").replace(/<\/?a[^>]*>/gi, '');
-                        
-                        const q_low = stripA(item.ques).toLowerCase();
-                        const a_low = stripA(item.answ).toLowerCase();
-                        const d_low = (item.date || "").toLowerCase();
-                        const punc = /[.,!?;:\-]/g;
-                        const apos = /['’]/g;
+                        const q_raw = stripA(item.ques).toLowerCase();
+                        const a_raw = stripA(item.answ).toLowerCase();
+                        const d_raw = (item.date || "").toLowerCase();
+
+                        const q_no_apos = q_raw.replace(apos, '');
+                        const a_no_apos = a_raw.replace(apos, '');
+                        const d_no_apos = d_raw.replace(apos, '');
 
                         return {
                             id: key,
@@ -102,12 +106,13 @@ async loadAllData(fileList, onProgress, useCache) {
                             date: item.date, 
                             question: item.ques || "",
                             answer: item.answ || "",
-                            hasLink: hasLink,
-                            q_lower: q_low.replace(apos, ''),
-                            a_lower: a_low.replace(apos, ''),
-                            q_clean: q_low.replace(apos, '').replace(punc, ' ').replace(/\s+/g, ' ').trim(),
-                            a_clean: a_low.replace(apos, '').replace(punc, ' ').replace(/\s+/g, ' ').trim(),
-                            d_clean: d_low.replace(apos, '').replace(punc, ' ').replace(/\s+/g, ' ').trim(),
+                            hasLink: !!item.info?.hl,
+                            q_lower: q_no_apos,
+                            a_lower: a_no_apos,
+                            q_raw, a_raw, d_raw,
+                            q_clean: q_no_apos.replace(commaNum, '$1$2').replace(punc, ' ').replace(ws, ' ').trim(),
+                            a_clean: a_no_apos.replace(commaNum, '$1$2').replace(punc, ' ').replace(ws, ' ').trim(),
+                            d_clean: d_no_apos.replace(commaNum, '$1$2').replace(punc, ' ').replace(ws, ' ').trim(),
                             ts: tsStr
                         };
                     });
@@ -144,7 +149,7 @@ parseBooleanQuery(query) {
             let quoted = match[1] !== undefined;
             
             if (!quoted && !['AND', 'OR', 'XOR', 'NOT', '(', ')'].includes(val)) {
-                const cleaned = val.replace(/^[.,!?;:\-]+|[.,!?;:\-]+$/g, '');
+                const cleaned = val.replace(/^[.,!?;:\-](?![.,!?;:\-])/, '').replace(/([^.,!?;:\-])[.,!?;:\-]$/, '$1');
                 val = cleaned === "" ? val : cleaned;
             }
             if (val) tokens.push({ val: val, quoted: quoted });
@@ -182,8 +187,8 @@ parseBooleanQuery(query) {
 
         terms.forEach(t => {
             t.exact = (t.explicitQuote || query.includes(`"${t.text}"`));
-            t.lower = t.text.toLowerCase().replace(/['’]/g, '');
-            t.clean = t.lower.replace(/[.,!?;:\-]/g, ' ').replace(/\s+/g, ' ').trim();
+            t.lower = t.exact ? t.text.toLowerCase() : t.text.toLowerCase().replace(/['’]/g, '');
+            t.clean = t.lower.replace(/(\d),(\d)/g, '$1$2').replace(/[.,!?;:\-]/g, ' ').replace(/\s+/g, ' ').trim();
             if (t.clean === "") t.clean = t.lower;
         });
 
@@ -198,17 +203,29 @@ parseBooleanQuery(query) {
         if (!text || !patterns) return text || "";
 
         if (isRegexMode) {
-            try { return text.replace(patterns, (m) => `<span class="highlight">${m}</span>`); } catch (e) { return text; }
+            try { 
+                const newReg = new RegExp(`(<[^>]+>)|(${patterns.source})`, patterns.flags);
+                return text.replace(newReg, function(m, g1) {
+                    if (g1) return g1;
+                    return `<span class="highlight">${m}</span>`;
+                });
+            } catch (e) { return text; }
         }
         
         // build regex strings list
         const regexParts = patterns.map(term => {
             if (!term.text) return null;
+            const processStr = (s) => {
+                const withApos = s.replace(/(\S)(?=\S)/g, '$1\x01');
+                const withCommas = withApos.replace(/(\d)(?=\x01?\d)/g, '$1\x02');
+                return withCommas.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+                                 .replace(/\x01/g, "['’]?")
+                                 .replace(/\x02/g, ",?");
+            };
+
             if (term.exact) {
-                const baseText = term.text.replace(/['’]/g, '');
-                const withApos = baseText.replace(/(\S)(?=\S)/g, '$1\x01'); // placeholder injection
-                const escaped = withApos.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\x01/g, '[\'’]?');
-                const htmlAware = escaped.replace(/\s+/g, '(?:\\s|<[^>]+>)+');
+                const baseText = term.text;
+                const htmlAware = processStr(baseText).replace(/\s+/g, '(?:\\s|<[^>]+>)+');
                 const bS = /^\w/.test(baseText) ? '\\b' : '';
                 const bE = /\w$/.test(baseText) ? '\\b' : '';
                 return `${bS}${htmlAware}${bE}`;
@@ -216,10 +233,7 @@ parseBooleanQuery(query) {
                 const source = term.clean || term.lower;
                 if (!source || source.trim() === "") return null;
                 const parts = source.split(/\s+/).filter(p => p.length > 0);
-                const escapedParts = parts.map(p => {
-                    const withApos = p.replace(/(\S)(?=\S)/g, '$1\x01');
-                    return withApos.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\x01/g, '[\'’]?');
-                });
+                const escapedParts = parts.map(p => processStr(p));
                 return escapedParts.join('(?:[.,!?;:\\-\\s]|<[^>]+>)+');
             }
         }).filter(p => p !== null);
@@ -227,11 +241,14 @@ parseBooleanQuery(query) {
         if (regexParts.length === 0) return text;
 
         // 'dont match if followed by a closing > without an opening < first'
-        const compositePattern = `(${regexParts.join('|')})(?![^<]*>)`;
+        const compositePattern = `(<[^>]+>)|(${regexParts.join('|')})`;
         
         try {
             const compositeRegex = new RegExp(compositePattern, isRegexMode ? 'g' : 'gi');
-            return text.replace(compositeRegex, (m) => `<span class="highlight">${m}</span>`);
+            return text.replace(compositeRegex, function(m, g1) {
+                if (g1) return g1;
+                return `<span class="highlight">${m}</span>`;
+            });
         } catch (e) { return text; }
     },
 
@@ -246,15 +263,15 @@ parseBooleanQuery(query) {
 
         let dateFilter = null;
         if (!isRawRegex) {
-            const dtMatches = qTrim.match(/\b(after|before):(\d{4}(?:-\d{2})?)\b/g);
+            const dtMatches = qTrim.match(/\b(after|before):(\d{4}(?:-\d{2}(?:-\d{2})?)?)\b/g);
             if (dtMatches) {
                 const conditions = dtMatches.map(m => {
                     const [prefix, val] = m.split(':');
-                    const limit = val.replace('-', '').padEnd(12, '0');
-                    return prefix === 'after' ? (ts) => ts >= limit : (ts) => ts < limit;
+                    const limit = val.replace(/-/g, '').padEnd(12, prefix === 'after' ? '9' : '0');
+                    return prefix === 'after' ? (ts) => ts > limit : (ts) => ts < limit;
                 });
                 dateFilter = (ts) => conditions.every(cond => cond(ts));
-                qTrim = qTrim.replace(/\b(after|before):(\d{4}(?:-\d{2})?)\b/g, '').trim();
+                qTrim = qTrim.replace(/\b(after|before):(\d{4}(?:-\d{2}(?:-\d{2})?)?)\b/g, '').trim();
             }
         }
 
@@ -281,7 +298,7 @@ parseBooleanQuery(query) {
                 terms.forEach(t => {
                     try {
                         if (t.exact || isRawRegex) {
-                            const baseText = isRawRegex ? t.text : t.text.replace(/['’]/g, '');
+                            const baseText = t.text;
                             const escaped = baseText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                             const bS = (!isRawRegex && /^\w/.test(baseText)) ? '\\b' : '';
                             const bE = (!isRawRegex && /\w$/.test(baseText)) ? '\\b' : '';
@@ -302,14 +319,14 @@ parseBooleanQuery(query) {
 
                 let totalCounts = 0, vals = [], skipItem = false;
                 for (const term of terms) {
-                    const check = (txt, low, clean) => {
+                    const check = (txt, low, clean, raw) => {
                         if (term.regexGlobal) {
-                            const target = isRawRegex ? txt : low;
+                            const target = isRawRegex ? txt : (term.exact ? raw : low);
                             return ((target || "").match(term.regexGlobal) || []).length;
                         }
                         
                         const useRaw = (!term.clean || term.clean.length === 0 || /[^\w\s]/.test(term.lower));
-                        const target = useRaw ? low : clean;
+                        const target = term.exact ? raw : (useRaw ? low : clean);
                         const find = useRaw ? term.lower : term.clean;
                         
                         if (!find || !target || find.length === 0) return 0;
@@ -319,9 +336,9 @@ parseBooleanQuery(query) {
                         return c;
                     };
 
-                    const dC = includeDates ? check(item.date, item.date, item.d_clean) : 0;
-                    const qC = check(item.question, item.q_lower, item.q_clean);
-                    const aC = check(item.answer, item.a_lower, item.a_clean);
+                    const dC = includeDates ? check(item.date, item.date, item.d_clean, item.d_raw || item.date.toLowerCase()) : 0;
+                    const qC = check(item.question, item.q_lower, item.q_clean, item.q_raw);
+                    const aC = check(item.answer, item.a_lower, item.a_clean, item.a_raw);
                     
                     let hasM = false;
                     if (searchIn === 'both') hasM = (qC > 0 || aC > 0);
@@ -331,8 +348,7 @@ parseBooleanQuery(query) {
                     else if (searchIn === 'q-excl') hasM = (qC > 0 && aC === 0);
                     else if (searchIn === 'a-excl') hasM = (aC > 0 && qC === 0);
                     else if (searchIn === 'date-incl') hasM = (dC > 0 || qC > 0 || aC > 0);
-                    else if (searchIn === 'date-excl') hasM = (dC > 0 && qC === 0 && aC === 0);
-                    else if (searchIn === 'xor-res') hasM = (qC > 0) !== (aC > 0);
+                    else if (searchIn === 'date-excl') hasM = (dC > 0);
 
                     if (!isComplex && !hasM) { skipItem = true; break; }
                     vals.push(hasM); 
@@ -349,8 +365,8 @@ parseBooleanQuery(query) {
 
                     if (isMatch) {
                         const hPats = isRawRegex ? (terms[0] ? terms[0].regexGlobal : null) : terms;
-                        const showA = ['both', 'answer', 'dual-req', 'a-excl', 'date-incl', 'xor-res'].includes(searchIn);
-                        const showQ = ['both', 'question', 'dual-req', 'q-excl', 'date-incl', 'xor-res'].includes(searchIn);
+                        const showA = ['both', 'answer', 'dual-req', 'a-excl', 'date-incl'].includes(searchIn);
+                        const showQ = ['both', 'question', 'dual-req', 'q-excl', 'date-incl'].includes(searchIn);
                         processedData.push({
                             ...item, matchCount: totalCounts,
                             dateHtml: includeDates ? this.highlightText(item.date, hPats, isRawRegex) : item.date,
