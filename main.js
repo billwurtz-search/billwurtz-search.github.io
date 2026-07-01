@@ -36,22 +36,77 @@ window.addEventListener('DOMContentLoaded', async () => {
     
     localStorage.removeItem('bwsearch-cache-pref'); // cleanup
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('nocache')) { // there is a ?nocache=1 flag if u don't want IndexedDB
+    
+    // there is a ?nocache=1 flag if you don't want IndexedDB
+    if (urlParams.has('nocache')) {
         try { await SearchEngine.deleteIndex(); } catch(e) {}
     }
 
-    // check '?q=' permalink
+    const filterMap = {
+        'qna': 'both',
+        'questions': 'question',
+        'answers': 'answer',
+        'dates': 'date-excl',
+        'incl-dates': 'date-incl',
+        'excl-ques': 'q-excl',
+        'excl-answ': 'a-excl',
+        'req-both': 'dual-req'
+    };
+    
+    const sortMap = {
+        'newest': 'newest',
+        'oldest': 'oldest',
+        'frequency': 'frequency',
+        'randy': 'randy',
+        'links-only': 'links-only'
+    };
+
+    const urlFilter = urlParams.get('filter');
+    const urlSort   = urlParams.get('sortby');
+
+    const advancedFilters = ['dates', 'excl-ques', 'excl-answ', 'req-both'];
+    const advancedSorts   = ['links-only'];
+
+    const needsMoreFilters = urlParams.has('more-filters') || 
+                             advancedFilters.includes(urlFilter) || 
+                             advancedSorts.includes(urlSort);
+
+    if (needsMoreFilters) {
+        checkMoreFilters.checked = true;
+        checkMoreFilters.dispatchEvent(new Event('change'));
+    }
+
+    if (urlFilter && filterMap[urlFilter]) {
+        filterSelect.value = filterMap[urlFilter];
+        filterSelect.dispatchEvent(new Event('change'));
+    }
+    
+    if (urlSort && sortMap[urlSort]) {
+        sortSelect.value = sortMap[urlSort];
+    }
+
+    if (urlParams.has('disable-links')) {
+        checkLinks.checked = false;
+        checkLinks.dispatchEvent(new Event('change'));
+    }
+    
+    if (urlParams.has('disable-highlight')) {
+        checkHighlight.checked = false;
+        checkHighlight.dispatchEvent(new Event('change'));
+    }
+
+    // check ?q= permalink
     const initialQuery = urlParams.get('q');
     if (initialQuery) {
         qInput.value = initialQuery;
         triggerSearch();
-        
-        urlParams.delete('q');
-        const newSearch = urlParams.toString() ? '?' + urlParams.toString() : '';
-        window.history.replaceState(null, '', window.location.pathname + newSearch);
     } else {
         qInput.value = '';
         statusMsg.innerText = "Search stuff to search.";
+    }
+
+    if (urlParams.has('clear')) {
+        window.history.replaceState(null, '', window.location.pathname);
     }
 });
 
