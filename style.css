@@ -104,14 +104,14 @@ a .highlight, .highlight a {
 body.disable-highlight .highlight,
 body.disable-highlight a .highlight,
 body.disable-highlight .dco a .highlight { 
-    background-color: transparent;
-    color: inherit;
+    background-color: transparent !important;
+    color: inherit !important;
 }
 
 body.disable-highlight .highlight a,
 body.disable-highlight .dco .highlight a {
-    background-color: transparent;
-    color: #24ff28; 
+    background-color: transparent !important;
+    color: #24ff28 !important; 
 }
 
 #status-msg {
