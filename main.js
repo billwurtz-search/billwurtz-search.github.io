@@ -62,7 +62,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     };
 
     const urlFilter = urlParams.get('filter');
-    const urlSort   = urlParams.get('sortby');
+    const urlSort   = urlParams.get('sort');
 
     const advancedFilters = ['dates', 'excl-ques', 'excl-answ', 'req-both'];
     const advancedSorts   = ['links-only'];
