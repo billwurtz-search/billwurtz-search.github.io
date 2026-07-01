@@ -182,10 +182,10 @@ checkHighlight.onchange = function() {
 
 checkMoreFilters.onchange = function() {
     const extraFilterOptions = [
-        { val: 'dual-req', txt: 'Must be in Both' },
+        { val: 'date-incl', txt: 'Include Dates' },
         { val: 'q-excl', txt: 'Exclusively Ques' },
         { val: 'a-excl', txt: 'Exclusively Answ' },
-        { val: 'date-excl', txt: 'Exclusively Dates' }
+        { val: 'dual-req', txt: 'Must be in Both' }
     ];
     const extraSortOptions = [
         { val: 'links-only', txt: 'Links only' }
