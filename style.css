@@ -136,7 +136,7 @@ body.disable-highlight .dco .highlight a {
     left: 50%;
     transform: translate(-50%, -50%);
     aspect-ratio: auto;
-    width: 50vw;
+    width: clamp(600px, 50vw, 700px);
     height: auto;
     max-height: 92vh;
     background-color: #dbdbdb;
@@ -145,7 +145,7 @@ body.disable-highlight .dco .highlight a {
     padding: 20px;
     box-sizing: border-box;
     overflow-y: auto;
-    scrollbar-width: none;
+    /*scrollbar-width: none;*/
 }
 
 .close-btn {
@@ -364,4 +364,14 @@ input[type="checkbox"]
 
     #toast { display: block; }
     #count-display { display: none; }
+}
+
+@media (max-width: 280px) {
+    #limit-slider {
+        width: 140px !important;
+    }
+
+    .modal-section code.after-text {
+        display: none;
+    }
 }
