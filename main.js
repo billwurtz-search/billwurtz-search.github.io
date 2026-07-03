@@ -18,7 +18,6 @@ const toastElement = document.getElementById('toast');
 const toastMessageElement = document.getElementById('toast-message');
 const sliderReset = document.getElementById('to-default-button');
 const modalBox = document.querySelector('.modal-content');
-let toastTimer = null;
 
 const logFiles = [];
 for (let i = 1; i <= 14; i++) {
@@ -30,6 +29,7 @@ let currentResults = [];
 let currentOffset = 0;
 let currentLimit = 100;
 let isDownloading = false;
+let toastTimer = null;
 
 window.addEventListener('DOMContentLoaded', async () => {
     qInput.focus();
@@ -152,10 +152,26 @@ configBtn.onclick = () => {
 };
 
 closeModal.onclick = hideModal;
-window.onclick = (e) => { if (e.target == modal) hideModal(); };
+window.onclick = (e) => { if (e.target === modal) hideModal(); };
 
 window.addEventListener('keydown', (e) => { 
-    if (e.key === "Escape" && modal.style.display === "block") hideModal(); 
+    if (modal.style.display !== "block") return; 
+    
+    if (e.key === "Escape") return hideModal(); 
+
+    if (e.key === "Tab") {
+        const els = modal.querySelectorAll("button, [href], input");
+        const first = els[0];
+        const last  = els[els.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+        }
+    }
 });
 
 // modal knobs
