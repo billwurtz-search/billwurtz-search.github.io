@@ -227,59 +227,62 @@ checkMoreFilters.onchange = function() {
 // trigger search
 async function triggerSearch() {
     const query = qInput.value.trim();
+
     if (!query) {
         statusMsg.innerText = "Please enter something to search.";
         return;
     }
 
-if (!SearchEngine.isLoaded) {
-    if (isDownloading) return;
-    isDownloading = true;
+    if (!SearchEngine.isLoaded) {
+        if (isDownloading) return;
+        isDownloading = true;
 
-    statusMsg.innerText = "Loading questions...";
+        statusMsg.innerText = "Loading questions...";
 
-    let isSlowData = false;
-    let hasStartedProgress = false;
+        let isSlowData = false;
+        let hasStartedProgress = false;
 
-    const slowTimer = setTimeout(() => {
-        isSlowData = true;
-        if (SearchEngine.isLoaded) return;
+        const slowTimer = setTimeout(() => {
+            isSlowData = true;
+            if (SearchEngine.isLoaded) return;
 
-        if (hasStartedProgress) {
-            statusMsg.innerText += " -- this is only slow once.";
-        } else {
-            statusMsg.innerText = "Loading questions... (this is taking a while, huh)";
-        }
-    }, 10000);
-
-    const useCache = !new URLSearchParams(window.location.search).has('nocache');
-    const fakeDelays = [200, 320, 520, 840, 1370, 2210, 3580, 5800, 9390]; let fakeTimeouts = [];
-    try {
-        await SearchEngine.loadAllData(logFiles, (current, total) => {
-            hasStartedProgress = true;
-            fakeTimeouts.forEach(clearTimeout); fakeTimeouts = [];
-
-            const realPercent = Math.round((current / total) * 100);
-            const nextPercent = Math.round(((current + 1) / total) * 100);
-
-            const updateUi = (percent) => {
-                const slowSuffix = isSlowData ? " -- this is only slow once." : "";
-                statusMsg.innerText = `Loading questions (${percent}%)${slowSuffix}`;
-            };
-
-            updateUi(realPercent);
-            if (current >= total) return;
-            const maxTicks = Math.min(nextPercent - realPercent - 1, fakeDelays.length);
-
-            for (let i = 0; i < maxTicks; i++) {
-                const timerId = setTimeout(() => {
-                    updateUi(realPercent + i + 1);
-                }, fakeDelays[i]);
-                fakeTimeouts.push(timerId);
+            if (hasStartedProgress) {
+                statusMsg.innerText += " -- this is only slow once.";
+            } else {
+                statusMsg.innerText = "Loading questions... (this is taking a while, huh)";
             }
-        }, useCache);
+        }, 10000);
+
+        const useCache = !new URLSearchParams(window.location.search).has('nocache');
+        const fakeDelays = [200, 320, 520, 840, 1370, 2210, 3580, 5800, 9390]; let fakeTimeouts = [];
+
+        try {
+            await SearchEngine.loadAllData(logFiles, (current, total) => {
+                hasStartedProgress = true;
+                fakeTimeouts.forEach(clearTimeout); fakeTimeouts = [];
+
+                const realPercent = Math.round((current / total) * 100);
+                const nextPercent = Math.round(((current + 1) / total) * 100);
+
+                const updateUi = (percent) => {
+                    const slowSuffix = isSlowData ? " -- this is only slow once." : "";
+                    statusMsg.innerText = `Loading questions (${percent}%)${slowSuffix}`;
+                };
+
+                updateUi(realPercent);
+                if (current >= total) return;
+                const maxTicks = Math.min(nextPercent - realPercent - 1, fakeDelays.length);
+
+                for (let i = 0; i < maxTicks; i++) {
+                    const timerId = setTimeout(() => {
+                        updateUi(realPercent + i + 1);
+                    }, fakeDelays[i]);
+                    fakeTimeouts.push(timerId);
+                }
+            }, useCache);
 
             const lastItem = SearchEngine.allData[SearchEngine.allData.length - 1];
+
             if (lastItem && lastItem.date) {
                 const rawDate = lastItem.date.split(' ')[0];
                 const parts = rawDate.split('.');
@@ -289,7 +292,7 @@ if (!SearchEngine.isLoaded) {
                         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
                         const monthName = months[parseInt(parts[0], 10) - 1];
                         const dbDay = parseInt(parts[1], 10);
-                        dateEl.innerText = `${monthName} ${dbDay}, 20${parts[2]}`;
+                        dateEl.innerText = `${monthName}\u00A0${dbDay}, 20${parts[2]}`;
                     }
                 }
             }
@@ -324,18 +327,19 @@ if (!SearchEngine.isLoaded) {
             statusMsg.innerText = response.message;
             return;
         }
+
+        // update title
+        document.title = `${query} - Bill Wurtz Search`;
         
+        // update result text
         currentResults = response.results;
-        const desktopText = `Found ${currentResults.length} results.`;
-        const mobileText = `${currentResults.length} results`;
-        
-        countDisplay.innerText = desktopText;
+        countDisplay.innerText = `Found ${currentResults.length} results.`;
         
         if (currentResults.length === 0) {
             statusMsg.innerText = "No results found.";
             showToast("0 results");
         } else {
-            showToast(mobileText);
+            showToast(`${currentResults.length.toLocaleString()} results`);
             renderBatch();
         }
     }, 10);
