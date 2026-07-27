@@ -7,20 +7,15 @@
 ## Why?
 Why not? Searching is cool. Searching with Regex is even cooler.
 
-## Will you update the database?
+## Will you keep the questions up to date?
 Occasionally.
-
-## How does it work?
-I don't know.
 
 ## About pull requests
 Sure, you can send me suggestions or even fixes if you fix something.
 
-## How does it work?
-I figured it out. See [main.js](main.js) and [search.js](search.js).
-
 ## License
-1\) This project is "unlicensed" as in public domain. 2) I don't own the logs, their content is from Bill Wurtz. 3) THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+1) I don't own the logs; their content is property of Bill Wurtz.
+2) The rest of this project (the "software") is licensed under the [MIT license](LICENSE).
 
 ## Contact
 Message my [Reddit account](https://reddit.com/user/Kuzeyy27). I don't go on Reddit a lot, but this felt "safer" than putting my email on the internet.
