@@ -147,11 +147,6 @@ parseBooleanQuery(query) {
         while ((match = regex.exec(query)) !== null) {
             let val = match[1] || match[2];
             let quoted = match[1] !== undefined;
-            
-            if (!quoted && !['AND', 'OR', 'XOR', 'NOT', '(', ')'].includes(val)) {
-                const cleaned = val.replace(/^[.,!?;:\-](?![.,!?;:\-])/, '').replace(/([^.,!?;:\-])[.,!?;:\-]$/, '$1');
-                val = cleaned === "" ? val : cleaned;
-            }
             if (val) tokens.push({ val: val, quoted: quoted });
         }
         if (tokens.length === 0) return null;
@@ -230,7 +225,8 @@ parseBooleanQuery(query) {
                 const bE = /\w$/.test(baseText) ? '\\b' : '';
                 return `${bS}${htmlAware}${bE}`;
             } else {
-                const source = term.clean || term.lower;
+                const useRaw = (!term.clean || term.clean.length === 0 || /[^\w\s]/.test(term.lower));
+                const source = useRaw ? term.lower : term.clean;
                 if (!source || source.trim() === "") return null;
                 const parts = source.split(/\s+/).filter(p => p.length > 0);
                 const escapedParts = parts.map(p => processStr(p));
