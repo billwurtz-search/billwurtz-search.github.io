@@ -144,11 +144,13 @@ filterSelect.addEventListener('change', function() {
 const hideModal = () => {
     modal.style.display = "none";
     configBtn.focus();
+    document.body.style.overflow = "";
 };
 
 configBtn.onclick = () => {
     modal.style.display = "block";
     closeModal.focus();
+    document.body.style.overflow = "hidden";
 };
 
 closeModal.onclick = hideModal;
