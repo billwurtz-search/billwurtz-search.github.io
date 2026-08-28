@@ -259,7 +259,7 @@ parseBooleanQuery(query) {
 
         let dateFilter = null;
         if (!isRawRegex) {
-            const dtMatches = qTrim.match(/\b(after|before):(\d{4}(?:-\d{2}(?:-\d{2})?)?)\b/g);
+            const dtMatches = qTrim.match(/\b(after|before):(\d{4}(?:-\d{2}(?:-\d{2})?)?)\b/gi);
             if (dtMatches) {
                 const conditions = dtMatches.map(m => {
                     const [prefix, val] = m.split(':');
@@ -267,7 +267,7 @@ parseBooleanQuery(query) {
                     return prefix === 'after' ? (ts) => ts > limit : (ts) => ts < limit;
                 });
                 dateFilter = (ts) => conditions.every(cond => cond(ts));
-                qTrim = qTrim.replace(/\b(after|before):(\d{4}(?:-\d{2}(?:-\d{2})?)?)\b/g, '').trim();
+                qTrim = qTrim.replace(/\b(after|before):(\d{4}(?:-\d{2}(?:-\d{2})?)?)\b/gi, '').trim();
             }
         }
 
