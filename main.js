@@ -20,7 +20,7 @@ const sliderReset = document.getElementById('to-default-button');
 const modalBox = document.querySelector('.modal-content');
 
 const logFiles = [];
-for (let i = 1; i <= 14; i++) {
+for (let i = 1; i <= 15; i++) {
     const num = i.toString().padStart(2, '0');
     logFiles.push(`logs/log_${num}.json`);
 }
