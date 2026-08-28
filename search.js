@@ -255,7 +255,7 @@ parseBooleanQuery(query) {
         let qTrim = query.trim();
         if (!qTrim) return { results: [], message: "" };
 
-        const isRawRegex = (qTrim.startsWith("REGEX="));
+        const isRawRegex = (qTrim.startsWith("REGEX=") || qTrim.toLowerCase().startsWith("regex:"));
 
         let dateFilter = null;
         if (!isRawRegex) {
