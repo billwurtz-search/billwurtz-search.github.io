@@ -241,7 +241,7 @@ input[type="checkbox"]
     text-align: center;
     font-size: 16px;
     transition: opacity 0.3s ease-in-out;
-    bottom: 44px;
+    top: 100px;
 }
 
 .toast-hidden {
