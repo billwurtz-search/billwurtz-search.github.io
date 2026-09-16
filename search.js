@@ -469,15 +469,26 @@ const SearchEngine = {
                 try {
                     rawRegexObj = new RegExp(cleanQuery, "g");
                 } catch (e) {
-                    return { results: [], message: "Invalid regular expression." };
+                    return { results: [], message: "Invalid regex." };
                 }
                 terms = [{ text: cleanQuery, exact: false, regex: rawRegexObj }];
             } else {
                 const tokens = QueryCompiler.tokenize(cleanQuery);
                 compiledQuery = QueryCompiler.compileBoolean(tokens);
-                if (!compiledQuery) {
+
+                const invalidTerms = [
+                    "AND",
+                    "OR",
+                    "NOT",
+                    "XOR",
+                    "()",
+                    "( )"
+                ];
+
+                if (invalidTerms.includes(cleanQuery) || !compiledQuery) {
                     return { results: [], message: "Invalid query syntax." };
                 }
+
                 terms = compiledQuery.terms;
 
                 // Prepare term regexes for exact word-boundary terms
