@@ -39,7 +39,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     
     // there is a ?nocache=1 flag if you don't want IndexedDB
     if (urlParams.has('nocache')) {
-        try { await SearchEngine.deleteIndex(); } catch(e) {}
+        try { await StorageEngine.deleteDatabase(); } catch(e) { console.warn(e); }
     }
 
     const filterMap = {
@@ -359,7 +359,8 @@ function renderBatch() {
         div.innerHTML = `
             <br><br>
             <h3> 
-                <span class="dco"><a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.dateHtml}</a></span> 
+                <span class="dco"><a href="https://billwurtz.com/questions/q.php?date=${item.ts}"
+                    target="_blank" rel="noopener noreferrer">${item.dateHtml}</a></span> 
                 &nbsp;
                 <span class="qco">${item.questionHtml}</span> 
             </h3> 
