@@ -263,8 +263,50 @@ input[type="checkbox"]
     mask: url('data:image/svg+xml;utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"%3E%3Cpath d="m480-120c-92 0-172.17-30.5-240.5-91.5s-107.5-137.17-117.5-228.5h82c9.3333 69.333 40.167 126.67 92.5 172s113.5 68 183.5 68c78 0 144.17-27.167 198.5-81.5s81.5-120.5 81.5-198.5-27.167-144.17-81.5-198.5-120.5-81.5-198.5-81.5c-46 0-89 10.667-129 32s-73.667 50.667-101 88h110v80h-240v-240h80v94c34-42.667 75.5-75.667 124.5-99s100.83-35 155.5-35c50 0 96.833 9.5 140.5 28.5s81.667 44.667 114 77 58 70.333 77 114 28.5 90.5 28.5 140.5-9.5 96.833-28.5 140.5-44.667 81.667-77 114-70.333 58-114 77-90.5 28.5-140.5 28.5zm112-192 56-56z"/%3E%3C/svg%3E') center / contain no-repeat;
 }
 
+.anding-explanation {
+    position: relative;
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    cursor: help;
+    vertical-align: middle;
+    outline: none;
+    box-sizing: content-box;
+    padding: 8px;
+    margin: -8px;
+}
+
+.anding-explanation::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="%23888"%3E%3Cpath d="m513.5-254.5Q528-269 528-290t-14.5-35.5Q499-340 478-340t-35.5 14.5Q428-311 428-290t14.5 35.5Q457-240 478-240t35.5-14.5ZM442-394h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/%3E%3C/svg%3E') center / contain no-repeat;
+}
+
+@media (pointer: coarse), (hover: none) {
+    .anding-explanation[title]:focus::after {
+        content: attr(title);
+        position: absolute;
+        bottom: calc(100% + 6px);
+        left: 50%;
+        transform: translateX(-50%);
+        color: #000;
+        font-family: arial, sans-serif;
+        background-color: #eee;
+        border: 1px solid gray;
+        padding: 3px;
+        font-size: 10px;
+        width: 100px;
+    }
+}
 /* mobile layout */
 @media (max-width: 630px) {
+    .anding-explanation {
+        padding: 20px;
+        margin: -20px;
+    }
+
     .modal-content {
         width: 90%;
         max-height: 86vh;

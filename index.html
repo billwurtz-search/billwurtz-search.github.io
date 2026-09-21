@@ -42,7 +42,14 @@
                 <label><input type="checkbox" id="check-links" checked> Enable question links</label>
                 <label><input type="checkbox" id="check-highlight" checked> Enable highlighting</label>
                 <label><input type="checkbox" id="check-more-filters"> More filter options</label>
-                <label><input type="checkbox" id="check-auto-and"> Automatically add "AND" to every word</label>
+
+                <div style="display: inline-flex; align-items: center; gap: 2px;">
+                    <label><input type="checkbox" id="check-auto-and"> Automaticaly <code>AND</code> words</label>
+                    <span class="anding-explanation" tabindex="0"
+                        title="Implicitly ANDs words together. &quot;two friends beach&quot; automatically becomes &quot;two AND friends AND beach&quot;"
+                        onpointerdown="if (document.activeElement === this) { this.blur(); event.preventDefault(); }">
+                    </span>
+                </div>
             </div>
         </div>
     </div>
