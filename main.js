@@ -14,6 +14,7 @@ const limitLabel = document.getElementById('limit-label');
 const checkLinks = document.getElementById('check-links');
 const checkHighlight = document.getElementById('check-highlight');
 const checkMoreFilters = document.getElementById('check-more-filters');
+const checkAutoAND = document.getElementById('check-auto-and');
 const toastElement = document.getElementById('toast');
 const toastMessageElement = document.getElementById('toast-message');
 const sliderReset = document.getElementById('to-default-button');
@@ -320,7 +321,8 @@ async function triggerSearch() {
     const params = {
         query: query,
         sortBy: sortSelect.value,
-        searchIn: filterSelect.value
+        searchIn: filterSelect.value,
+        autoAND: checkAutoAND.checked
     };
 
     setTimeout(() => {

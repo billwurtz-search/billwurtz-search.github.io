@@ -451,7 +451,7 @@ const SearchEngine = {
     },
 
     executeSearch(params) {
-        const { query, sortBy, searchIn } = params;
+        const { query, sortBy, searchIn, autoAND } = params;
         const qTrim = (query || "").trim();
 
         if (!qTrim) {
@@ -476,7 +476,7 @@ const SearchEngine = {
             } else {
                 const tokens = QueryCompiler.tokenize(cleanQuery);
 
-                if (sortBy === "newest") {
+                if (autoAND === true) {
                     compiledQuery = QueryCompiler.compileBoolean(tokens, true);
                 } else {
                     compiledQuery = QueryCompiler.compileBoolean(tokens, false);
