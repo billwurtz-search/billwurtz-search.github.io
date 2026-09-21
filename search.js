@@ -182,7 +182,7 @@ const QueryCompiler = {
         return rawTokens;
     },
 
-    compileBoolean(tokens) {
+    compileBoolean(tokens, autoANDquery) {
         if (tokens.length === 0) return null;
 
         // Combine contiguous non-op words into phrases
@@ -194,7 +194,8 @@ const QueryCompiler = {
             if (isOp || isParen) {
                 grouped.push(t);
             } else {
-                if (grouped.length > 0 && grouped[grouped.length - 1].isTerm) {
+                // AND if true
+                if (!autoANDquery && grouped.length > 0 && grouped[grouped.length - 1].isTerm) {
                     grouped[grouped.length - 1].value += ` ${t.value}`;
                     if (t.quoted) grouped[grouped.length - 1].quoted = true;
                 } else {
@@ -474,7 +475,12 @@ const SearchEngine = {
                 terms = [{ text: cleanQuery, exact: false, regex: rawRegexObj }];
             } else {
                 const tokens = QueryCompiler.tokenize(cleanQuery);
-                compiledQuery = QueryCompiler.compileBoolean(tokens);
+
+                if (sortBy === "newest") {
+                    compiledQuery = QueryCompiler.compileBoolean(tokens, true);
+                } else {
+                    compiledQuery = QueryCompiler.compileBoolean(tokens, false);
+                }
 
                 const invalidTerms = [
                     "AND",
