@@ -128,10 +128,17 @@ const QueryCompiler = {
         const dateConditions = [];
 
         // regex mode
-        const isRawRegex = text.startsWith("REGEX=") || text.toLowerCase().startsWith("regex:");
-        if (isRawRegex) {
+        if (text.toLowerCase().startsWith("regex:(?i)")) {
             return {
                 isRawRegex: true,
+                caseInsensitiveRegex: true,
+                cleanQuery: text.substring(10),
+                dateFilter: null
+            };
+        } else if (text.toLowerCase().startsWith("regex:")) {
+            return {
+                isRawRegex: true,
+                caseInsensitiveRegex: false,
                 cleanQuery: text.substring(6),
                 dateFilter: null
             };
@@ -159,6 +166,7 @@ const QueryCompiler = {
 
         return {
             isRawRegex: false,
+            caseInsensitiveRegex: false,
             cleanQuery: text,
             dateFilter: dateFilter
         };
@@ -459,7 +467,8 @@ const SearchEngine = {
         }
 
         // Extract the commands
-        const { isRawRegex, cleanQuery, dateFilter } = QueryCompiler.extractCommands(qTrim);
+        const { isRawRegex, caseInsensitiveRegex, cleanQuery, dateFilter }
+            = QueryCompiler.extractCommands(qTrim);
 
         let terms = [];
         let compiledQuery = null;
@@ -468,7 +477,11 @@ const SearchEngine = {
         if (cleanQuery !== "") {
             if (isRawRegex) {
                 try {
-                    rawRegexObj = new RegExp(cleanQuery, "g");
+                    if (caseInsensitiveRegex) {
+                        rawRegexObj = new RegExp(cleanQuery, "gi");
+                    } else {
+                        rawRegexObj = new RegExp(cleanQuery, "g");
+                    }
                 } catch (e) {
                     return { results: [], message: "Invalid regex." };
                 }
