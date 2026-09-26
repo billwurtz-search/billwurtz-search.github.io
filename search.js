@@ -459,7 +459,7 @@ const SearchEngine = {
     },
 
     executeSearch(params) {
-        const { query, sortBy, searchIn, autoAND } = params;
+        const { query, sortBy, searchIn, autoAND, excludedQues } = params;
         const qTrim = (query || "").trim();
 
         if (!qTrim) {
@@ -558,12 +558,6 @@ const SearchEngine = {
 
         for (const item of this.allData) {
             if (sortBy === "links-only" && !item.hasLink) continue;
-
-            // if (item.ts === "202609150157" || item.ts === "202608271028") continue;
-
-            const excludedQues = [
-                
-            ]
 
             if (excludedQues.includes(item.ts)) continue;
 

@@ -32,11 +32,12 @@ let currentLimit = 100;
 let isDownloading = false;
 let toastTimer = null;
 
+const urlParams = new URLSearchParams(window.location.search);
+
 window.addEventListener('DOMContentLoaded', async () => {
     qInput.focus();
     
     localStorage.removeItem('bwsearch-cache-pref'); // cleanup
-    const urlParams = new URLSearchParams(window.location.search);
     
     // there is a ?nocache=1 flag if you don't want IndexedDB
     if (urlParams.has('nocache')) {
@@ -317,12 +318,15 @@ async function triggerSearch() {
     currentResults = [];
 
     statusMsg.innerText = "Searching...";
+
+    const excludedQues = urlParams.get("exclude")?.split(",") || [];
     
     const params = {
         query: query,
         sortBy: sortSelect.value,
         searchIn: filterSelect.value,
-        autoAND: checkAutoAND.checked
+        autoAND: checkAutoAND.checked,
+        excludedQues: excludedQues
     };
 
     setTimeout(() => {
