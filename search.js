@@ -558,6 +558,15 @@ const SearchEngine = {
 
         for (const item of this.allData) {
             if (sortBy === "links-only" && !item.hasLink) continue;
+
+            // if (item.ts === "202609150157" || item.ts === "202608271028") continue;
+
+            const excludedQues = [
+                
+            ]
+
+            if (excludedQues.includes(item.ts)) continue;
+
             if (dateFilter && !dateFilter(item.ts)) continue;
 
             // Pure date-range query without text
