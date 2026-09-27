@@ -559,7 +559,7 @@ const SearchEngine = {
         for (const item of this.allData) {
             if (sortBy === "links-only" && !item.hasLink) continue;
 
-            if (excludedQues.includes(item.ts)) continue;
+            if (excludedQues && excludedQues.includes(item.ts)) continue;
 
             if (dateFilter && !dateFilter(item.ts)) continue;
 

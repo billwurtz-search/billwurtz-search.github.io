@@ -319,7 +319,7 @@ async function triggerSearch() {
 
     statusMsg.innerText = "Searching...";
 
-    const excludedQues = urlParams.get("exclude")?.split(",") || [];
+    const excludedQues = urlParams.get("exclude")?.split(",") || null;
     
     const params = {
         query: query,
