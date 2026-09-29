@@ -47724,10 +47724,10 @@
         "answ": "........play?"
     },
     {
-        "info": {"ts": "date_parsing_error_panick"},
-        "date": "9.20.22 fine 4:58 pm",
+        "info": {"ts": "202209201658"},
+        "date": "9.20.22 4:58 pm",
         "ques": "how is your mental state?",
-        "answ": ""
+        "answ": "fine"
     },
     {
         "info": {"ts": "202209201707"},

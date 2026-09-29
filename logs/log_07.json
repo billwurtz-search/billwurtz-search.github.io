@@ -3090,10 +3090,10 @@
         "answ": "yes, i must admit, that is a trait i commonly have. but there are 2 parts to this. the second part is when i can't take it anymore and i flip out and go into emergency hyperdrive. if you've known me, i'm sure you've probably watched me go through these 2 phases again and again throughout my life. i think that's why it makes a lot of sense when my parents told me i was born a week late but also extremely suddenly"
     },
     {
-        "info": {"ts": "date_parsing_error_panicf"},
-        "date": "4.6.20 how did you know 1:11 am",
+        "info": {"ts": "202004060111"},
+        "date": "4.6.20 1:11 am",
         "ques": "are you mentally ok?",
-        "answ": ""
+        "answ": "how did you know"
     },
     {
         "info": {"ts": "202004060114"},
@@ -42456,8 +42456,8 @@
         "answ": "no"
     },
     {
-        "info": {"ts": "date_parsing_error_panicg"},
-        "date": "6.18.20&sp; 6:45 pm",
+        "info": {"ts": "202006181845a"},
+        "date": "6.18.20 6:45 pm",
         "ques": "when are you going to talk about velcro",
         "answ": "was thinking of more of a velcro simulation"
     },
@@ -46434,10 +46434,10 @@
         "answ": "no"
     },
     {
-        "info": {"ts": "date_parsing_error_panich"},
-        "date": "9:29 am",
+        "info": {"ts": "202006300929"},
+        "date": "6.30.20 9:29 am",
         "ques": "A serious question, how are you doing mentally?",
-        "answ": ""
+        "answ": "fine"
     },
     {
         "info": {"ts": "202006300953"},
@@ -49176,8 +49176,8 @@
         "answ": "the future"
     },
     {
-        "info": {"ts": "date_parsing_error_panici"},
-        "date": "7.6.20&nb\bsp; 11:27 am",
+        "info": {"ts": "202007061127"},
+        "date": "7.6.20 11:27 am",
         "ques": "what's your opinion on comic sans?",
         "answ": "so good, it's now been classified as a sin"
     },

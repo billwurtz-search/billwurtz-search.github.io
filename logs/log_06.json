@@ -29838,10 +29838,10 @@
         "answ": "it's a lot of both but i'd hope to imagine i'd come out ahead"
     },
     {
-        "info": {"ts": "date_parsing_error_panicb"},
-        "date": "1.1.20yes3:07 am",
+        "info": {"ts": "202001010307"},
+        "date": "1.1.20 3:07 am",
         "ques": "Bill u ok? Like mentally?",
-        "answ": ""
+        "answ": "yes"
     },
     {
         "info": {"ts": "202001010312"},
@@ -38658,10 +38658,10 @@
         "answ": "for research purposes"
     },
     {
-        "info": {"ts": "date_parsing_error_panicc"},
-        "date": "1.19.20no, i don't think that would ever happen2:40 am",
+        "info": {"ts": "202001190240"},
+        "date": "1.19.20 2:40 am",
         "ques": "Do you ever lost your sanity when awnsering ueqstions?",
-        "answ": ""
+        "answ": "no, i don't think that would ever happen"
     },
     {
         "info": {"ts": "202001190301"},
@@ -51516,10 +51516,10 @@
         "answ": "i would prefer to make a new one to be my favorite,"
     },
     {
-        "info": {"ts": "date_parsing_error_panicd"},
-        "date": "2.8.20 very good 10:07 pm",
+        "info": {"ts": "202002082207"},
+        "date": "2.8.20 10:07 pm",
         "ques": "How is your mental health?",
-        "answ": ""
+        "answ": "very good"
     },
     {
         "info": {"ts": "202002082215"},
@@ -67992,10 +67992,10 @@
         "answ": "see if you can read the entire internet. it's a race to see if you can read the whole thing before school opens"
     },
     {
-        "info": {"ts": "date_parsing_error_panice"},
-        "date": "3.12.20 5:oh yes, i think i have made that abundantly clear09 pm",
+        "info": {"ts": "202003121709"},
+        "date": "3.12.20 5:09 pm",
         "ques": "are you mentally stable",
-        "answ": ""
+        "answ": "oh yes, i think i have made that abundantly clear"
     },
     {
         "info": {"ts": "202003121714"},

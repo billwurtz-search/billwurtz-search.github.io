@@ -3996,10 +3996,10 @@
         "answ": "could happen"
     },
     {
-        "info": {"ts": "date_parsing_error_panicl"},
-        "date": "10.12.2fine4 4:26 pm",
+        "info": {"ts": "202410121626"},
+        "date": "10.12.24 4:26 pm",
         "ques": "How's your current mental health?",
-        "answ": ""
+        "answ": "fine"
     },
     {
         "info": {"ts": "202410121649"},
