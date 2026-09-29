@@ -21,7 +21,7 @@ const sliderReset = document.getElementById('to-default-button');
 const modalBox = document.querySelector('.modal-content');
 
 const logFiles = [];
-for (let i = 1; i <= 15; i++) {
+for (let i = 1; i <= 12; i++) {
     const num = i.toString().padStart(2, '0');
     logFiles.push(`logs/log_${num}.json`);
 }
@@ -361,17 +361,27 @@ function renderBatch() {
     const nextBatch = currentResults.slice(currentOffset, currentOffset + currentLimit);
     const fragment = document.createDocumentFragment();
     nextBatch.forEach(item => {
-        const div = document.createElement('div');
-        div.innerHTML = `
+        let html = `
             <br><br>
             <h3> 
                 <span class="dco"><a href="https://billwurtz.com/questions/q.php?date=${item.ts}"
                     target="_blank" rel="noopener noreferrer">${item.dateHtml}</a></span> 
                 &nbsp;
-                <span class="qco">${item.questionHtml}</span> 
+                <span class="qco">${item.questionHtml[0]}</span> 
             </h3> 
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="ans">${item.answerHtml}</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="ans">${item.answerHtml[0]}</span>
         `;
+
+        for (let i = 1; i < item.questionHtml.length; i++) {
+            html += `\n<h3><span class="qco">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.questionHtml[i]}</span></h3>`;
+            
+            if (item.answerHtml[i]) {
+                html += `\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="ans">${item.answerHtml[i]}</span>`;
+            }
+        }
+
+        const div = document.createElement("div");
+        div.innerHTML = html;
         fragment.appendChild(div);
     });
     resultsArea.appendChild(fragment);

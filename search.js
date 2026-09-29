@@ -1,6 +1,6 @@
 // DB --
 const StorageEngine = {
-    CACHE_VERSION: 16,
+    CACHE_VERSION: 17,
     DB_NAME: "bwsearch-db",
     STORE_NAME: "logs",
 
@@ -74,11 +74,16 @@ const TextNormalizer = {
             .trim();
     },
 
+    toArray(val) {
+        if (Array.isArray(val)) return val;
+        return [val || ""];
+    },
+
     // formatting raw json into a runtime record
     createRecord(item) {
         const ts = item.info.ts || "";
-        const ques = item.ques || "";
-        const answ = item.answ || "";
+        const ques = this.toArray(item.ques);
+        const answ = this.toArray(item.answ);
         const hasLink = Boolean(item.info.hl);
 
         return {
@@ -87,8 +92,8 @@ const TextNormalizer = {
             question: ques,
             answer: answ,
             hasLink: hasLink,
-            qClean: this.clean(ques),
-            aClean: this.clean(answ)
+            qClean: ques.map((q) => this.clean(q)),
+            aClean: answ.map((a) => this.clean(a))
         };
     },
 
@@ -109,14 +114,16 @@ const TextNormalizer = {
     },
 
     deserializeFromCache(entry) {
+        const ques = this.toArray(entry.ques);
+        const answ = this.toArray(entry.answ);
         return {
             ts: entry.ts,
             date: entry.date,
-            question: entry.ques,
-            answer: entry.answ,
+            question: ques,
+            answer: answ,
             hasLink: Boolean(entry.hl),
-            qClean: entry.qClean ?? this.clean(entry.ques),
-            aClean: entry.aClean ?? this.clean(entry.answ)
+            qClean: entry.qClean ?? ques.map((q) => this.clean(q)),
+            aClean: entry.aClean ?? answ.map((a) => this.clean(a))
         };
     }
 };
@@ -541,7 +548,7 @@ const SearchEngine = {
             return count;
         };
 
-        const countOccurrences = (targetText, cleanText, term) => {
+        const countSingle = (targetText, cleanText, term) => {
             if (term.regex) {
                 return ((targetText || "").match(term.regex) || []).length;
             }
@@ -554,12 +561,25 @@ const SearchEngine = {
             return countSubstrings(cleanText, term.clean);
         };
 
+        const countOccurrences = (target, clean, term) => {
+            if (Array.isArray(target)) {
+                let total = 0;
+                for (let i = 0; i < target.length; i++) {
+                    total += countSingle(target[i], clean[i], term);
+                }
+                return total;
+            }
+            return countSingle(target, clean, term);
+        };
+
         const processedData = [];
 
         for (const item of this.allData) {
             if (sortBy === "links-only" && !item.hasLink) continue;
 
             if (excludedQues && excludedQues.includes(item.ts)) continue;
+
+            // if (item.question.length === 1) continue;
 
             if (dateFilter && !dateFilter(item.ts)) continue;
 
@@ -615,8 +635,8 @@ const SearchEngine = {
                     ...item,
                     matchCount: totalMatchCount,
                     dateHtml: includeDates ? TextHighlighter.highlight(item.date, terms, isRawRegex, rawRegexObj) : item.date,
-                    questionHtml: showQ ? TextHighlighter.highlight(item.question, terms, isRawRegex, rawRegexObj) : item.question,
-                    answerHtml: showA ? TextHighlighter.highlight(item.answer, terms, isRawRegex, rawRegexObj) : item.answer
+                    questionHtml: item.question.map((q) => showQ ? TextHighlighter.highlight(q, terms, isRawRegex, rawRegexObj) : q),
+                    answerHtml: item.answer.map((a) => showA ? TextHighlighter.highlight(a, terms, isRawRegex, rawRegexObj) : a)
                 });
             }
         }
