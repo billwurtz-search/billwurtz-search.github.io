@@ -1,5 +1,41 @@
 [
     {
+        "info": {"ts": "202109260211"},
+        "date": "9.26.21 2:11 am",
+        "ques": "do you have a pet volcano",
+        "answ": "i'm glad you asked. the answer is no"
+    },
+    {
+        "info": {"ts": "202109260306"},
+        "date": "9.26.21 3:06 am",
+        "ques": "when will the next song be out?",
+        "answ": "not soon enough for me"
+    },
+    {
+        "info": {"ts": "202109260506"},
+        "date": "9.26.21 5:06 am",
+        "ques": ["hi can i be a princess please", "do i need to sign a form or something"],
+        "answ": ["sure", "yes, but, sometimes the whole point of being a princess is being able to skip what you needed to do"]
+    },
+    {
+        "info": {"ts": "202109260535"},
+        "date": "9.26.21 5:35 am",
+        "ques": "why are your songs so hypnotizing?",
+        "answ": "that's easy, i just try to hypnotize myself with it, and if it doesn't work then i keep fixing it until it does"
+    },
+    {
+        "info": {"ts": "202109260704"},
+        "date": "9.26.21 7:04 am",
+        "ques": ["Hahhahahahahhahahahahaahhahahahahahha what Kind of Person are you?", "I dont know what i should do because my Mom is narcisstic and i can't be myself and im everbody Else but me. Help me Bill"],
+        "answ": ["regular", "maybe it's time to write a play"]
+    },
+    {
+        "info": {"ts": "202109260733"},
+        "date": "9.26.21 7:33 am",
+        "ques": "Is it ok to feel ok sometimes?",
+        "answ": "yes"
+    },
+    {
         "info": {"ts": "202109261108"},
         "date": "9.26.21 11:08 am",
         "ques": ["As much as you've probably been asked this, it seems like i'm a princess has a slightly more coherent theme/message to it intended than a lot of your other songs, which feel more like general vibes.", "Were you going for a slightly different writing approach on this song?"],
@@ -42174,10 +42210,16 @@
         "answ": "are you a teacher or a student"
     },
     {
-        "info": {"ts": "202208210104"},
+        "info": {"ts": "202208210104a"},
         "date": "8.21.22 1:04 am",
         "ques": "Whats your hot take on hot takes",
         "answ": "none. didn't happen"
+    },
+    {
+        "info": {"ts": "202208210104b"},
+        "date": "8.21.22 1:04 am",
+        "ques": "Whats your hot take on hot takes",
+        "answ": "fake"
     },
     {
         "info": {"ts": "202208210106", "hl": true},
@@ -74428,53 +74470,5 @@
         "date": "4.12.23 2:59 pm",
         "ques": "will buildings stop being built?",
         "answ": "yes but not yet"
-    },
-    {
-        "info": {"ts": "202304121518"},
-        "date": "4.12.23 3:18 pm",
-        "ques": "What were the chords for the section of \"more than a dream\" that goes \"woah woah dreams can be much better than anything their supposed to be\"",
-        "answ": "Bbmaj7, Gmaj7/A"
-    },
-    {
-        "info": {"ts": "202304121632"},
-        "date": "4.12.23 4:32 pm",
-        "ques": "What is the most underrated topic you can think of right now?",
-        "answ": "something without a name. only the highest rated topics even have names"
-    },
-    {
-        "info": {"ts": "202304121844"},
-        "date": "4.12.23 6:44 pm",
-        "ques": "What is the origin of Pineapples?",
-        "answ": "pineapples were a mistake"
-    },
-    {
-        "info": {"ts": "202304121959"},
-        "date": "4.12.23 7:59 pm",
-        "ques": "do you like doctors/horses",
-        "answ": "yes"
-    },
-    {
-        "info": {"ts": "202304122036"},
-        "date": "4.12.23 8:36 pm",
-        "ques": "do you have any suggestions for music to cheer me up when i am sad?",
-        "answ": "yep. all of it"
-    },
-    {
-        "info": {"ts": "202304122041"},
-        "date": "4.12.23 8:41 pm",
-        "ques": "How can I learn to be me",
-        "answ": "everyway. anything you do will teach you a little bit more"
-    },
-    {
-        "info": {"ts": "202304122210"},
-        "date": "4.12.23 10:10 pm",
-        "ques": "How often do you say the word \"rizz\"",
-        "answ": "i've never said it"
-    },
-    {
-        "info": {"ts": "202304122244"},
-        "date": "4.12.23 10:44 pm",
-        "ques": "did you write a lot of songs in your teenage years?",
-        "answ": "yes"
     }
 ]

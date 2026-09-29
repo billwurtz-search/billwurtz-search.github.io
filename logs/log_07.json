@@ -1,5 +1,29 @@
 [
     {
+        "info": {"ts": "202003311149"},
+        "date": "3.31.20 11:49 am",
+        "ques": "if its fast food is it called that because the food is fast or because it is just fast food?",
+        "answ": "the time between when you order it and when you receive it is much quicker than in traditional restaurants"
+    },
+    {
+        "info": {"ts": "202003311203"},
+        "date": "3.31.20 12:03 pm",
+        "ques": "what happens when you think of chain reactions?",
+        "answ": "it makes me think of another thing"
+    },
+    {
+        "info": {"ts": "202003311209"},
+        "date": "3.31.20 12:09 pm",
+        "ques": "i rarely heard you use grand piano sound on your song, why ?",
+        "answ": "it's usually layered with other things. kind of like how you can rarely taste the flour in bread"
+    },
+    {
+        "info": {"ts": "202003311213"},
+        "date": "3.31.20 12:13 pm",
+        "ques": "thoughts on music theory?",
+        "answ": "all fun and games until every theory starts to flip itself upside down and throw itself back in your face. correction: that's actually when the fun starts"
+    },
+    {
         "info": {"ts": "202003311255"},
         "date": "3.31.20 12:55 pm",
         "ques": "Have you considered getting a team to help you edit videos?",
@@ -43416,7 +43440,7 @@
         "answ": "maybe diagonally"
     },
     {
-        "info": {"ts": "202006211802"},
+        "info": {"ts": "202006211802a"},
         "date": "6.21.20 6:02 pm",
         "ques": "what calms you down?",
         "answ": "having a breakthrough in the name of science"
@@ -43426,6 +43450,12 @@
         "date": "6.21.20 6:01 pm",
         "ques": "How make sandwhich?",
         "answ": "first you'll need to invest in the proper infrastructure"
+    },
+    {
+        "info": {"ts": "202006211802b"},
+        "date": "6.21.20 6:02 pm",
+        "ques": "what calms you down?",
+        "answ": "maybe some storms"
     },
     {
         "info": {"ts": "202006211814"},
@@ -82744,41 +82774,5 @@
         "date": "9.23.20 6:28 pm",
         "ques": ["Do you plan the visuals in your videos while you're writing your music?", "Do the visuals influence the songwriting process? Or are the visuals planned/done after the song is essentially written?"],
         "answ": ["sometimes", "well, think of it this way, .... there would be no visuals planned BETWEEN the time of song writing and the time of song recording. after the song recording, that is when the visuals happen. but some things were probably obvious during the songwriting process. (i.e. 'lemon song' probably should have a lemon in the video). But here's a new twist that i've found: if you try to come up with visuals at the same time as writing the song, it actually helps you write the song. Even if that visual is not even used.... even if you dont even come up with any specific visual ...... just telling yourself to activate the part of your brain that thinks of visuals, for some reason it makes the songwriting 10x more potent. even if no visual is thought of, it tricks your brain into going to the right place. just to pretend you are supposed to be coming up with the visual. so in other words, when you're writing a song, pretend you're writing a video. it doesn't even matter if you even make a video, just tell your brain you're writing a video, and often you won't even come up with any visual but it still jumpstarts the songwriting when you think that way. hopefully i've explained it. i started doing that with 'best friends with my own front door', and i've been using that trick ever since. it's like opening the door to the next room, to help give you perspective on the room you are in"]
-    },
-    {
-        "info": {"ts": "202009231843"},
-        "date": "9.23.20 6:43 pm",
-        "ques": "Is there a right or wrong way to make music?",
-        "answ": "every way is both"
-    },
-    {
-        "info": {"ts": "202009231903"},
-        "date": "9.23.20 7:03 pm",
-        "ques": "Growing up, how was your relationship with the fundamentals of conscious existence?",
-        "answ": "very careful"
-    },
-    {
-        "info": {"ts": "202009231924"},
-        "date": "9.23.20 7:24 pm",
-        "ques": "I haven't been here in while. Last I checked you said you were working on songwriting, is this still the stage you're at?",
-        "answ": "no, i've recorded that song and now i am working on the video for it"
-    },
-    {
-        "info": {"ts": "202009232014"},
-        "date": "9.23.20 8:14 pm",
-        "ques": "what is an ideal place to write a song?",
-        "answ": "on the way between places"
-    },
-    {
-        "info": {"ts": "202009232036"},
-        "date": "9.23.20 8:36 pm",
-        "ques": "Am I allowed to love myself?",
-        "answ": "i dare you to try"
-    },
-    {
-        "info": {"ts": "202009232100"},
-        "date": "9.23.20 9:00 pm",
-        "ques": "is the name of your new video \"New Video\"??",
-        "answ": "no"
     }
 ]

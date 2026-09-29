@@ -1,5 +1,41 @@
 [
     {
+        "info": {"ts": "202511300516"},
+        "date": "11.30.25 5:16 am",
+        "ques": "Bill if I were to ask you a question that's supposed to be decoded by some series of random things which is really hard to do, would you try to accomplish the challenge? Or accept your defeat and roll down a lonely road forever wondering about hibernating?",
+        "answ": "in many cases i would be able to skip the problem guilt-free"
+    },
+    {
+        "info": {"ts": "202511300556"},
+        "date": "11.30.25 5:56 am",
+        "ques": "Find the logic behind this sequence and complete it with the last number : 1 2 6",
+        "answ": "there are probably an unlimted amount of logics that would produce those three numbers. the sequence could be 1,2,6,15,31 (i'm adding the next square number each time). but it could also be 1,2,6,13,23,36 (i'm adding 3 to the amount i'm adding each time)"
+    },
+    {
+        "info": {"ts": "202511300643"},
+        "date": "11.30.25 6:43 am",
+        "ques": "How do i stop fearing that im not loved, and instead redirect this energy into loving myself and also acknowledging the love people have for me?",
+        "answ": "sometimes it helps to just get yourself distracted by what you're really interested in"
+    },
+    {
+        "info": {"ts": "202511300707"},
+        "date": "11.30.25 7:07 am",
+        "ques": "favorite type of triangle?",
+        "answ": "scalene"
+    },
+    {
+        "info": {"ts": "202511300712"},
+        "date": "11.30.25 7:12 am",
+        "ques": "Is this a multiple choice question? a) no b) no c) no d) no",
+        "answ": "no"
+    },
+    {
+        "info": {"ts": "202511300840"},
+        "date": "11.30.25 8:40 am",
+        "ques": "what's a conspiracy?",
+        "answ": "how about the miracle of life"
+    },
+    {
         "info": {"ts": "202511301052"},
         "date": "11.30.25 10:52 am",
         "ques": ["Have you got any tips on improvising in music? Just general words of wisdom or random tips and/or tricks. Don't have any particular problem in mind, just something you would see on a loading screen in a sterotypical game", "Also, is there such thing as monotypical?"],

@@ -1,5 +1,11 @@
 [
     {
+        "info": {"ts": "201901182147"},
+        "date": "1.18.19 9:47 pm",
+        "ques": "Would you ever publish a video of you playing classical music?",
+        "answ": "sure"
+    },
+    {
         "info": {"ts": "201901182206"},
         "date": "1.18.19 10:06 pm",
         "ques": "what is your heritage",
@@ -56688,10 +56694,16 @@
         "answ": "editing the controls"
     },
     {
-        "info": {"ts": "201909211043"},
+        "info": {"ts": "201909211043a"},
         "date": "9.21.19 10:43 am",
         "ques": "Hey bill, I've thanked you a few times on here before but I want to thank you again because your tips for a lot of people's questions about general productivity and direction advice I've tried and have been really helpful to me. I rhink a lot of your suggestions I think leave behind assumptions about how you're supposed to do things that I'm not always aware of. i just felt the need to thank you. Good luck with all your keyboard maestroing and learning adventures 🌟 ps don't feel like you need to post this whatever strikesz your fancy",
         "answ": "how about if i post it twice"
+    },
+    {
+        "info": {"ts": "201909211043b"},
+        "date": "9.21.19 10:43 am",
+        "ques": "Hey bill, I've thanked you a few times on here before but I want to thank you again because your tips for a lot of people's questions about general productivity and direction advice I've tried and have been really helpful to me. I rhink a lot of your suggestions I think leave behind assumptions about how you're supposed to do things that I'm not always aware of. i just felt the need to thank you. Good luck with all your keyboard maestroing and learning adventures 🌟 ps don't feel like you need to post this whatever strikesz your fancy",
+        "answ": ""
     },
     {
         "info": {"ts": "201909211236"},
@@ -69628,23 +69640,5 @@
         "date": "10.31.19 10:52 pm",
         "ques": ["Hi Bill. Do you have an specific hour of the day for recording vocals?", "I'm currently living alone in my apartment and I don't want to bother my neighbour. I'd met him before and it seems like he's a good guy (he listens the band Air Supply once a day). How do you deal with noise pollution? Thanks"],
         "answ": ["not anymore", "i recently bought a magic privacy box. i've seen a lot of people complain about the price ............ but there is truly nothing like it. changed my life. just be careful not to suffocate. just as well, it's a reminder to let your voice rest, and not do so many takes you forget how the song goes"]
-    },
-    {
-        "info": {"ts": "201910312302"},
-        "date": "10.31.19 11:02 pm",
-        "ques": "were ggoing over calculus in school right know and i can't figure out what a derivative is... anyway, my question is \"how U doin'\"",
-        "answ": "pretty good, just looking for a video player app that can make quick in-out copy-paste edits, and maybe rotate and export. to replace the one that went extinct 10 years ago without me noticing. it's about to go extinct even more so i better do something"
-    },
-    {
-        "info": {"ts": "201910312322"},
-        "date": "10.31.19 11:22 pm",
-        "ques": "on a scale to 1-insanecrazy, what is your thoughts on the united nations",
-        "answ": "sometimes i wonder if the nations could unite even more"
-    },
-    {
-        "info": {"ts": "201911010009"},
-        "date": "11.1.19 12:09 am",
-        "ques": "In your former editing program, how did you make the glowing text effect like on \"November\" in Halloween Song?",
-        "answ": "i will be doing a tutorial except honestly it would be pretty stupid to do a tutorial in that program because it doesn't exist anymore"
     }
 ]

@@ -1,5 +1,47 @@
 [
     {
+        "info": {"ts": "202409220452"},
+        "date": "9.22.24 4:52 am",
+        "ques": "Have you ever listened to music that the first time you heard it you almost had to stop because it was so intense? Like eating a piece of 90% dark chocolate? And it made you feel like you were full inside?",
+        "answ": "those sound like 3 different experiences. i believe i've had all 3, but they don't seem comparable to each other"
+    },
+    {
+        "info": {"ts": "202409220511"},
+        "date": "9.22.24 5:11 am",
+        "ques": "what is the point in asking a question",
+        "answ": "to inquire about what the point is of asking it"
+    },
+    {
+        "info": {"ts": "202409220600"},
+        "date": "9.22.24 6:00 am",
+        "ques": "are you sure you've frolicked too hard or is it \"surely\" as in like \"probably\"",
+        "answ": "i don't recall. if i said \"surely\" it might be a person's name"
+    },
+    {
+        "info": {"ts": "202409220857"},
+        "date": "9.22.24 8:57 am",
+        "ques": "Are muffins or cupcakes better?",
+        "answ": "no, they are equivalent"
+    },
+    {
+        "info": {"ts": "202409220923"},
+        "date": "9.22.24 9:23 am",
+        "ques": "am i bread",
+        "answ": "not actually, it's just your name"
+    },
+    {
+        "info": {"ts": "202409221055"},
+        "date": "9.22.24 10:55 am",
+        "ques": "what do you think of fretless bass",
+        "answ": "it's fine"
+    },
+    {
+        "info": {"ts": "202409221107"},
+        "date": "9.22.24 11:07 am",
+        "ques": "why do we pronounce kansas as \"kan-zuhs\" but don't pronounce arkansas as \"ar-kan-zuhs\"? i have been questioning this for two and a half days, and have yet to crack the case",
+        "answ": "they used to have no S on the end, the french added the silent S to make it more french. then the english people came along and didn't really know what to do with it. to this day they're still not sure"
+    },
+    {
         "info": {"ts": "202409221115"},
         "date": "9.22.24 11:15 am",
         "ques": "i'm certain you've been asked this many a time so feel free to refer me to a previous answer, but i'm just starting to seriously float the idea of making and releasing music and have no idea where to start. i play guitar and know a bit about a couple other instruments but i'm a total stranger as to what goes into recording real instruments, or how you make zany computerised instruments, etc. are there any resources you'd recommend or just general advice you'd give, or are you in favour of just totally winging it?",
@@ -70474,41 +70516,5 @@
         "date": "11.30.25 3:46 am",
         "ques": "Yknow, rocket fuel is pretty snazzy. Do you have any of that on you? I wanna know what it tastes like. Do you think it will taste like rocks? I like to imagine it will taste like grapes, or maybe popcorn.",
         "answ": "not edible. i do not recommend this"
-    },
-    {
-        "info": {"ts": "202511300516"},
-        "date": "11.30.25 5:16 am",
-        "ques": "Bill if I were to ask you a question that's supposed to be decoded by some series of random things which is really hard to do, would you try to accomplish the challenge? Or accept your defeat and roll down a lonely road forever wondering about hibernating?",
-        "answ": "in many cases i would be able to skip the problem guilt-free"
-    },
-    {
-        "info": {"ts": "202511300556"},
-        "date": "11.30.25 5:56 am",
-        "ques": "Find the logic behind this sequence and complete it with the last number : 1 2 6",
-        "answ": "there are probably an unlimted amount of logics that would produce those three numbers. the sequence could be 1,2,6,15,31 (i'm adding the next square number each time). but it could also be 1,2,6,13,23,36 (i'm adding 3 to the amount i'm adding each time)"
-    },
-    {
-        "info": {"ts": "202511300643"},
-        "date": "11.30.25 6:43 am",
-        "ques": "How do i stop fearing that im not loved, and instead redirect this energy into loving myself and also acknowledging the love people have for me?",
-        "answ": "sometimes it helps to just get yourself distracted by what you're really interested in"
-    },
-    {
-        "info": {"ts": "202511300707"},
-        "date": "11.30.25 7:07 am",
-        "ques": "favorite type of triangle?",
-        "answ": "scalene"
-    },
-    {
-        "info": {"ts": "202511300712"},
-        "date": "11.30.25 7:12 am",
-        "ques": "Is this a multiple choice question? a) no b) no c) no d) no",
-        "answ": "no"
-    },
-    {
-        "info": {"ts": "202511300840"},
-        "date": "11.30.25 8:40 am",
-        "ques": "what's a conspiracy?",
-        "answ": "how about the miracle of life"
     }
 ]

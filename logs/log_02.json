@@ -14850,7 +14850,7 @@
         "answ": "the flammability, i'd say"
     },
     {
-        "info": {"ts": "201704021828"},
+        "info": {"ts": "201704021828a"},
         "date": "4.2.17 6:28 pm",
         "ques": "<a href=\"https://billwurtz.com/questions/when-will-next-history-video-come-out.html\">when will the next history video come out</a>",
         "answ": ""
@@ -14878,6 +14878,12 @@
         "date": "4.2.17 7:41 pm",
         "ques": "What do you do if you want two answer two different questions asked in the same minute?",
         "answ": "answer them both"
+    },
+    {
+        "info": {"ts": "201704021828b"},
+        "date": "4.2.17 6:28 pm",
+        "ques": "<a href=\"https://billwurtz.com/questions/when-will-next-history-video-come-out.html\">when will the next history video come out</a>",
+        "answ": ""
     },
     {
         "info": {"ts": "201704021958"},
@@ -22203,6 +22209,12 @@
         "info": {"ts": "201704200322b"},
         "date": "4.20.17 3:22 am",
         "ques": "<a href=\"https://billwurtz.com/questions/next-video-late2016-coming-out.html\">When will HOTEWIG come out? Please -matt also</a>",
+        "answ": ""
+    },
+    {
+        "info": {"ts": "201704200322c"},
+        "date": "4.20.17 3:22 am",
+        "ques": "<a href=\"https://billwurtz.com/questions/next-video-late2016-coming-out.html\">When will HOTEWIG come out?</a>",
         "answ": ""
     },
     {

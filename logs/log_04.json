@@ -61500,10 +61500,16 @@
         "answ": "i try to get the best possible one, that sounds the best but more importantly strengthens the entire song"
     },
     {
-        "info": {"ts": "201812071750"},
+        "info": {"ts": "201812071750a"},
         "date": "12.7.18 5:50 pm",
         "ques": "How do I stop not doing the things I want to do",
         "answ": "according to my calculations, you would start doing them"
+    },
+    {
+        "info": {"ts": "201812071750b"},
+        "date": "12.7.18 5:50 pm",
+        "ques": "How do I stop not doing the things I want to do",
+        "answ": "music is a superpower, i have found"
     },
     {
         "info": {"ts": "201812071828"},
@@ -72010,11 +72016,5 @@
         "date": "1.18.19 9:45 pm",
         "ques": "Why does music theory exist?",
         "answ": "i actually don't know what it is. sometimes i think people just mean literacy but i really have no idea what they mean. there is a general understood understanding of what it means but as soon as i start to think about what it might mean the more it completely unravels and i cannot figure out what they would possibly mean. but i suspect it often simply means literacy, which is just like knowing how to read etc. which exists for communication purposes"
-    },
-    {
-        "info": {"ts": "201901182147"},
-        "date": "1.18.19 9:47 pm",
-        "ques": "Would you ever publish a video of you playing classical music?",
-        "answ": "sure"
     }
 ]

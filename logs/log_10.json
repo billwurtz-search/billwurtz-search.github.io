@@ -1,5 +1,53 @@
 [
     {
+        "info": {"ts": "202304121518"},
+        "date": "4.12.23 3:18 pm",
+        "ques": "What were the chords for the section of \"more than a dream\" that goes \"woah woah dreams can be much better than anything their supposed to be\"",
+        "answ": "Bbmaj7, Gmaj7/A"
+    },
+    {
+        "info": {"ts": "202304121632"},
+        "date": "4.12.23 4:32 pm",
+        "ques": "What is the most underrated topic you can think of right now?",
+        "answ": "something without a name. only the highest rated topics even have names"
+    },
+    {
+        "info": {"ts": "202304121844"},
+        "date": "4.12.23 6:44 pm",
+        "ques": "What is the origin of Pineapples?",
+        "answ": "pineapples were a mistake"
+    },
+    {
+        "info": {"ts": "202304121959"},
+        "date": "4.12.23 7:59 pm",
+        "ques": "do you like doctors/horses",
+        "answ": "yes"
+    },
+    {
+        "info": {"ts": "202304122036"},
+        "date": "4.12.23 8:36 pm",
+        "ques": "do you have any suggestions for music to cheer me up when i am sad?",
+        "answ": "yep. all of it"
+    },
+    {
+        "info": {"ts": "202304122041"},
+        "date": "4.12.23 8:41 pm",
+        "ques": "How can I learn to be me",
+        "answ": "everyway. anything you do will teach you a little bit more"
+    },
+    {
+        "info": {"ts": "202304122210"},
+        "date": "4.12.23 10:10 pm",
+        "ques": "How often do you say the word \"rizz\"",
+        "answ": "i've never said it"
+    },
+    {
+        "info": {"ts": "202304122244"},
+        "date": "4.12.23 10:44 pm",
+        "ques": "did you write a lot of songs in your teenage years?",
+        "answ": "yes"
+    },
+    {
         "info": {"ts": "202304122317"},
         "date": "4.12.23 11:17 pm",
         "ques": "will the thing inventor really come out in 2028?",
@@ -3588,7 +3636,7 @@
         "answ": "no, but i'd be a little scared of not being able to use them"
     },
     {
-        "info": {"ts": "202305121229"},
+        "info": {"ts": "202305121229a"},
         "date": "5.12.23 12:29 pm",
         "ques": "are you excited",
         "answ": "yes"
@@ -3682,6 +3730,12 @@
         "date": "5.12.23 11:52 pm",
         "ques": "So you've said before that boxes taste like mush. Did you have to eat a box to figure this out?",
         "answ": "that was fake. that was a songwriting launch technique known as \"being terrible on purpose\""
+    },
+    {
+        "info": {"ts": "202305121229b"},
+        "date": "5.12.23 12:29 pm",
+        "ques": "are you excited",
+        "answ": "yes"
     },
     {
         "info": {"ts": "202305130104"},
@@ -55296,10 +55350,16 @@
         "answ": "sometimes"
     },
     {
-        "info": {"ts": "202405122137"},
+        "info": {"ts": "202405122137a"},
         "date": "5.12.24 9:37 pm",
         "ques": "What is your favorite sentence (ever)?",
         "answ": "any sentence currently holding that status would be reserved for future use"
+    },
+    {
+        "info": {"ts": "202405122137b"},
+        "date": "5.12.24 9:37 pm",
+        "ques": "What is your favorite sentence (ever)?",
+        "answ": "oh"
     },
     {
         "info": {"ts": "202405122138"},
@@ -74302,47 +74362,5 @@
         "date": "9.22.24 4:26 am",
         "ques": "what questions don't you answer?",
         "answ": "this one. wait oops"
-    },
-    {
-        "info": {"ts": "202409220452"},
-        "date": "9.22.24 4:52 am",
-        "ques": "Have you ever listened to music that the first time you heard it you almost had to stop because it was so intense? Like eating a piece of 90% dark chocolate? And it made you feel like you were full inside?",
-        "answ": "those sound like 3 different experiences. i believe i've had all 3, but they don't seem comparable to each other"
-    },
-    {
-        "info": {"ts": "202409220511"},
-        "date": "9.22.24 5:11 am",
-        "ques": "what is the point in asking a question",
-        "answ": "to inquire about what the point is of asking it"
-    },
-    {
-        "info": {"ts": "202409220600"},
-        "date": "9.22.24 6:00 am",
-        "ques": "are you sure you've frolicked too hard or is it \"surely\" as in like \"probably\"",
-        "answ": "i don't recall. if i said \"surely\" it might be a person's name"
-    },
-    {
-        "info": {"ts": "202409220857"},
-        "date": "9.22.24 8:57 am",
-        "ques": "Are muffins or cupcakes better?",
-        "answ": "no, they are equivalent"
-    },
-    {
-        "info": {"ts": "202409220923"},
-        "date": "9.22.24 9:23 am",
-        "ques": "am i bread",
-        "answ": "not actually, it's just your name"
-    },
-    {
-        "info": {"ts": "202409221055"},
-        "date": "9.22.24 10:55 am",
-        "ques": "what do you think of fretless bass",
-        "answ": "it's fine"
-    },
-    {
-        "info": {"ts": "202409221107"},
-        "date": "9.22.24 11:07 am",
-        "ques": "why do we pronounce kansas as \"kan-zuhs\" but don't pronounce arkansas as \"ar-kan-zuhs\"? i have been questioning this for two and a half days, and have yet to crack the case",
-        "answ": "they used to have no S on the end, the french added the silent S to make it more french. then the english people came along and didn't really know what to do with it. to this day they're still not sure"
     }
 ]

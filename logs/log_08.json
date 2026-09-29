@@ -1,5 +1,41 @@
 [
     {
+        "info": {"ts": "202009231843"},
+        "date": "9.23.20 6:43 pm",
+        "ques": "Is there a right or wrong way to make music?",
+        "answ": "every way is both"
+    },
+    {
+        "info": {"ts": "202009231903"},
+        "date": "9.23.20 7:03 pm",
+        "ques": "Growing up, how was your relationship with the fundamentals of conscious existence?",
+        "answ": "very careful"
+    },
+    {
+        "info": {"ts": "202009231924"},
+        "date": "9.23.20 7:24 pm",
+        "ques": "I haven't been here in while. Last I checked you said you were working on songwriting, is this still the stage you're at?",
+        "answ": "no, i've recorded that song and now i am working on the video for it"
+    },
+    {
+        "info": {"ts": "202009232014"},
+        "date": "9.23.20 8:14 pm",
+        "ques": "what is an ideal place to write a song?",
+        "answ": "on the way between places"
+    },
+    {
+        "info": {"ts": "202009232036"},
+        "date": "9.23.20 8:36 pm",
+        "ques": "Am I allowed to love myself?",
+        "answ": "i dare you to try"
+    },
+    {
+        "info": {"ts": "202009232100"},
+        "date": "9.23.20 9:00 pm",
+        "ques": "is the name of your new video \"New Video\"??",
+        "answ": "no"
+    },
+    {
         "info": {"ts": "202009232121"},
         "date": "9.23.20 9:21 pm",
         "ques": "what was your mad bad and sad glad scheme?",
@@ -1968,7 +2004,7 @@
         "answ": "can be a useful tactic in flower arranging"
     },
     {
-        "info": {"ts": "202009291227"},
+        "info": {"ts": "202009291227a"},
         "date": "9.29.20 12:27 pm",
         "ques": "do you have a date for your next upload?",
         "answ": "i could tell you what i think, but there is a risk i might be wrong, and be chastised for it. and if there's one thing i know about 2020 it's that i'm sick of being chastised"
@@ -2014,6 +2050,12 @@
         "date": "9.29.20 2:21 pm",
         "ques": "what are some instances of dominant7#5 that you enjoy in their respective context",
         "answ": "i think if you go to paul mccartney 'tragedy' and check 1 bar before the second verse, hopefully you will find what you're looking for"
+    },
+    {
+        "info": {"ts": "202009291227b"},
+        "date": "9.29.20 12:27 pm",
+        "ques": "do you have a date for your next upload?",
+        "answ": "i could tell you what i think, but there is a risk i might be wrong, and be chastised for it. and if there's one thing i know about 2020 it's that i'm sick of being chastised"
     },
     {
         "info": {"ts": "202009291425"},
@@ -73924,41 +73966,5 @@
         "date": "9.26.21 12:28 am",
         "ques": "why did you feel unusual at the airport terminal",
         "answ": "the reason someone might feel unusual in an airport terminal is because they may be in a different city from where they usually spend their day. this makes sense to me"
-    },
-    {
-        "info": {"ts": "202109260211"},
-        "date": "9.26.21 2:11 am",
-        "ques": "do you have a pet volcano",
-        "answ": "i'm glad you asked. the answer is no"
-    },
-    {
-        "info": {"ts": "202109260306"},
-        "date": "9.26.21 3:06 am",
-        "ques": "when will the next song be out?",
-        "answ": "not soon enough for me"
-    },
-    {
-        "info": {"ts": "202109260506"},
-        "date": "9.26.21 5:06 am",
-        "ques": ["hi can i be a princess please", "do i need to sign a form or something"],
-        "answ": ["sure", "yes, but, sometimes the whole point of being a princess is being able to skip what you needed to do"]
-    },
-    {
-        "info": {"ts": "202109260535"},
-        "date": "9.26.21 5:35 am",
-        "ques": "why are your songs so hypnotizing?",
-        "answ": "that's easy, i just try to hypnotize myself with it, and if it doesn't work then i keep fixing it until it does"
-    },
-    {
-        "info": {"ts": "202109260704"},
-        "date": "9.26.21 7:04 am",
-        "ques": ["Hahhahahahahhahahahahaahhahahahahahha what Kind of Person are you?", "I dont know what i should do because my Mom is narcisstic and i can't be myself and im everbody Else but me. Help me Bill"],
-        "answ": ["regular", "maybe it's time to write a play"]
-    },
-    {
-        "info": {"ts": "202109260733"},
-        "date": "9.26.21 7:33 am",
-        "ques": "Is it ok to feel ok sometimes?",
-        "answ": "yes"
     }
 ]
