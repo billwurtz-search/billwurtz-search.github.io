@@ -360,23 +360,27 @@ function renderBatch() {
     }
     const nextBatch = currentResults.slice(currentOffset, currentOffset + currentLimit);
     const fragment = document.createDocumentFragment();
+
     nextBatch.forEach(item => {
+        const ques = Array.isArray(item.questionHtml) ? item.questionHtml : [item.questionHtml];
+        const answ = Array.isArray(item.answerHtml) ? item.answerHtml : [item.answerHtml];
+
         let html = `
             <br><br>
             <h3> 
                 <span class="dco"><a href="https://billwurtz.com/questions/q.php?date=${item.ts}"
                     target="_blank" rel="noopener noreferrer">${item.dateHtml}</a></span> 
                 &nbsp;
-                <span class="qco">${item.questionHtml[0]}</span> 
+                <span class="qco">${ques[0]}</span> 
             </h3> 
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="ans">${item.answerHtml[0]}</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="ans">${answ[0]}</span>
         `;
 
-        for (let i = 1; i < item.questionHtml.length; i++) {
-            html += `\n<h3><span class="qco">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.questionHtml[i]}</span></h3>`;
+        for (let i = 1; i < ques.length; i++) {
+            html += `\n<h3><span class="qco">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${ques[i]}</span></h3>`;
             
-            if (item.answerHtml[i]) {
-                html += `\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="ans">${item.answerHtml[i]}</span>`;
+            if (answ[i]) {
+                html += `\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="ans">${answ[i]}</span>`;
             }
         }
 
@@ -384,6 +388,7 @@ function renderBatch() {
         div.innerHTML = html;
         fragment.appendChild(div);
     });
+
     resultsArea.appendChild(fragment);
     currentOffset += nextBatch.length;
     statusMsg.innerText = (currentOffset >= currentResults.length) ? "End of results." : "";

@@ -79,11 +79,18 @@ const TextNormalizer = {
         return [val || ""];
     },
 
+    cleanField(val) {
+        if (Array.isArray(val)) {
+            return val.map((line) => this.clean(line)).join("\0");
+        }
+        return this.clean(val);
+    },
+
     // formatting raw json into a runtime record
     createRecord(item) {
         const ts = item.info.ts || "";
-        const ques = this.toArray(item.ques);
-        const answ = this.toArray(item.answ);
+        const ques = item.ques || "";
+        const answ = item.answ || "";
         const hasLink = Boolean(item.info.hl);
 
         return {
@@ -92,8 +99,8 @@ const TextNormalizer = {
             question: ques,
             answer: answ,
             hasLink: hasLink,
-            qClean: ques.map((q) => this.clean(q)),
-            aClean: answ.map((a) => this.clean(a))
+            qClean: this.cleanField(ques),
+            aClean: this.cleanField(answ)
         };
     },
 
@@ -114,16 +121,17 @@ const TextNormalizer = {
     },
 
     deserializeFromCache(entry) {
-        const ques = this.toArray(entry.ques);
-        const answ = this.toArray(entry.answ);
+        const ques = entry.ques || "";
+        const answ = entry.answ || "";
+
         return {
             ts: entry.ts,
             date: entry.date,
             question: ques,
             answer: answ,
             hasLink: Boolean(entry.hl),
-            qClean: entry.qClean ?? ques.map((q) => this.clean(q)),
-            aClean: entry.aClean ?? answ.map((a) => this.clean(a))
+            qClean: entry.qClean ?? this.cleanField(ques),
+            aClean: entry.aClean ?? this.cleanField(answ)
         };
     }
 };
@@ -548,28 +556,31 @@ const SearchEngine = {
             return count;
         };
 
-        const countSingle = (targetText, cleanText, term) => {
-            if (term.regex) {
-                return ((targetText || "").match(term.regex) || []).length;
-            }
-            // if the query has punc, search the raw text just .lower()
-            if (term.hasPunc) {
-                const raw = TextNormalizer.stripHtml(targetText).toLowerCase();
-                return countSubstrings(raw, term.lower);
-            }
-            // normal
-            return countSubstrings(cleanText, term.clean);
-        };
-
         const countOccurrences = (target, clean, term) => {
+            if (!term.regex && !term.hasPunc) {
+                return countSubstrings(clean, term.clean);
+            }
+
             if (Array.isArray(target)) {
                 let total = 0;
                 for (let i = 0; i < target.length; i++) {
-                    total += countSingle(target[i], clean[i], term);
+                    const text = target[i] || "";
+                    if (term.regex) {
+                        total += (text.match(term.regex) || []).length;
+                    } else {
+                        const raw = TextNormalizer.stripHtml(text).toLowerCase();
+                        total += countSubstrings(raw, term.lower);
+                    }
                 }
                 return total;
             }
-            return countSingle(target, clean, term);
+
+            if (term.regex) {
+                return ((target || "").match(term.regex) || []).length;
+            }
+
+            const raw = TextNormalizer.stripHtml(target).toLowerCase();
+            return countSubstrings(raw, term.lower);
         };
 
         const processedData = [];
@@ -624,6 +635,7 @@ const SearchEngine = {
             }
 
             let isMatch = false;
+
             if (isRawRegex) {
                 isMatch = termMatches[0];
             } else {
@@ -631,12 +643,20 @@ const SearchEngine = {
             }
 
             if (isMatch) {
+                const highlight = (val, show) => {
+                    if (!show || !val) return val;
+                    if (Array.isArray(val)) {
+                        return val.map((v) => TextHighlighter.highlight(v, terms, isRawRegex, rawRegexObj));
+                    }
+                    return TextHighlighter.highlight(val, terms, isRawRegex, rawRegexObj);
+                };
+
                 processedData.push({
                     ...item,
                     matchCount: totalMatchCount,
                     dateHtml: includeDates ? TextHighlighter.highlight(item.date, terms, isRawRegex, rawRegexObj) : item.date,
-                    questionHtml: item.question.map((q) => showQ ? TextHighlighter.highlight(q, terms, isRawRegex, rawRegexObj) : q),
-                    answerHtml: item.answer.map((a) => showA ? TextHighlighter.highlight(a, terms, isRawRegex, rawRegexObj) : a)
+                    questionHtml: highlight(item.question, showQ),
+                    answerHtml: highlight(item.answer, showA)
                 });
             }
         }
