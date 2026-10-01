@@ -42,15 +42,24 @@
                 <label><input type="checkbox" id="check-links" checked> Enable question links</label>
                 <label><input type="checkbox" id="check-highlight" checked> Enable highlighting</label>
                 <label><input type="checkbox" id="check-more-filters"> More filter options</label>
-
-                <div style="display: inline-flex; align-items: center; gap: 2px;">
-                    <label><input type="checkbox" id="check-auto-and"> Automatically <code>AND</code> words</label>
-                    <span class="anding-explanation" tabindex="0"
-                        title="Implicitly ANDs words together. e.g. &quot;2 friends beach&quot; automatically becomes &quot;2 AND friends AND beach&quot;"
-                        onpointerdown="if (document.activeElement === this) { this.blur(); event.preventDefault(); }">
-                    </span>
-                </div>
             </div>
+        </div>
+    </div>
+
+    <div id="anding-modal">
+        <div class="anding-modal-content">
+            <button class="close-btn" id="close-anding-modal" aria-label="close">×</button>
+            <table>
+                <tr>
+                    <td style="vertical-align: top;">
+                        <input type="checkbox" id="check-auto-and">
+                    </td>
+                    <td>
+                        <label for="check-auto-and" style="user-select: none;"> Automatically <i>AND</i> words</label>
+                        <div style="color: gray; font-size: 12px;">Implicitly ANDs words together. e.g. <i>2 friends beach</i> automatically becomes <i>2 AND friends AND beach</i></div>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 
@@ -58,7 +67,9 @@
         <form id="search-form">
             <div class="search-left">
                 <input type="text" id="q" placeholder="Search..." size="40" autocomplete="off" enterkeyhint="search">
-                
+
+                <button type="button" class="anding-btn" id="anding-btn">%</button>
+
                 <label for="sort">Sort by:</label>
                 <select id="sort">
                     <option value="newest">Newest</option>

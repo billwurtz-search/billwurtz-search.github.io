@@ -9,6 +9,9 @@ const sentinel = document.getElementById('sentinel');
 const modal = document.getElementById('config-modal');
 const configBtn = document.getElementById('config-btn');
 const closeModal = document.getElementById('close-modal');
+const andingModal = document.getElementById('anding-modal');
+const andingBtn = document.getElementById('anding-btn');
+const closeAndingModal = document.getElementById('close-anding-modal');
 const limitSlider = document.getElementById('limit-slider');
 const limitLabel = document.getElementById('limit-label');
 const checkLinks = document.getElementById('check-links');
@@ -42,6 +45,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     // there is a ?nocache=1 flag if you don't want IndexedDB
     if (urlParams.has('nocache')) {
         try { await StorageEngine.deleteDatabase(); } catch(e) { console.warn(e); }
+    }
+
+    if (localStorage.getItem("andingPref") === "true") {
+        andingBtn.innerHTML = "%<span class='anding-btn-active'>&check;</span>";
+    } else {
+        andingBtn.innerText = "%";
     }
 
     const filterMap = {
@@ -156,7 +165,6 @@ configBtn.onclick = () => {
 };
 
 closeModal.onclick = hideModal;
-window.onclick = (e) => { if (e.target === modal) hideModal(); };
 
 window.addEventListener('keydown', (e) => { 
     if (modal.style.display !== "block") return; 
@@ -177,6 +185,36 @@ window.addEventListener('keydown', (e) => {
         }
     }
 });
+
+// anding modal
+const hideAndingModal = () => {
+    andingModal.style.display = "none";
+    andingBtn.focus();
+    document.body.style.overflow = "";
+};
+
+andingBtn.onclick = () => {
+    andingModal.style.display = "block";
+    closeAndingModal.focus();
+    document.body.style.overflow = "hidden";
+};
+
+closeAndingModal.onclick = hideAndingModal;
+
+window.onclick = (e) => {
+    if (e.target === modal) hideModal();
+    if (e.target === andingModal) hideAndingModal();
+};
+
+checkAutoAND.onchange = function() {
+    if (this.checked) {
+        andingBtn.innerHTML = "%<span class='anding-btn-active'>&check;</span>";
+        localStorage.setItem("andingPref", "true");
+    } else {
+        andingBtn.innerText = "%";
+        localStorage.setItem("andingPref", "false");
+    }
+};
 
 // modal knobs
 limitSlider.oninput = function() {
