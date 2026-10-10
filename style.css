@@ -91,6 +91,21 @@ input[type="submit"]:active {
   border-color: #484851;
 }
 
+button,
+input[type="checkbox"],
+label:not([for]),
+select {
+    cursor: pointer;
+}
+
+label {
+    user-select: none;
+}
+
+input[type="range"] {
+    cursor: ew-resize;
+}
+
 /* highlighting */
 .highlight {
     background-color: yellow;
