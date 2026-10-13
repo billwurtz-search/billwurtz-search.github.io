@@ -103,7 +103,11 @@ label {
 }
 
 input[type="range"] {
-    cursor: ew-resize;
+    cursor: grab;
+}
+
+input[type="range"]:active {
+    cursor: grabbing;
 }
 
 /* highlighting */
