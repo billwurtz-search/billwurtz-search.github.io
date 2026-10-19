@@ -663,15 +663,15 @@ const SearchEngine = {
                 if (searchIn === "both") {
                     if (!lenghtFilterType(item.question, lengthFilter.n) && !lenghtFilterType(item.answer, lengthFilter.n)) continue;
                 } else if (searchIn === "question") {
-                    if (arrayPassLength(item.question)) continue;
+                    if (!lenghtFilterType(item.question, lengthFilter.n)) continue;
                 } else if (searchIn === "answer") {
-                    if (arrayPassLength(item.answer)) continue;
+                     if (!lenghtFilterType(item.answer, lengthFilter.n)) continue;
                 } else if (searchIn === "dual-req") {
-                    if (!lengthFilter(item.question.length) || !lengthFilter(item.answer.length)) continue;
+                    if (!lenghtFilterType(item.question, lengthFilter.n) || !lenghtFilterType(item.answer, lengthFilter.n)) continue;
                 } else if (searchIn === "q-excl") {
-                    if (!lengthFilter(item.question.length) || !(!lengthFilter(item.answer.length))) continue;
+                    if (!lenghtFilterType(item.question, lengthFilter.n) || !(!lenghtFilterType(item.answer, lengthFilter.n))) continue;
                 } else if (searchIn === "a-excl") {
-                    if (!(!lengthFilter(item.question.length)) || !lengthFilter(item.answer.length)) continue;
+                    if (!lenghtFilterType(item.answer, lengthFilter.n) || !(!lenghtFilterType(item.question, lengthFilter.n))) continue;
                 }
             }
 
