@@ -629,7 +629,23 @@ const SearchEngine = {
 
             if (dateFilter && !dateFilter(item.ts)) continue;
 
-            if (lengthFilter && !lengthFilter(item.question.length)) continue;
+            if (searchIn === "both") {
+                if (lengthFilter
+                    && !lengthFilter(item.question.length)
+                    && !lengthFilter(item.answer.length)
+                ) continue;
+
+            } else if (searchIn === "question") {
+                if (lengthFilter && !lengthFilter(
+                    (Array.isArray(item.question)
+                        ? item.question[0].length
+                        : item.question.length
+                    ))
+                ) continue;
+
+            } else if (searchIn === "answer") {
+                if (lengthFilter && !lengthFilter(item.answer.length)) continue;
+            }
 
             // Pure date-range query without text
             if (cleanQuery === "") {
