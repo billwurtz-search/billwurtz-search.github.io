@@ -182,13 +182,14 @@ const QueryCompiler = {
 
         // ---
 
-        const lengthRegex = /\blength:(>|<)(\d+)/gi;
+        const lengthRegex = /\blength:(>|<)(\d+)(q|a)?\b/gi;
 
         let matchL;
 
         while ((matchL = lengthRegex.exec(text)) !== null) {
             const lessOrMore = matchL[1].toLowerCase();
             const lengthNum = matchL[2];
+            const qField = matchL[3] ?? null;
 
             if (lessOrMore === ">") {
                 lengthConditions.push((length) => length > lengthNum);
