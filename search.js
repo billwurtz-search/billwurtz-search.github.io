@@ -612,39 +612,32 @@ const SearchEngine = {
 
         const processedData = [];
 
-        // const desiredlenght = 500;
+        const arrayPassLength = (input) => {
+            if (Array.isArray(input)) {
+                return !(input.some((item) => lengthFilter(item.length)));
+            } else {
+                return !lengthFilter(input.length);
+            }
+        }
 
         for (const item of this.allData) {
             if (sortBy === "links-only" && !item.hasLink) continue;
 
             if (excludedQues && excludedQues.includes(item.ts)) continue;
 
-            // if (item.question.length === 1) continue;
-
-            // if (Array.isArray(item.question)) {
-            //     if (item.question[0].length < desiredlenght) continue;
-            // } else {
-            //     if (item.question.length < desiredlenght) continue;
-            // }
-
             if (dateFilter && !dateFilter(item.ts)) continue;
 
-            if (searchIn === "both") {
-                if (lengthFilter
-                    && !lengthFilter(item.question.length)
-                    && !lengthFilter(item.answer.length)
-                ) continue;
-
-            } else if (searchIn === "question") {
-                if (lengthFilter && !lengthFilter(
-                    (Array.isArray(item.question)
-                        ? item.question[0].length
-                        : item.question.length
-                    ))
-                ) continue;
-
-            } else if (searchIn === "answer") {
-                if (lengthFilter && !lengthFilter(item.answer.length)) continue;
+            if (lengthFilter) {
+                if (searchIn === "both") {
+                    if (lengthFilter
+                        && !lengthFilter(item.question.length)
+                        && !lengthFilter(item.answer.length)
+                    ) continue;
+                } else if (searchIn === "question") {
+                    if (arrayPassLength(item.question)) continue;
+                } else if (searchIn === "answer") {
+                    if (arrayPassLength(item.answer)) continue;
+                }
             }
 
             // Pure date-range query without text
