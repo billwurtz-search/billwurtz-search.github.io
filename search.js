@@ -141,6 +141,7 @@ const QueryCompiler = {
     extractCommands(rawQuery) {
         let text = rawQuery.trim();
         const dateConditions = [];
+        const lengthConditions = [];
 
         // regex mode
         if (text.toLowerCase().startsWith("regex:(?i)")) {
@@ -179,11 +180,37 @@ const QueryCompiler = {
             ? (ts) => dateConditions.every((fn) => fn(ts))
             : null;
 
+        // ---
+
+        const lengthRegex = /\blength:(>|<)(\d+)/gi;
+
+        let matchL;
+
+        while ((matchL = lengthRegex.exec(text)) !== null) {
+            const lessOrMore = matchL[1].toLowerCase();
+            const lengthNum = matchL[2];
+
+            if (lessOrMore === ">") {
+                lengthConditions.push((length) => length > lengthNum);
+            } else {
+                lengthConditions.push((length) => length < lengthNum);
+            }
+        }
+
+        text = text.replace(lengthRegex, "").trim();
+
+        const lengthFilter = lengthConditions.length > 0
+            ? (length) => lengthConditions.every((fn) => fn(length))
+            : null;
+
+        // ---
+
         return {
             isRawRegex: false,
             caseInsensitiveRegex: false,
             cleanQuery: text,
-            dateFilter: dateFilter
+            dateFilter: dateFilter,
+            lengthFilter: lengthFilter
         };
     },
 
@@ -482,7 +509,7 @@ const SearchEngine = {
         }
 
         // Extract the commands
-        const { isRawRegex, caseInsensitiveRegex, cleanQuery, dateFilter }
+        const { isRawRegex, caseInsensitiveRegex, cleanQuery, dateFilter, lengthFilter }
             = QueryCompiler.extractCommands(qTrim);
 
         let terms = [];
@@ -601,6 +628,8 @@ const SearchEngine = {
             // }
 
             if (dateFilter && !dateFilter(item.ts)) continue;
+
+            if (lengthFilter && !lengthFilter(item.question.length)) continue;
 
             // Pure date-range query without text
             if (cleanQuery === "") {
