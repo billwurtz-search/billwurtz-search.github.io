@@ -141,7 +141,11 @@ const QueryCompiler = {
     extractCommands(rawQuery) {
         let text = rawQuery.trim();
         const dateConditions = [];
-        const lengthConditions = [];
+        const lengthConditions = {
+            q: [],
+            a: [],
+            n: []
+        };
 
         // regex mode
         if (text.toLowerCase().startsWith("regex:(?i)")) {
@@ -189,20 +193,32 @@ const QueryCompiler = {
         while ((matchL = lengthRegex.exec(text)) !== null) {
             const lessOrMore = matchL[1].toLowerCase();
             const lengthNum = matchL[2];
-            const qField = matchL[3] ?? null;
+            const qField = matchL[3]?.toLowerCase() ?? null;
 
-            if (lessOrMore === ">") {
-                lengthConditions.push((length) => length > lengthNum);
-            } else {
-                lengthConditions.push((length) => length < lengthNum);
+            const bracketType = lessOrMore === ">" 
+                ? (len) => len > lengthNum 
+                : (len) => len < lengthNum;
+
+            if (qField === null) {
+                lengthConditions.n.push(bracketType);
+            } else if (qField === "q") {
+                lengthConditions.q.push(bracketType);
+            } else if (qField === "a") {
+                lengthConditions.a.push(bracketType);
             }
         }
 
         text = text.replace(lengthRegex, "").trim();
 
-        const lengthFilter = lengthConditions.length > 0
-            ? (length) => lengthConditions.every((fn) => fn(length))
-            : null;
+        const makeLengthFilter = (rules) => {
+            return rules.length > 0 ? (len) => rules.every((fn) => fn(len)) : null;
+        };
+
+        const lengthFilter = {
+            n: makeLengthFilter(lengthConditions.n),
+            q: makeLengthFilter(lengthConditions.q),
+            a: makeLengthFilter(lengthConditions.a)
+        };
 
         // ---
 
@@ -621,6 +637,16 @@ const SearchEngine = {
             }
         }
 
+        const lenghtFilterType = (input, filterFn) => {
+            if (!filterFn) return true;
+
+            if (Array.isArray(input)) {
+                return input.some((item) => filterFn(item.length));
+            }
+
+            return filterFn(input.length);
+        }
+
         for (const item of this.allData) {
             if (sortBy === "links-only" && !item.hasLink) continue;
 
@@ -628,9 +654,14 @@ const SearchEngine = {
 
             if (dateFilter && !dateFilter(item.ts)) continue;
 
-            if (lengthFilter) {
+            // length filters ---
+
+            if (lengthFilter.q && !lenghtFilterType(item.question, lengthFilter.q)) continue;
+            if (lengthFilter.a && !lenghtFilterType(item.answer, lengthFilter.a)) continue;
+
+            if (lengthFilter.n) {
                 if (searchIn === "both") {
-                    if (!lengthFilter(item.question.length) && !lengthFilter(item.answer.length)) continue;
+                    if (!lenghtFilterType(item.question, lengthFilter.n) && !lenghtFilterType(item.answer, lengthFilter.n)) continue;
                 } else if (searchIn === "question") {
                     if (arrayPassLength(item.question)) continue;
                 } else if (searchIn === "answer") {
@@ -644,7 +675,9 @@ const SearchEngine = {
                 }
             }
 
-            // Pure date-range query without text
+            // --- 
+
+            // Pure date-range or length-filter query without text
             if (cleanQuery === "") {
                 processedData.push({
                     ...item,
