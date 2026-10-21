@@ -1,6 +1,6 @@
 // DB --
 const StorageEngine = {
-    CACHE_VERSION: 17,
+    CACHE_VERSION: 18,
     DB_NAME: "bwsearch-db",
     STORE_NAME: "logs",
 
