@@ -153,14 +153,16 @@ const QueryCompiler = {
                 isRawRegex: true,
                 caseInsensitiveRegex: true,
                 cleanQuery: text.substring(10),
-                dateFilter: null
+                dateFilter: null,
+                lengthFilter: null
             };
         } else if (text.toLowerCase().startsWith("regex:")) {
             return {
                 isRawRegex: true,
                 caseInsensitiveRegex: false,
                 cleanQuery: text.substring(6),
-                dateFilter: null
+                dateFilter: null,
+                lengthFilter: null
             };
         }
 
@@ -656,10 +658,10 @@ const SearchEngine = {
 
             // length filters ---
 
-            if (lengthFilter.q && !lenghtFilterType(item.question, lengthFilter.q)) continue;
-            if (lengthFilter.a && !lenghtFilterType(item.answer, lengthFilter.a)) continue;
+            if (lengthFilter && lengthFilter.q && !lenghtFilterType(item.question, lengthFilter.q)) continue;
+            if (lengthFilter && lengthFilter.a && !lenghtFilterType(item.answer, lengthFilter.a)) continue;
 
-            if (lengthFilter.n) {
+            if (lengthFilter && lengthFilter.n) {
                 if (searchIn === "both") {
                     if (!lenghtFilterType(item.question, lengthFilter.n) && !lenghtFilterType(item.answer, lengthFilter.n)) continue;
                 } else if (searchIn === "question") {
