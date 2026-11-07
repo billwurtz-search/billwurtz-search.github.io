@@ -1,28 +1,28 @@
-const form = document.getElementById('search-form');
-const qInput = document.getElementById('q');
-const sortSelect = document.getElementById('sort');
-const filterSelect = document.getElementById('filter');
-const resultsArea = document.getElementById('results-area');
-const countDisplay = document.getElementById('count-display');
-const statusMsg = document.getElementById('status-msg');
-const sentinel = document.getElementById('sentinel');
-const modal = document.getElementById('config-modal');
-const configBtn = document.getElementById('config-btn');
-const closeModal = document.getElementById('close-modal');
-const limitSlider = document.getElementById('limit-slider');
-const limitLabel = document.getElementById('limit-label');
-const checkLinks = document.getElementById('check-links');
-const checkHighlight = document.getElementById('check-highlight');
-const checkMoreFilters = document.getElementById('check-more-filters');
-const checkAutoAND = document.getElementById('check-auto-and');
-const toastElement = document.getElementById('toast');
-const toastMessageElement = document.getElementById('toast-message');
-const sliderReset = document.getElementById('to-default-button');
-const modalBox = document.querySelector('.modal-content');
+const form = document.getElementById("search-form");
+const qInput = document.getElementById("q");
+const sortSelect = document.getElementById("sort");
+const filterSelect = document.getElementById("filter");
+const resultsArea = document.getElementById("results-area");
+const countDisplay = document.getElementById("count-display");
+const statusMsg = document.getElementById("status-msg");
+const sentinel = document.getElementById("sentinel");
+const modal = document.getElementById("config-modal");
+const configBtn = document.getElementById("config-btn");
+const closeModal = document.getElementById("close-modal");
+const limitSlider = document.getElementById("limit-slider");
+const limitLabel = document.getElementById("limit-label");
+const checkLinks = document.getElementById("check-links");
+const checkHighlight = document.getElementById("check-highlight");
+const checkMoreFilters = document.getElementById("check-more-filters");
+const checkAutoAND = document.getElementById("check-auto-and");
+const toastElement = document.getElementById("toast");
+const toastMessageElement = document.getElementById("toast-message");
+const sliderReset = document.getElementById("to-default-button");
+const modalBox = document.querySelector(".modal-content");
 
 const logFiles = [];
 for (let i = 1; i <= 13; i++) {
-    const num = i.toString().padStart(2, '0');
+    const num = i.toString().padStart(2, "0");
     logFiles.push(`logs/log_${num}.json`);
 }
 
@@ -34,108 +34,108 @@ let toastTimer = null;
 
 const urlParams = new URLSearchParams(window.location.search);
 
-window.addEventListener('DOMContentLoaded', async () => {
+window.addEventListener("DOMContentLoaded", async () => {
     qInput.focus();
     
-    localStorage.removeItem('bwsearch-cache-pref'); // cleanup
+    localStorage.removeItem("bwsearch-cache-pref"); // cleanup
     
-    // there is a ?nocache=1 flag if you don't want IndexedDB
-    if (urlParams.has('nocache')) {
+    // there is a ?nocache=1 flag if you don"t want IndexedDB
+    if (urlParams.has("nocache")) {
         try { await StorageEngine.deleteDatabase(); } catch(e) { console.warn(e); }
     }
 
     const filterMap = {
-        'qna': 'both',
-        'questions': 'question',
-        'answers': 'answer',
-        'dates': 'date-excl',
-        'incl-dates': 'date-incl',
-        'excl-ques': 'q-excl',
-        'excl-answ': 'a-excl',
-        'req-both': 'dual-req'
+        "qna": "both",
+        "questions": "question",
+        "answers": "answer",
+        "dates": "date-excl",
+        "incl-dates": "date-incl",
+        "excl-ques": "q-excl",
+        "excl-answ": "a-excl",
+        "req-both": "dual-req"
     };
     
     const sortMap = {
-        'newest': 'newest',
-        'oldest': 'oldest',
-        'frequency': 'frequency',
-        'randy': 'randy',
-        'links-only': 'links-only'
+        "newest": "newest",
+        "oldest": "oldest",
+        "frequency": "frequency",
+        "randy": "randy",
+        "links-only": "links-only"
     };
 
-    const urlFilter = urlParams.get('filter');
-    const urlSort   = urlParams.get('sort');
+    const urlFilter = urlParams.get("filter");
+    const urlSort   = urlParams.get("sort");
 
-    const advancedFilters = ['incl-dates', 'excl-ques', 'excl-answ', 'req-both'];
-    const advancedSorts   = ['links-only'];
+    const advancedFilters = ["incl-dates", "excl-ques", "excl-answ", "req-both"];
+    const advancedSorts   = ["links-only"];
 
-    const needsMoreFilters = urlParams.has('more-filters') || 
+    const needsMoreFilters = urlParams.has("more-filters") || 
                              advancedFilters.includes(urlFilter) || 
                              advancedSorts.includes(urlSort);
 
     if (needsMoreFilters) {
         checkMoreFilters.checked = true;
-        checkMoreFilters.dispatchEvent(new Event('change'));
+        checkMoreFilters.dispatchEvent(new Event("change"));
     }
 
     if (urlFilter && filterMap[urlFilter]) {
         filterSelect.value = filterMap[urlFilter];
-        filterSelect.dispatchEvent(new Event('change'));
+        filterSelect.dispatchEvent(new Event("change"));
     }
     
     if (urlSort && sortMap[urlSort]) {
         sortSelect.value = sortMap[urlSort];
     }
 
-    if (urlParams.has('disable-links')) {
+    if (urlParams.has("disable-links")) {
         checkLinks.checked = false;
-        checkLinks.dispatchEvent(new Event('change'));
+        checkLinks.dispatchEvent(new Event("change"));
     }
     
-    if (urlParams.has('disable-highlight')) {
+    if (urlParams.has("disable-highlight")) {
         checkHighlight.checked = false;
-        checkHighlight.dispatchEvent(new Event('change'));
+        checkHighlight.dispatchEvent(new Event("change"));
     }
 
     // check ?q= permalink
-    const initialQuery = urlParams.get('q');
+    const initialQuery = urlParams.get("q");
     if (initialQuery) {
         qInput.value = initialQuery;
         triggerSearch();
     } else {
-        qInput.value = '';
+        qInput.value = "";
         statusMsg.innerText = "Search stuff to search.";
     }
 
-    if (urlParams.has('clear')) {
-        window.history.replaceState(null, '', window.location.pathname);
+    if (urlParams.has("clear")) {
+        window.history.replaceState(null, "", window.location.pathname);
     }
 });
 
-form.addEventListener('submit', (e) => {
+form.addEventListener("submit", (e) => {
     e.preventDefault();
     triggerSearch();
 });
 
-window.addEventListener('keydown', (e) => {
-    if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+window.addEventListener("keydown", (e) => {
+    if (e.key === "/" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
         e.preventDefault();
         qInput.focus();
     }
 });
 
-resultsArea.addEventListener('click', (e) => {
-    const link = e.target.closest('a'); 
+resultsArea.addEventListener("click", (e) => {
+    const link = e.target.closest("a"); 
         if (link) {
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
     }
 });
 
-filterSelect.addEventListener('change', function() {
-    if (this.value === 'date-incl' || this.value === 'date-excl') {
+filterSelect.addEventListener("change", function() {
+    if (this.value === "date-incl" || this.value === "date-excl") {
         const placeholderDate = [[3, 12], [1, 28], [17, 25]]
-            .map(([min, max]) => Math.floor(Math.random() * (max - min + 1) + min)).join('.');
+            .map(([min, max]) => Math.floor(Math.random() * (max - min + 1) + min)).join(".");
         qInput.placeholder = `${placeholderDate}...`;
     } else {
         qInput.placeholder = "Search...";
@@ -158,7 +158,7 @@ configBtn.onclick = () => {
 closeModal.onclick = hideModal;
 window.onclick = (e) => { if (e.target === modal) hideModal(); };
 
-window.addEventListener('keydown', (e) => { 
+window.addEventListener("keydown", (e) => { 
     if (modal.style.display !== "block") return; 
     
     if (e.key === "Escape") return hideModal(); 
@@ -182,33 +182,33 @@ window.addEventListener('keydown', (e) => {
 limitSlider.oninput = function() {
     limitLabel.innerText = this.value;
     currentLimit = parseInt(this.value);
-    sliderReset.style.display = this.value == 100 ? 'none' : 'inline-block';
+    sliderReset.style.display = this.value == 100 ? "none" : "inline-block";
 };
 
 sliderReset.onclick = function() {
     limitSlider.value = 100;
-    limitSlider.dispatchEvent(new Event('input'));
+    limitSlider.dispatchEvent(new Event("input"));
 };
 
 checkLinks.onchange = function() {
-    if (this.checked) document.body.classList.remove('disable-links');
-    else document.body.classList.add('disable-links');
+    if (this.checked) document.body.classList.remove("disable-links");
+    else document.body.classList.add("disable-links");
 };
 
 checkHighlight.onchange = function() {
-    if (this.checked) document.body.classList.remove('disable-highlight');
-    else document.body.classList.add('disable-highlight');
+    if (this.checked) document.body.classList.remove("disable-highlight");
+    else document.body.classList.add("disable-highlight");
 };
 
 checkMoreFilters.onchange = function() {
     const extraFilterOptions = [
-        { val: 'date-incl', txt: 'Include Dates' },
-        { val: 'q-excl', txt: 'Exclusively Ques' },
-        { val: 'a-excl', txt: 'Exclusively Answ' },
-        { val: 'dual-req', txt: 'Must be in Both' }
+        { val: "date-incl", txt: "Include Dates" },
+        { val: "q-excl", txt: "Exclusively Ques" },
+        { val: "a-excl", txt: "Exclusively Answ" },
+        { val: "dual-req", txt: "Must be in Both" }
     ];
     const extraSortOptions = [
-        { val: 'links-only', txt: 'Links only' }
+        { val: "links-only", txt: "Links only" }
     ];
 
     const addOpts = (sel, list, cls) => list.forEach(o => {
@@ -218,13 +218,13 @@ checkMoreFilters.onchange = function() {
     });
 
     if (this.checked) {
-        addOpts(filterSelect, extraFilterOptions, 'extra-f');
-        addOpts(sortSelect, extraSortOptions, 'extra-s');
+        addOpts(filterSelect, extraFilterOptions, "extra-f");
+        addOpts(sortSelect, extraSortOptions, "extra-s");
 
     } else {
-        if (filterSelect.selectedOptions[0]?.classList.contains('extra-f')) { filterSelect.value = 'both'; }
-        if (sortSelect.selectedOptions[0]?.classList.contains('extra-s')) { sortSelect.value = 'newest'; }
-        document.querySelectorAll('.extra-f, .extra-s').forEach(el => el.remove());
+        if (filterSelect.selectedOptions[0]?.classList.contains("extra-f")) { filterSelect.value = "both"; }
+        if (sortSelect.selectedOptions[0]?.classList.contains("extra-s")) { sortSelect.value = "newest"; }
+        document.querySelectorAll(".extra-f, .extra-s").forEach(el => el.remove());
     }
 };
 
@@ -257,7 +257,7 @@ async function triggerSearch() {
             }
         }, 10000);
 
-        const useCache = !new URLSearchParams(window.location.search).has('nocache');
+        const useCache = !new URLSearchParams(window.location.search).has("nocache");
         const fakeDelays = [200, 320, 520, 840, 1370, 2210, 3580, 5800, 9390]; let fakeTimeouts = [];
 
         try {
@@ -288,10 +288,10 @@ async function triggerSearch() {
             const lastItem = SearchEngine.allData[SearchEngine.allData.length - 1];
 
             if (lastItem && lastItem.date) {
-                const rawDate = lastItem.date.split(' ')[0];
-                const parts = rawDate.split('.');
+                const rawDate = lastItem.date.split(" ")[0];
+                const parts = rawDate.split(".");
                 if (parts.length === 3) {
-                    const dateEl = document.getElementById('db-date');
+                    const dateEl = document.getElementById("db-date");
                     if (dateEl) {
                         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
                         const monthName = months[parseInt(parts[0], 10) - 1];
@@ -398,12 +398,12 @@ function showToast(message) {
     if (toastTimer) clearTimeout(toastTimer);
     
     toastMessageElement.textContent = message;
-    toastElement.classList.remove('toast-hidden');
-    toastElement.classList.add('toast-visible');
+    toastElement.classList.remove("toast-hidden");
+    toastElement.classList.add("toast-visible");
 
     toastTimer = setTimeout(() => {
-        toastElement.classList.remove('toast-visible');
-        toastElement.classList.add('toast-hidden');
+        toastElement.classList.remove("toast-visible");
+        toastElement.classList.add("toast-hidden");
         toastTimer = null;
     }, 3600);
 }
