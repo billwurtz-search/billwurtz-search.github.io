@@ -229,7 +229,7 @@ checkMoreFilters.onchange = function() {
 };
 
 // trigger search
-async function triggerSearch() {
+async function triggerSearch(previous, doPushState) {
     const query = qInput.value.trim();
 
     if (!query) {
@@ -321,13 +321,19 @@ async function triggerSearch() {
 
     const excludedQues = urlParams.get("exclude")?.split(",") || null;
     
-    const params = {
+    let params = {
         query: query,
         sortBy: sortSelect.value,
         searchIn: filterSelect.value,
         autoAND: checkAutoAND.checked,
         excludedQues: excludedQues
     };
+    
+    if (previous !== undefined) params = previous;
+
+    if (doPushState) history.pushState(params, "");
+
+    qInput.value = params.query;
 
     setTimeout(() => {
         const response = SearchEngine.executeSearch(params);
@@ -352,6 +358,14 @@ async function triggerSearch() {
         }
     }, 10);
 }
+
+window.addEventListener("popstate", (event) => {
+    if (event.state) {
+        triggerSearch(event.state);
+    } else {
+        triggerSearch();
+    }
+});
 
 function renderBatch() {
     if (currentOffset >= currentResults.length) {
