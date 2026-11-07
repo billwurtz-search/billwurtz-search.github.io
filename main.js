@@ -229,7 +229,7 @@ checkMoreFilters.onchange = function() {
 };
 
 // trigger search
-async function triggerSearch(previous, doPushState) {
+async function triggerSearch(previous, doPushState = true) {
     const query = qInput.value.trim();
 
     if (!query) {
@@ -331,6 +331,7 @@ async function triggerSearch(previous, doPushState) {
     
     if (previous !== undefined) params = previous;
 
+    // history.pushState(params, "");
     if (doPushState) history.pushState(params, "");
 
     qInput.value = params.query;
@@ -361,9 +362,9 @@ async function triggerSearch(previous, doPushState) {
 
 window.addEventListener("popstate", (event) => {
     if (event.state) {
-        triggerSearch(event.state);
+        triggerSearch(event.state, false);
     } else {
-        triggerSearch();
+        triggerSearch(undefined, false);
     }
 });
 
