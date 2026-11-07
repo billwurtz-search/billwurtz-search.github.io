@@ -328,10 +328,10 @@ async function triggerSearch(previous, doPushState = true) {
         autoAND: checkAutoAND.checked,
         excludedQues: excludedQues
     };
-    
+
     if (previous !== undefined) params = previous;
 
-    if (doPushState) history.pushState(params, "");
+    if (doPushState && JSON.stringify(params) !== JSON.stringify(history.state)) history.pushState(params, "");
 
     // set everything after back button
     qInput.value = params.query;
