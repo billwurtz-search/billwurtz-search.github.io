@@ -348,7 +348,7 @@ async function triggerSearch(previous, doPushState = true) {
         }
 
         // update title
-        document.title = `${query} - Bill Wurtz Search`;
+        document.title = `${params.query} - Bill Wurtz Search`;
         
         // update result text
         currentResults = response.results;
