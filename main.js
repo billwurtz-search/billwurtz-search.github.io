@@ -319,7 +319,7 @@ async function triggerSearch(previous, doPushState = true) {
 
     statusMsg.innerText = "Searching...";
 
-    const excludedQues = urlParams.get("exclude")?.split(",") || null;
+    let excludedQues = urlParams.get("exclude")?.split(",") || null;
     
     let params = {
         query: query,
@@ -331,10 +331,14 @@ async function triggerSearch(previous, doPushState = true) {
     
     if (previous !== undefined) params = previous;
 
-    // history.pushState(params, "");
     if (doPushState) history.pushState(params, "");
 
+    // set everything after back button
     qInput.value = params.query;
+    sortSelect.value = params.sortBy;
+    filterSelect.value = params.searchIn;
+    checkAutoAND.checked = params.autoAND;
+    excludedQues = params.excludedQues;
 
     setTimeout(() => {
         const response = SearchEngine.executeSearch(params);
