@@ -234,18 +234,21 @@ const QueryCompiler = {
     },
 
     tokenize(queryString) {
-        // matches quoted strings, parens, or words
-        const tokenRegex = /"([^"]+)"|([()])|([^\s()]+)/g;
+        // match quoted strings, parens, or words
+        const tokenRegex = /(-)?(?:"([^"]+)"|([()])|([^\s()]+))/g;
         const rawTokens = [];
         let match;
 
         while ((match = tokenRegex.exec(queryString)) !== null) {
-            if (match[1] !== undefined) {
-                rawTokens.push({ value: match[1], quoted: true });
-            } else if (match[2] !== undefined) {
-                rawTokens.push({ value: match[2], paren: true });
+            if (match[1]) {
+                rawTokens.push({ value: "NOT" });
+            }
+            if (match[2] !== undefined) {
+                rawTokens.push({ value: match[2], quoted: true });
             } else if (match[3] !== undefined) {
-                rawTokens.push({ value: match[3], word: true });
+                rawTokens.push({ value: match[3], paren: true });
+            } else if (match[4] !== undefined) {
+                rawTokens.push({ value: match[4], word: true });
             }
         }
         return rawTokens;
