@@ -229,7 +229,7 @@ checkMoreFilters.onchange = function() {
 };
 
 // trigger search
-async function triggerSearch(previous, doPushState = true) {
+async function triggerSearch(previous, doPushState = true, setEverything = false) {
     const query = qInput.value.trim();
 
     if (!query) {
@@ -334,11 +334,13 @@ async function triggerSearch(previous, doPushState = true) {
     if (doPushState && JSON.stringify(params) !== JSON.stringify(history.state)) history.pushState(params, "");
 
     // set everything after back button
-    qInput.value = params.query;
-    sortSelect.value = params.sortBy;
-    filterSelect.value = params.searchIn;
-    checkAutoAND.checked = params.autoAND;
-    excludedQues = params.excludedQues;
+    if (setEverything) {
+        qInput.value = params.query;
+        sortSelect.value = params.sortBy;
+        filterSelect.value = params.searchIn;
+        checkAutoAND.checked = params.autoAND;
+        excludedQues = params.excludedQues;
+    }
 
     setTimeout(() => {
         const response = SearchEngine.executeSearch(params);
@@ -366,9 +368,9 @@ async function triggerSearch(previous, doPushState = true) {
 
 window.addEventListener("popstate", (event) => {
     if (event.state) {
-        triggerSearch(event.state, false);
+        triggerSearch(event.state, false, true);
     } else {
-        triggerSearch(undefined, false);
+        triggerSearch(undefined, false, false);
     }
 });
 
