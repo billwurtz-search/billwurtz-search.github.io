@@ -8956,5 +8956,347 @@
         "date": "11.14.26 4:48 pm",
         "ques": "what do you think of the great depression?",
         "answ": "seems like an opportunity to start something great, genuinely"
+    },
+    {
+        "info": {"ts": "202611141654"},
+        "date": "11.14.26 4:54 pm",
+        "ques": "Hello, do you remember the last time you fell asleep ?",
+        "answ": "i could tell you when it was, but i dont remember it happening"
+    },
+    {
+        "info": {"ts": "202611141702"},
+        "date": "11.14.26 5:02 pm",
+        "ques": "what video editing and animation software do you use?",
+        "answ": "i'll give you a hint: it's not the kind of stuff where you say \"hey computer, can you please do something like this for me\". i havent gotten into any of that sort of technology, especially not for my work"
+    },
+    {
+        "info": {"ts": "202611141722"},
+        "date": "11.14.26 5:22 pm",
+        "ques": "I really liked the call back to the \"Gotta go downstairs\" vid. Are there any more references planned for future videos?",
+        "answ": "yes, if my calculations are correct, in the video 16 videos from now, there will be a callback to the video 2 videos from now, and in the video 6 videos from now, there should be a callback to the video 6 videos ago"
+    },
+    {
+        "info": {"ts": "202611141734"},
+        "date": "11.14.26 5:34 pm",
+        "ques": "if i lead a horse to water, will it drink?",
+        "answ": "maybe, maybe not"
+    },
+    {
+        "info": {"ts": "202611141745"},
+        "date": "11.14.26 5:45 pm",
+        "ques": "if doritos were hexagonal instead of triangualar, do you think you would be a happier person in said alternate universe compared to where you are now, or vice versa?",
+        "answ": "it wouldn't make a difference"
+    },
+    {
+        "info": {"ts": "202611141752"},
+        "date": "11.14.26 5:52 pm",
+        "ques": "ive asked this before about 7/8 but whats your opinion on 9/8",
+        "answ": "1 and 1/8"
+    },
+    {
+        "info": {"ts": "202611141759"},
+        "date": "11.14.26 5:59 pm",
+        "ques": "what cheese is best cheese . asking for a friend",
+        "answ": "bad. in the world of cheese, bad is good"
+    },
+    {
+        "info": {"ts": "202611142007"},
+        "date": "11.14.26 8:07 pm",
+        "ques": "What's your project organization method when working on multiple projects?",
+        "answ": "i only tried that once, i had an assembly line system for a series of videos, where i do all of 1 task for all videos, then do all of the next task for all videos, in the same order. The great great advantage of this strategy is, it gives you a chance to get really good practice doing that task, and often there is a breakthrough that happens after a certain period of time where you figure out a better way to do it, and you wouldnt have had that breakthrough if you have to keep switching to the next task. The huge disadvantage of this, however, is you never get a chance to learn from your mistakes until it's too late"
+    },
+    {
+        "info": {"ts": "202611142025"},
+        "date": "11.14.26 8:25 pm",
+        "ques": "do you get tired of the questions",
+        "answ": "no, each one makes me more awake"
+    },
+    {
+        "info": {"ts": "202611142110"},
+        "date": "11.14.26 9:10 pm",
+        "ques": "how much ties do you think are too much ties",
+        "answ": "that's not for me to judge"
+    },
+    {
+        "info": {"ts": "202611142115"},
+        "date": "11.14.26 9:15 pm",
+        "ques": "How are you? I've been better but I think we've all been better unless you're at your absolute best currently but then you realize that it's going to pass then you are back to being \"I've been better\".",
+        "answ": "i think it's a confusing phrase. when i first read what you said, i thought you were saying things have improved lately, since before"
+    },
+    {
+        "info": {"ts": "202611142142"},
+        "date": "11.14.26 9:42 pm",
+        "ques": "have you ever listened to something you've listened to before and you enjoyed it so you expect it to feel shorter but then suddenly it had more than you remembered there being before?",
+        "answ": "sure, sometimes i notice more things not just in length but in depth. like i hear more things per moment"
+    },
+    {
+        "info": {"ts": "202611142143"},
+        "date": "11.14.26 9:43 pm",
+        "ques": "it's always \"why is the infinity bus\" but never \"how is the infinity bus\" and i find that to be sad",
+        "answ": "i dont believe you"
+    },
+    {
+        "info": {"ts": "202611142147"},
+        "date": "11.14.26 9:47 pm",
+        "ques": "did u just feel music or did music feel you?",
+        "answ": "when it's working properly it is very mutual"
+    },
+    {
+        "info": {"ts": "202611142202"},
+        "date": "11.14.26 10:02 pm",
+        "ques": "What is the video that you made that you are the most proud of?",
+        "answ": "maybe one of the upcoming ones"
+    },
+    {
+        "info": {"ts": "202611142214"},
+        "date": "11.14.26 10:14 pm",
+        "ques": "under the description for \"hi\" you put \"oops, no ai\", does this imply that you originally intended to use AI but forgot to use it?",
+        "answ": "i started the video way before ai was popular, but of course now i might look insane for having worked that hard. so maybe it's more like, \"oops, i look insane\". but that's always been true and always probably gonna be true anyway"
+    },
+    {
+        "info": {"ts": "202611142215"},
+        "date": "11.14.26 10:15 pm",
+        "ques": "can you make me a grilled cheese",
+        "answ": "no i dont believe so"
+    },
+    {
+        "info": {"ts": "202611142216"},
+        "date": "11.14.26 10:16 pm",
+        "ques": "how do you optimize the transition from being awake to being asleep",
+        "answ": "i have no idea if this will work for you, but i usually try to prime factor large numbers in my head"
+    },
+    {
+        "info": {"ts": "202611142219"},
+        "date": "11.14.26 10:19 pm",
+        "ques": "why is it sweet that lots of people on here have fully adopted \"0000\" as the official name for the non shelby person. Well I guess that was technically already their name in the file....",
+        "answ": "sometimes i call it character 1, but they are also known as 'person20240128031057'"
+    },
+    {
+        "info": {"ts": "202611142321"},
+        "date": "11.14.26 11:21 pm",
+        "ques": "I have a slideshow coming up soon. What should I hide in the slideshow?",
+        "answ": "how about a birthday present"
+    },
+    {
+        "info": {"ts": "202611142336"},
+        "date": "11.14.26 11:36 pm",
+        "ques": "will riding the infinity bus help me find a finite version of me?",
+        "answ": "i was going to say no but now that i think about it yes"
+    },
+    {
+        "info": {"ts": "202611142337"},
+        "date": "11.14.26 11:37 pm",
+        "ques": "hey bill, for the hi video, why do the people have dots on their heads?",
+        "answ": "style"
+    },
+    {
+        "info": {"ts": "202611142354"},
+        "date": "11.14.26 11:54 pm",
+        "ques": "how did you keep your love of music in your life?",
+        "answ": "how could i keep it away"
+    },
+    {
+        "info": {"ts": "202611150012"},
+        "date": "11.15.26 12:12 am",
+        "ques": "who's the latest rad composer that you fancy",
+        "answ": "i'm always surprised by either not liking someone i thought i did like, or liking someone i thought i didnt like. i've come to expect this, and enjoy it also"
+    },
+    {
+        "info": {"ts": "202611150022"},
+        "date": "11.15.26 12:22 am",
+        "ques": "whats the best beatles album",
+        "answ": "i don't really know which songs are on which albums"
+    },
+    {
+        "info": {"ts": "202611150111"},
+        "date": "11.15.26 1:11 am",
+        "ques": "what's your ratio of time spent working on audio vs visuals? And would you (ideally) prefer it to be different? If so, how so?",
+        "answ": "it ought to be about the same"
+    },
+    {
+        "info": {"ts": "202611150140"},
+        "date": "11.15.26 1:40 am",
+        "ques": "Is nature an artificial thing?",
+        "answ": "really what we're talking about now are the words, but i think those words are supposed to be opposites"
+    },
+    {
+        "info": {"ts": "202611150233"},
+        "date": "11.15.26 2:33 am",
+        "ques": "unlimited bacon but no games or unlimited games... and no games",
+        "answ": "skip the bacon, just games and no games for me"
+    },
+    {
+        "info": {"ts": "202611150408"},
+        "date": "11.15.26 4:08 am",
+        "ques": "thoughts on chocolate cake?",
+        "answ": "too good it even scares itself away"
+    },
+    {
+        "info": {"ts": "202611150428"},
+        "date": "11.15.26 4:28 am",
+        "ques": "what advice do you have for someone who has no idea what to do with their life",
+        "answ": "you will. for now, enjoy the mystery"
+    },
+    {
+        "info": {"ts": "202611150439"},
+        "date": "11.15.26 4:39 am",
+        "ques": "how do you stay on the same page as life? Like how do you stay looking forward to things while being in tune with the present moment?",
+        "answ": "you can do it a different way every day. sometimes you catch up to life, sometimes it catches up to you"
+    },
+    {
+        "info": {"ts": "202611150514"},
+        "date": "11.15.26 5:14 am",
+        "ques": "Are the infinity busses supposed to represent social media intruding and ravaging our loves and hobbies (like writing down everything that ever happened) into things that can be bought and sold for purposes beyond our understanding (like at the music store where the owner responds to the wrong door and speaks five times each time he talks, a wild contradiction to the relative simplicity of the song the protagonist was enjoying after the map issues), and that the two people are trying to escape to their own, more elegant and artistic life (the 'concert' paper with the heartbeat drawn on it) but ending up trapped, surrounded by a hostile world, illustrated by the confusion of person 2 regarding the nature of the paper, then the paper rising into the air and approaching them as they sat on the couch?",
+        "answ": "like 'pure mathematicians' tend to not worry so much about exactly which real-world application their math will have (there are often many), i tend to get my kick from 'pure storytelling', in a similar way"
+    },
+    {
+        "info": {"ts": "202611150522"},
+        "date": "11.15.26 5:22 am",
+        "ques": "what is an interesting bit of creative intent that i should look deeper into? (definitely not for an essay)",
+        "answ": "you wanna pick something that really moves you. really really moves you. otherwise you'll just wish you picked something else"
+    },
+    {
+        "info": {"ts": "202611150653"},
+        "date": "11.15.26 6:53 am",
+        "ques": "is the infinity bus a direct reference to the flock cameras that spy on people and cars?",
+        "answ": "no"
+    },
+    {
+        "info": {"ts": "202611150737"},
+        "date": "11.15.26 7:37 am",
+        "ques": "do you build EVERY scene in your animations?",
+        "answ": "yes i do"
+    },
+    {
+        "info": {"ts": "202611150854"},
+        "date": "11.15.26 8:54 am",
+        "ques": "I am a high school student from Japan. I stumbled upon your latest video and became a fan today. Since my artistic sensibilities aren't fully developed yet, I probably (or rather, almost certainly) don't understand everything in your videos, but I love your 3D animation, music, and overall creative style. I'm planning to check out the rest of your huge collection of works from now on. Is there anything a newcomer like me should know before diving into your creations?",
+        "answ": "whenever i watch anything, like a movie, etc, the best experience i prefer is to know absolutely nothing about it. i dont wanna know who's in it, i dont wanna know who did it, i dont wanna know what its 'about', ..... if possible i dont even wanna know the title. all these things would be tiny spoilers, which are better revealed as they come along. i dont know if that's what you prefer, but it's always how i like to do it"
+    },
+    {
+        "info": {"ts": "202611150904"},
+        "date": "11.15.26 9:04 am",
+        "ques": "have you ever used cool/interesting math for a visual?",
+        "answ": "yes i believe so"
+    },
+    {
+        "info": {"ts": "202611150932", "hl": true},
+        "date": "11.15.26 9:32 am",
+        "ques": "where did my question go",
+        "answ": "it's <a href=\"https://billwurtz.com/questions/q.php?date=202611111543\" target=\"_blank\">right here</a>"
+    },
+    {
+        "info": {"ts": "202611151054"},
+        "date": "11.15.26 10:54 am",
+        "ques": "Do you ever second guess if a song you're making is good or not because you've heard it so many times?",
+        "answ": "absolutely. this is normal"
+    },
+    {
+        "info": {"ts": "202611151112"},
+        "date": "11.15.26 11:12 am",
+        "ques": "are infinity buses organic, sentient, and capable of forming a labor union?",
+        "answ": "it's not clear"
+    },
+    {
+        "info": {"ts": "202611151114a"},
+        "date": "11.15.26 11:14 am",
+        "ques": "where do you get your inspo from for your wacky style of creation (love it btw)",
+        "answ": "already have the inspo, question is where the hell am i gonna put it"
+    },
+    {
+        "info": {"ts": "202611151114b"},
+        "date": "11.15.26 11:14 am",
+        "ques": "why is u and q flipped in the title",
+        "answ": "for style, but using text instead of pictures"
+    },
+    {
+        "info": {"ts": "202611151136"},
+        "date": "11.15.26 11:36 am",
+        "ques": "Hi Bill, are there variants of the Infinity Buses or they are all the same?",
+        "answ": "the ones you've seen are all the same"
+    },
+    {
+        "info": {"ts": "202611151209"},
+        "date": "11.15.26 12:09 pm",
+        "ques": "what's a food that's less novel than pizza?",
+        "answ": "how about bread"
+    },
+    {
+        "info": {"ts": "202611151250"},
+        "date": "11.15.26 12:50 pm",
+        "ques": "really resonated with 'hi' for a reason i can't really describe but i did. thank you for making something that satisfies my brain. do you plan on making more content like that?",
+        "answ": "be careful what you wish for"
+    },
+    {
+        "info": {"ts": "202611151316"},
+        "date": "11.15.26 1:16 pm",
+        "ques": "how to deal with the uncertainty of the future?",
+        "answ": "all the uncertainty is based on all kinds of choices made by all kinds of people and other things. The key role you play in this is to identify the choices which will be made by you. and cherish those choices"
+    },
+    {
+        "info": {"ts": "202611151439"},
+        "date": "11.15.26 2:39 pm",
+        "ques": "wfdoneodqksKOODMSOEFOWEJFOEFMIIlp;dfs;'';fd'sf;;'d/c/'df;we[f.[we[[w[e[]r[]w[erpw][ep]ofdciedfjsidfjewidfirgiefmvirnergfmewmiro29384rj9302kwsdlqpwpd-0293ojqdkmifm9329392939393939rfmeoisdkgmnedgkmeofkvlwmgodfmdoefowe what is your opinion on this",
+        "answ": "it looks like it was done with your hands. you moved them to different locations maybe 5 or 6 times, but during that whole time your fingers were wiggling"
+    },
+    {
+        "info": {"ts": "202611151444"},
+        "date": "11.15.26 2:44 pm",
+        "ques": "underrated facts you've learned about the 3rd dimension",
+        "answ": "it's surprisingly underutilized"
+    },
+    {
+        "info": {"ts": "202611151502"},
+        "date": "11.15.26 3:02 pm",
+        "ques": "if I go into the infinity bus and start to think of me going to an infinity bus and thinking of me going to an infinity bus and thinking of me going into an infinity bus and so on, will i spontaneously combust into 2 million flying pieces that will cause the end of the very mortal plane we live in as we know it?",
+        "answ": "no i don't believe so"
+    },
+    {
+        "info": {"ts": "202611151534"},
+        "date": "11.15.26 3:34 pm",
+        "ques": "do things matter?",
+        "answ": "yes i believe so"
+    },
+    {
+        "info": {"ts": "202611151707"},
+        "date": "11.15.26 5:07 pm",
+        "ques": "i'm about to finish college in a major i don't like. i became so burn out i can only function the day before deadlines. what can i do?",
+        "answ": "tell the tale"
+    },
+    {
+        "info": {"ts": "202611151713"},
+        "date": "11.15.26 5:13 pm",
+        "ques": "Best type of cheese?",
+        "answ": "terrible"
+    },
+    {
+        "info": {"ts": "202611151718"},
+        "date": "11.15.26 5:18 pm",
+        "ques": "whats a good bpm for jazz?",
+        "answ": "all tempos are good"
+    },
+    {
+        "info": {"ts": "202611151723"},
+        "date": "11.15.26 5:23 pm",
+        "ques": "In nametags, for nameless people, what are the names of the people with nameless nametags that have names?",
+        "answ": "in order of appearance: '0000', '0001', '0003', '0004', '0008', '0005', '0006', '0007', '0010' (left) and '0009' (right). also known as, in same order: 'person20221224211906', 'person20221224222050', 'person20221224234150', 'person20221225010816', 'person20221225011014', 'person20221225010846', 'person20221225010909', 'person20221225010925', 'person20221225011036', 'person20221225011058',"
+    },
+    {
+        "info": {"ts": "202611151800"},
+        "date": "11.15.26 6:00 pm",
+        "ques": "ive written music for 2-3 years, but i feel like i completely ignored the idea of INTENTION. i have always just, wrote, without any emotion or idea or anything im trying to convey. instead i just write what \"sounds good to me\". how do i go about creating a song (or project) with MEANING? it seems so layered and confusing to me, like the idea \"minor=sad, major=happy\" when that is just not true in some cases. i just struggle to write a song with meaning or an idea, let alone COME UP with the idea to write about. do you have any advice on this?",
+        "answ": "i have no idea what you're talking about. it sounds like there's been some wild conspiracy afoot to try to get you to disbelieve your own senses; to make you believe that \"meaning\" couldnt possibly be something you could hear. or, that it couldnt possibly be meaningful for something to sound any good. If i had to guess i would guess that you already know what youre doing and your music has already been great, but suddenly you're doubting yourself for some reason"
+    },
+    {
+        "info": {"ts": "202611151908"},
+        "date": "11.15.26 7:08 pm",
+        "ques": "is the brain different from the mind?",
+        "answ": "the word 'mind' usually refers to the conscious experience. the brain does at least some things apart from consciousness. whether consciousness also does some things apart from the brain, is a separate question entirely, but, even if we set that aside, the brain does some things apart from the mind so at least in that way there is a difference, between what the words 'brain' and 'mind' refer to"
+    },
+    {
+        "info": {"ts": "202611151923"},
+        "date": "11.15.26 7:23 pm",
+        "ques": "I appreciate you, Mr Bill Wurtz. Many thank you's and eternal gratitude for your whimsy and artistry. Two questions, if I may have the privilege of your answers. 1. When you are waiting for a new idea to arrive, are you standing at a doorway expecting a visitor, or are you digging a hole hoping to strike liquid? 2. If the universe eventually finishes saying everything it needs to say, what is the very last word it will use to wrap up the sentence?",
+        "answ": "when i'm waiting for an idea to arrive, i'm indeed waiting for a visitor, even if that visitor is me. and, separately, about your second question, the universe's last moments will not be in the form of a word"
     }
 ]
